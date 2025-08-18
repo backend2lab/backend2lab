@@ -167,6 +167,15 @@
     @apply border-transparent text-dark-text-secondary hover:text-dark-text-primary;
   }
 
+  /* Editor Tab System */
+  .tabby {
+    @apply w-full flex items-center bg-gray-800 border-b border-dark-border-primary h-12;
+  }
+
+  .editor-tabs {
+    @apply flex items-center justify-between px-4 h-12 bg-gray-800 border-b border-dark-border-primary;
+  }
+
   /* Console Components */
   .console-container {
     @apply border-t border-dark-border-primary bg-gray-900;

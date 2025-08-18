@@ -161,7 +161,7 @@ You can return the answer in any order.`,
         <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-dark-border-primary bg-gray-900 flex flex-col shadow-dark">
           {/* Tab Navigation */}
           <div className="border-b border-dark-border-primary bg-dark-card">
-            <div className="flex overflow-x-auto">
+            <div className="tabby flex overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab}

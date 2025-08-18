@@ -1,6 +1,14 @@
 import { useState } from "react";
 import Editor from "@monaco-editor/react";
 
+interface FileTab {
+  id: string;
+  name: string;
+  language: string;
+  content: string;
+  isActive: boolean;
+}
+
 interface Props {
   code: string;
   runCode?: (code: string) => void;
@@ -8,14 +16,133 @@ interface Props {
 }
 
 export default function CodeEditor({ code, runCode, readOnly }: Props) {
-  const [currentCode, setCurrentCode] = useState<string>(code);
+  const [files, setFiles] = useState<FileTab[]>([
+    {
+      id: 'main.js',
+      name: 'main.js',
+      language: 'javascript',
+      content: code,
+      isActive: true
+    },
+    {
+      id: 'solution.py',
+      name: 'solution.py',
+      language: 'python',
+      content: `# Two Sum Solution
+def two_sum(nums, target):
+    """
+    Given an array of integers nums and an integer target,
+    return indices of the two numbers such that they add up to target.
+    """
+    seen = {}
+    
+    for i, num in enumerate(nums):
+        complement = target - num
+        
+        if complement in seen:
+            return [seen[complement], i]
+        
+        seen[num] = i
+    
+    return []
+
+# Test the function
+nums = [2, 7, 11, 15]
+target = 9
+print(two_sum(nums, target))  # Expected: [0, 1]`,
+      isActive: false
+    },
+    {
+      id: 'Solution.java',
+      name: 'Solution.java',
+      language: 'java',
+      content: `import java.util.*;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+            
+            map.put(nums[i], i);
+        }
+        
+        return new int[0];
+    }
+    
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = {2, 7, 11, 15};
+        int target = 9;
+        int[] result = solution.twoSum(nums, target);
+        System.out.println(Arrays.toString(result)); // Expected: [0, 1]
+    }
+}`,
+      isActive: false
+    }
+  ]);
+
+  const activeFile = files.find(file => file.isActive) || files[0];
+
+  const handleTabClick = (fileId: string) => {
+    setFiles(files.map(file => ({
+      ...file,
+      isActive: file.id === fileId
+    })));
+  };
+
+
+
+  const handleCodeChange = (value: string | undefined) => {
+    setFiles(files.map(file => 
+      file.isActive 
+        ? { ...file, content: value || "" }
+        : file
+    ));
+  };
+
+  const getFileIcon = (language: string) => {
+    switch (language) {
+      case 'javascript':
+        return '⚡';
+      case 'python':
+        return '🐍';
+      case 'java':
+        return '☕';
+      default:
+        return '📄';
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col bg-gray-900">
+      {/* Tabs Bar */}
+      <div className="tabby">
+        {files.map((file) => (
+          <div
+            key={file.id}
+            onClick={() => handleTabClick(file.id)}
+            className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-dark-border-primary flex-1 transition-colors ${
+              file.isActive 
+                ? 'bg-gray-900 text-dark-text-primary' 
+                : 'bg-gray-800 text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary'
+            }`}
+          >
+            <span className="text-sm">{getFileIcon(file.language)}</span>
+            <span className="text-sm font-medium truncate">{file.name}</span>
+          </div>
+        ))}
+      </div>
+
       {/* Editor Header */}
-      <div className="flex items-center justify-between px-4 pt-[0.6rem] pb-4 bg-gray-800 border-b border-dark-border-primary">
+      <div className="editor-tabs">
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-dark-text-secondary">main.js</span>
+          <span className="text-sm font-medium text-dark-text-secondary">{activeFile.name}</span>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 rounded-full bg-error-500"></div>
             <div className="w-3 h-3 rounded-full bg-warning-500"></div>
@@ -23,7 +150,7 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-dark-text-tertiary">JavaScript</span>
+          <span className="text-xs text-dark-text-tertiary capitalize">{activeFile.language}</span>
         </div>
       </div>
 
@@ -31,9 +158,9 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
       <div className="flex-1 relative">
         <Editor
           height="100%"
-          defaultLanguage="javascript"
-          value={currentCode}
-          onChange={(value) => setCurrentCode(value || "")}
+          defaultLanguage={activeFile.language}
+          value={activeFile.content}
+          onChange={handleCodeChange}
           options={{ 
             readOnly: readOnly || false,
             minimap: { enabled: false },
@@ -161,7 +288,7 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
           <span>UTF-8</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span>JavaScript</span>
+          <span className="capitalize">{activeFile.language}</span>
           <div className="w-2 h-2 bg-success-500 rounded-full"></div>
         </div>
       </div>
@@ -169,7 +296,7 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
       {!readOnly && runCode && (
         <div className="flex justify-end p-4 bg-dark-card border-t border-dark-border-primary">
           <button 
-            onClick={() => runCode(currentCode)}
+            onClick={() => runCode(activeFile.content)}
             className="btn-primary"
           >
             Run Code

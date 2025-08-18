@@ -13,7 +13,7 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
   return (
     <div className="w-full h-full flex flex-col bg-gray-900">
       {/* Editor Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-dark-border-primary">
+      <div className="flex items-center justify-between px-4 pt-[0.6rem] pb-4 bg-gray-800 border-b border-dark-border-primary">
         <div className="flex items-center space-x-4">
           <span className="text-sm font-medium text-dark-text-secondary">main.js</span>
           <div className="flex items-center space-x-1">

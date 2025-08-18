@@ -267,28 +267,6 @@ You can return the answer in any order.`,
 
         {/* Right Panel - Editor + Console */}
         <div className="w-full lg:w-1/2 bg-gray-900 flex flex-col shadow-dark">
-          {/* Language Selector */}
-          <div className="border-b border-dark-border-primary px-4 sm:px-6 py-3 bg-dark-card">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-              <div className="flex items-center space-x-3">
-                <label className="text-sm font-medium text-dark-text-secondary">Language:</label>
-                <select
-                  value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value as Language)}
-                  className="input-field w-auto"
-                >
-                  <option value="JavaScript">JavaScript</option>
-                  <option value="Python">Python</option>
-                  <option value="Java">Java</option>
-                  <option value="C++">C++</option>
-                </select>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs text-dark-text-secondary">Ready</span>
-                <div className="w-2 h-2 bg-success-500 rounded-full animate-pulse-slow"></div>
-              </div>
-            </div>
-          </div>
 
           {/* Code Editor */}
           <div className="flex-1 bg-gray-900">

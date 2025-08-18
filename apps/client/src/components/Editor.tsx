@@ -96,8 +96,6 @@ class Solution {
     })));
   };
 
-
-
   const handleCodeChange = (value: string | undefined) => {
     setFiles(files.map(file => 
       file.isActive 
@@ -120,37 +118,37 @@ class Solution {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-gray-900">
+    <div className="w-full h-full flex flex-col bg-tactical-background">
       {/* Tabs Bar */}
-      <div className="tabby">
+      <div className="w-full flex items-center bg-tactical-surface border-b border-tactical-border-primary h-12">
         {files.map((file) => (
           <div
             key={file.id}
             onClick={() => handleTabClick(file.id)}
-            className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-dark-border-primary flex-1 transition-colors ${
+            className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-tactical-border-primary flex-1 transition-colors ${
               file.isActive 
-                ? 'bg-gray-900 text-dark-text-primary' 
-                : 'bg-gray-800 text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary'
+                ? 'bg-tactical-background text-tactical-text-primary' 
+                : 'bg-tactical-surface text-tactical-text-secondary hover:bg-neutral-800 hover:text-tactical-text-primary'
             }`}
           >
-            <span className="text-sm">{getFileIcon(file.language)}</span>
-            <span className="text-sm font-medium truncate">{file.name}</span>
+            <span className="text-sm font-tactical">{getFileIcon(file.language)}</span>
+            <span className="text-sm font-medium truncate font-tactical">{file.name}</span>
           </div>
         ))}
       </div>
 
       {/* Editor Header */}
-      <div className="editor-tabs">
+      <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary">
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-dark-text-secondary">{activeFile.name}</span>
+          <span className="text-sm font-medium text-tactical-text-secondary font-tactical">{activeFile.name}</span>
           <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-error-500"></div>
-            <div className="w-3 h-3 rounded-full bg-warning-500"></div>
-            <div className="w-3 h-3 rounded-full bg-success-500"></div>
+            <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
+            <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
+            <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-dark-text-tertiary capitalize">{activeFile.language}</span>
+          <span className="text-xs text-tactical-text-secondary capitalize font-tactical">{activeFile.language}</span>
         </div>
       </div>
 
@@ -166,7 +164,7 @@ class Solution {
             minimap: { enabled: false },
             fontSize: 14,
             lineHeight: 20,
-            fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+            fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
             lineNumbers: "on",
             roundedSelection: false,
             scrollBeyondLastLine: false,
@@ -233,13 +231,13 @@ class Solution {
           theme="vs-dark"
           className="rounded-none"
           beforeMount={(monaco) => {
-            // Customize the dark theme
-            monaco.editor.defineTheme('leetcode-dark', {
+            // Customize the dark theme for tactical design
+            monaco.editor.defineTheme('tactical-dark', {
               base: 'vs-dark',
               inherit: true,
               rules: [
                 { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-                { token: 'keyword', foreground: '569CD6', fontStyle: 'bold' },
+                { token: 'keyword', foreground: 'f97316', fontStyle: 'bold' },
                 { token: 'string', foreground: 'CE9178' },
                 { token: 'number', foreground: 'B5CEA8' },
                 { token: 'operator', foreground: 'D4D4D4' },
@@ -248,30 +246,30 @@ class Solution {
                 { token: 'type', foreground: '4EC9B0' },
               ],
               colors: {
-                'editor.background': '#1E1E1E',
-                'editor.foreground': '#D4D4D4',
-                'editor.lineHighlightBackground': '#2A2D2E',
-                'editor.selectionBackground': '#264F78',
-                'editor.inactiveSelectionBackground': '#3A3D41',
-                'editorCursor.foreground': '#AEAFAD',
-                'editorWhitespace.foreground': '#3E3E3E',
+                'editor.background': '#000000',
+                'editor.foreground': '#ffffff',
+                'editor.lineHighlightBackground': '#262626',
+                'editor.selectionBackground': '#f97316',
+                'editor.inactiveSelectionBackground': '#404040',
+                'editorCursor.foreground': '#f97316',
+                'editorWhitespace.foreground': '#404040',
                 'editorIndentGuide.background': '#404040',
-                'editorIndentGuide.activeBackground': '#707070',
-                'editorLineNumber.foreground': '#858585',
-                'editorLineNumber.activeForeground': '#C6C6C6',
-                'editorGutter.background': '#1E1E1E',
-                'editorError.foreground': '#F44747',
-                'editorWarning.foreground': '#CCA700',
-                'editorInfo.foreground': '#75BEFF',
-                'editorBracketMatch.background': '#0064001A',
-                'editorBracketMatch.border': '#888888',
+                'editorIndentGuide.activeBackground': '#737373',
+                'editorLineNumber.foreground': '#737373',
+                'editorLineNumber.activeForeground': '#ffffff',
+                'editorGutter.background': '#000000',
+                'editorError.foreground': '#ef4444',
+                'editorWarning.foreground': '#f59e0b',
+                'editorInfo.foreground': '#3b82f6',
+                'editorBracketMatch.background': '#f97316',
+                'editorBracketMatch.border': '#f97316',
               }
             });
           }}
           onMount={(editor) => {
             // Set the custom theme
             editor.updateOptions({
-              theme: 'leetcode-dark'
+              theme: 'tactical-dark'
             });
             
             // Focus the editor
@@ -281,7 +279,7 @@ class Solution {
       </div>
 
       {/* Editor Footer */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-t border-dark-border-primary text-xs text-dark-text-tertiary">
+      <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical">
         <div className="flex items-center space-x-4">
           <span>Ln 1, Col 1</span>
           <span>Spaces: 2</span>
@@ -289,15 +287,15 @@ class Solution {
         </div>
         <div className="flex items-center space-x-2">
           <span className="capitalize">{activeFile.language}</span>
-          <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+          <div className="status-active"></div>
         </div>
       </div>
 
       {!readOnly && runCode && (
-        <div className="flex justify-end p-4 bg-dark-card border-t border-dark-border-primary">
+        <div className="flex justify-end p-4 bg-tactical-surface border-t border-tactical-border-primary">
           <button 
             onClick={() => runCode(activeFile.content)}
-            className="btn-primary"
+            className="btn-tactical-primary"
           >
             Run Code
           </button>

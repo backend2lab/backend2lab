@@ -1,7 +1,7 @@
 # Backend Playground
 
 Backend Playground is an **interactive learning platform** for backend development.
-It combines **labs**, **exercises**, and a **code playground** so learners can practice backend concepts in a real Node.js environment, directly from their browser.
+It combines **labs**, **exercises**, and a **code playground** for beginners to practice backend concepts in a real Node.js environment, directly from their browser.
 
 
 ## Getting Started

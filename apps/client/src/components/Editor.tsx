@@ -11,9 +11,9 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
   const [currentCode, setCurrentCode] = useState<string>(code);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <Editor
-        height="400px"
+        height="100%"
         defaultLanguage="javascript"
         value={currentCode}
         onChange={(value) => setCurrentCode(value || "")}
@@ -25,16 +25,55 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
           roundedSelection: false,
           scrollBeyondLastLine: false,
           automaticLayout: true,
-          theme: "vs-dark"
+          theme: "vs-dark",
+          scrollbar: {
+            vertical: 'visible',
+            horizontal: 'visible',
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+          },
+          overviewRulerBorder: false,
+          hideCursorInOverviewRuler: true,
+          overviewRulerLanes: 0,
+          lineDecorationsWidth: 0,
+          glyphMargin: false,
+          folding: false,
+          lineNumbersMinChars: 3,
+          renderLineHighlight: 'all',
+          selectOnLineNumbers: true,
+          wordWrap: 'on',
+          wrappingStrategy: 'advanced',
+          suggestOnTriggerCharacters: true,
+          acceptSuggestionOnEnter: 'on',
+          tabCompletion: 'on',
+          wordBasedSuggestions: 'on',
+          parameterHints: {
+            enabled: true,
+            cycle: true,
+          },
+          autoIndent: 'full',
+          formatOnPaste: true,
+          formatOnType: true,
+          dragAndDrop: true,
+          links: true,
+          colorDecorators: true,
+          lightbulb: {
+            enabled: true,
+          },
+          codeActionsOnSave: {
+            'source.fixAll': true,
+            'source.organizeImports': true,
+          },
         }}
         theme="vs-dark"
+        className="rounded-lg overflow-hidden"
       />
 
       {!readOnly && runCode && (
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-end p-4 bg-dark-card border-t border-dark-border-primary">
           <button 
             onClick={() => runCode(currentCode)}
-            className="bg-primary-600 text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-all duration-200 hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+            className="btn-primary"
           >
             Run Code
           </button>

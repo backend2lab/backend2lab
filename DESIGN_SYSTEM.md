@@ -1,664 +1,332 @@
-# Backend Playground Design System
+# Old Design System Reference
 
-A comprehensive design system inspired by LeetCode's clean, educational interface for backend development learning.
-
-## Table of Contents
-
-1. [Brand Identity](#brand-identity)
-2. [Color Palette](#color-palette)
-3. [Typography](#typography)
-4. [Spacing & Layout](#spacing--layout)
-5. [Components](#components)
-6. [Interactive States](#interactive-states)
-7. [Responsive Design](#responsive-design)
-8. [Accessibility](#accessibility)
-
-## Brand Identity
-
-### Mission
-Backend Playground is an interactive learning platform that makes backend development accessible, engaging, and practical through hands-on coding exercises and real-time feedback.
-
-### Design Principles
-- **Clarity First**: Clean, uncluttered interfaces that focus on learning
-- **Progressive Disclosure**: Information revealed as needed to avoid cognitive overload
-- **Immediate Feedback**: Real-time validation and results
-- **Educational Focus**: Every design decision supports learning outcomes
-- **Accessibility**: Inclusive design for all learners
+This document preserves the original design system that was used before the tactical operations overhaul. It featured a modern dark theme with blue accents and gradient effects.
 
 ## Color Palette
 
 ### Primary Colors
-```css
-/* Primary Blue - Main brand color */
---primary-50: #eff6ff;
---primary-100: #dbeafe;
---primary-500: #3b82f6;
---primary-600: #2563eb;
---primary-700: #1d4ed8;
---primary-900: #1e3a8a;
+- **Primary Blue**: `#0ea5e9` (sky-500) - Main accent color
+- **Primary Dark**: `#0369a1` (sky-700) - Darker variant
+- **Primary Light**: `#38bdf8` (sky-400) - Lighter variant
 
-/* Success Green - For correct solutions */
---success-50: #f0fdf4;
---success-100: #dcfce7;
---success-500: #22c55e;
---success-600: #16a34a;
---success-700: #15803d;
+### Secondary Colors
+- **Secondary Purple**: `#d946ef` (fuchsia-500) - Secondary accent
+- **Secondary Dark**: `#a21caf` (fuchsia-700) - Darker variant
 
-/* Warning Orange - For hints and warnings */
---warning-50: #fffbeb;
---warning-100: #fef3c7;
---warning-500: #f59e0b;
---warning-600: #d97706;
---warning-700: #b45309;
+### Success Colors
+- **Success Green**: `#22c55e` (green-500) - Success states
+- **Success Dark**: `#16a34a` (green-600) - Darker variant
 
-/* Error Red - For errors and failures */
---error-50: #fef2f2;
---error-100: #fee2e2;
---error-500: #ef4444;
---error-600: #dc2626;
---error-700: #b91c1c;
-```
+### Warning Colors
+- **Warning Yellow**: `#f59e0b` (amber-500) - Warning states
+- **Warning Dark**: `#d97706` (amber-600) - Darker variant
 
-### Neutral Colors
-```css
-/* Grays for text and backgrounds */
---gray-50: #f9fafb;
---gray-100: #f3f4f6;
---gray-200: #e5e7eb;
---gray-300: #d1d5db;
---gray-400: #9ca3af;
---gray-500: #6b7280;
---gray-600: #4b5563;
---gray-700: #374151;
---gray-800: #1f2937;
---gray-900: #111827;
-```
+### Error Colors
+- **Error Red**: `#ef4444` (red-500) - Error states
+- **Error Dark**: `#dc2626` (red-600) - Darker variant
 
-### Semantic Colors
-```css
-/* Code-specific colors */
---code-bg: #1e1e1e;
---code-text: #d4d4d4;
---code-comment: #6a9955;
---code-keyword: #569cd6;
---code-string: #ce9178;
---code-number: #b5cea8;
---code-function: #dcdcaa;
+### Dark Theme Colors
+- **Background Primary**: `#0a0a0f` - Main background
+- **Background Secondary**: `#1a1a2e` - Secondary background
+- **Background Tertiary**: `#16213e` - Card backgrounds
+- **Card Background**: `rgba(255, 255, 255, 0.03)` - Card surfaces
+- **Card Hover**: `rgba(255, 255, 255, 0.06)` - Card hover states
+- **Overlay**: `rgba(0, 0, 0, 0.8)` - Modal overlays
 
-/* Status colors */
---status-running: #3b82f6;
---status-success: #22c55e;
---status-error: #ef4444;
---status-warning: #f59e0b;
---status-info: #06b6d4;
-```
+### Border Colors
+- **Border Primary**: `rgba(255, 255, 255, 0.08)` - Main borders
+- **Border Secondary**: `rgba(255, 255, 255, 0.12)` - Secondary borders
+- **Border Accent**: `rgba(14, 165, 233, 0.3)` - Accent borders
+
+### Text Colors
+- **Text Primary**: `#ffffff` - Primary text
+- **Text Secondary**: `rgba(255, 255, 255, 0.7)` - Secondary text
+- **Text Tertiary**: `rgba(255, 255, 255, 0.5)` - Tertiary text
+- **Text Muted**: `rgba(255, 255, 255, 0.4)` - Muted text
 
 ## Typography
 
-### Font Stack
-```css
---font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
---font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
-```
+### Font Family
+- **Primary**: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
+- **Monospace**: `SF Mono, Monaco, Cascadia Code, Roboto Mono, Consolas, Courier New, monospace`
 
-### Type Scale
-```css
-/* Headings */
---text-xs: 0.75rem;    /* 12px */
---text-sm: 0.875rem;   /* 14px */
---text-base: 1rem;     /* 16px */
---text-lg: 1.125rem;   /* 18px */
---text-xl: 1.25rem;    /* 20px */
---text-2xl: 1.5rem;    /* 24px */
---text-3xl: 1.875rem;  /* 30px */
---text-4xl: 2.25rem;   /* 36px */
+### Font Weights
+- **Regular**: 400 - Body text
+- **Medium**: 500 - Emphasized text
+- **Semibold**: 600 - Headings
+- **Bold**: 700 - Important data
 
-/* Font Weights */
---font-light: 300;
---font-normal: 400;
---font-medium: 500;
---font-semibold: 600;
---font-bold: 700;
-```
+### Text Sizes
+- **Large**: `text-lg` (18px) - Headings
+- **Body**: `text-sm` (14px) - Standard text
+- **Small**: `text-xs` (12px) - Labels and secondary info
 
-### Text Styles
-```css
-/* Heading Styles */
-.heading-1 {
-  font-size: var(--text-4xl);
-  font-weight: var(--font-bold);
-  line-height: 1.2;
-  color: var(--gray-900);
-}
-
-.heading-2 {
-  font-size: var(--text-3xl);
-  font-weight: var(--font-semibold);
-  line-height: 1.3;
-  color: var(--gray-800);
-}
-
-.heading-3 {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-semibold);
-  line-height: 1.4;
-  color: var(--gray-800);
-}
-
-/* Body Text */
-.body-large {
-  font-size: var(--text-lg);
-  font-weight: var(--font-normal);
-  line-height: 1.6;
-  color: var(--gray-700);
-}
-
-.body-medium {
-  font-size: var(--text-base);
-  font-weight: var(--font-normal);
-  line-height: 1.5;
-  color: var(--gray-700);
-}
-
-.body-small {
-  font-size: var(--text-sm);
-  font-weight: var(--font-normal);
-  line-height: 1.5;
-  color: var(--gray-600);
-}
-
-/* Code Text */
-.code-text {
-  font-family: var(--font-family-mono);
-  font-size: var(--text-sm);
-  line-height: 1.6;
-  color: var(--code-text);
-}
-```
-
-## Spacing & Layout
+## Layout System
 
 ### Spacing Scale
-```css
---space-1: 0.25rem;   /* 4px */
---space-2: 0.5rem;    /* 8px */
---space-3: 0.75rem;   /* 12px */
---space-4: 1rem;      /* 16px */
---space-5: 1.25rem;   /* 20px */
---space-6: 1.5rem;    /* 24px */
---space-8: 2rem;      /* 32px */
---space-10: 2.5rem;   /* 40px */
---space-12: 3rem;     /* 48px */
---space-16: 4rem;     /* 64px */
---space-20: 5rem;     /* 80px */
---space-24: 6rem;     /* 96px */
+- **xs**: `space-y-1` (4px) - Tight spacing
+- **sm**: `space-y-2` (8px) - Related elements
+- **md**: `space-y-3` (12px) - Component sections
+- **lg**: `space-y-4` (16px) - Major sections
+- **xl**: `space-y-6` (24px) - Page sections
+
+### Container Widths
+- **Sidebar**: `w-80` (320px) - Left sidebar
+- **Content**: `flex-1` - Flexible main content
+- **Metrics Panel**: `w-80` (320px) - Right metrics panel
+
+### Border Radius
+- **Small**: `rounded` (4px) - Buttons and small elements
+- **Medium**: `rounded-lg` (8px) - Cards and components
+- **Large**: `rounded-xl` (12px) - Large cards
+- **Extra Large**: `rounded-2xl` (16px) - Hero sections
+
+## Component Patterns
+
+### Bento Cards
+```tsx
+<div className="bg-dark-card border border-dark-border-primary rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 relative overflow-hidden cursor-pointer min-h-[160px]">
+  {/* Gradient border effect */}
+  <div className="absolute inset-0 rounded-2xl opacity-30 bg-gradient-to-br from-primary-500/10 to-secondary-500/5" />
+  {/* Content */}
+</div>
 ```
 
-### Layout Grid
-```css
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--space-4);
-}
-
-/* Grid System */
-.grid {
-  display: grid;
-  gap: var(--space-6);
-}
-
-.grid-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-/* Flexbox Utilities */
-.flex {
-  display: flex;
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.gap-2 { gap: var(--space-2); }
-.gap-4 { gap: var(--space-4); }
-.gap-6 { gap: var(--space-6); }
+### Workflow Nodes
+```tsx
+<div className="bg-dark-card border-2 border-dark-border-primary rounded-xl p-4 min-w-[200px] relative transition-all duration-300 cursor-grab backdrop-blur-sm">
+  {/* Background gradient */}
+  <div className="absolute inset-0 rounded-xl opacity-30 bg-gradient-to-br from-dark-tertiary/80 to-dark-tertiary/60" />
+  {/* Node content */}
+</div>
 ```
-
-## Components
 
 ### Buttons
+```tsx
+// Primary Button
+<button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5">
+  Button Text
+</button>
 
-#### Primary Button
-```css
-.btn-primary {
-  background-color: var(--primary-600);
-  color: white;
-  padding: var(--space-3) var(--space-6);
-  border-radius: 8px;
-  font-weight: var(--font-medium);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-700);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-```
-
-#### Secondary Button
-```css
-.btn-secondary {
-  background-color: transparent;
-  color: var(--primary-600);
-  padding: var(--space-3) var(--space-6);
-  border-radius: 8px;
-  font-weight: var(--font-medium);
-  border: 2px solid var(--primary-600);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background-color: var(--primary-50);
-  border-color: var(--primary-700);
-}
-```
-
-#### Success Button
-```css
-.btn-success {
-  background-color: var(--success-600);
-  color: white;
-  padding: var(--space-3) var(--space-6);
-  border-radius: 8px;
-  font-weight: var(--font-medium);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-success:hover {
-  background-color: var(--success-700);
-}
-```
-
-### Code Editor
-
-#### Editor Container
-```css
-.code-editor {
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
-  overflow: hidden;
-  background-color: var(--code-bg);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.editor-header {
-  background-color: var(--gray-50);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--gray-200);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.editor-content {
-  min-height: 400px;
-  font-family: var(--font-family-mono);
-}
-```
-
-### Cards
-
-#### Problem Card
-```css
-.problem-card {
-  background-color: white;
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
-  padding: var(--space-6);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.problem-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.problem-title {
-  font-size: var(--text-xl);
-  font-weight: var(--font-semibold);
-  color: var(--gray-900);
-  margin-bottom: var(--space-2);
-}
-
-.problem-difficulty {
-  display: inline-block;
-  padding: var(--space-1) var(--space-3);
-  border-radius: 16px;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  margin-bottom: var(--space-4);
-}
-
-.difficulty-easy { background-color: var(--success-100); color: var(--success-700); }
-.difficulty-medium { background-color: var(--warning-100); color: var(--warning-700); }
-.difficulty-hard { background-color: var(--error-100); color: var(--error-700); }
-```
-
-### Navigation
-
-#### Top Navigation
-```css
-.navbar {
-  background-color: white;
-  border-bottom: 1px solid var(--gray-200);
-  padding: var(--space-4) 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--space-4);
-}
-
-.nav-logo {
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
-  color: var(--primary-600);
-}
-
-.nav-menu {
-  display: flex;
-  gap: var(--space-6);
-  align-items: center;
-}
-
-.nav-link {
-  color: var(--gray-600);
-  text-decoration: none;
-  font-weight: var(--font-medium);
-  transition: color 0.2s ease;
-}
-
-.nav-link:hover {
-  color: var(--primary-600);
-}
-
-.nav-link.active {
-  color: var(--primary-600);
-}
+// Secondary Button
+<button className="bg-dark-card border border-dark-border-primary hover:bg-dark-card-hover hover:border-dark-border-secondary text-dark-text-primary px-4 py-2 rounded-lg font-medium transition-all duration-300">
+  Button Text
+</button>
 ```
 
 ### Status Indicators
+```tsx
+// Active/Online
+<div className="w-2 h-2 bg-success-500 rounded-full animate-pulse"></div>
 
-#### Status Badge
-```css
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: 20px;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-}
+// Warning/Standby
+<div className="w-2 h-2 bg-warning-500 rounded-full"></div>
 
-.status-running {
-  background-color: var(--primary-100);
-  color: var(--primary-700);
-}
-
-.status-success {
-  background-color: var(--success-100);
-  color: var(--success-700);
-}
-
-.status-error {
-  background-color: var(--error-100);
-  color: var(--error-700);
-}
-
-.status-warning {
-  background-color: var(--warning-100);
-  color: var(--warning-700);
-}
-```
-
-### Forms
-
-#### Input Fields
-```css
-.input-field {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border: 2px solid var(--gray-200);
-  border-radius: 8px;
-  font-size: var(--text-base);
-  transition: border-color 0.2s ease;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.input-field.error {
-  border-color: var(--error-500);
-}
-
-.input-label {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--gray-700);
-  margin-bottom: var(--space-2);
-}
-
-.input-error {
-  font-size: var(--text-sm);
-  color: var(--error-600);
-  margin-top: var(--space-1);
-}
+// Error/Offline
+<div className="w-2 h-2 bg-error-500 rounded-full"></div>
 ```
 
 ## Interactive States
 
-### Loading States
+### Hover Effects
+- **Cards**: `hover:bg-dark-card-hover hover:border-dark-border-secondary -translate-y-1`
+- **Buttons**: `hover:-translate-y-0.5` with shadow effects
+- **Nodes**: `hover:border-primary-500` with glow effects
+
+### Active States
+- **Navigation**: `bg-primary-600 text-white`
+- **Selected**: `border-primary-500` with glow shadow
+
+### Transitions
+- **Standard**: `transition-all duration-300`
+- **Fast**: `transition-all duration-200`
+- **Slow**: `transition-all duration-500`
+
+## Visual Effects
+
+### Shadows
+- **Glow**: `box-shadow: 0 0 20px rgba(14, 165, 233, 0.5)`
+- **Glow Large**: `box-shadow: 0 0 40px rgba(14, 165, 233, 0.3)`
+- **Card**: `box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)`
+
+### Gradients
+- **Primary**: `linear-gradient(135deg, rgba(14, 165, 233, 0.8) 0%, rgba(14, 165, 233, 0.6) 100%)`
+- **Secondary**: `linear-gradient(135deg, rgba(217, 70, 239, 0.8) 0%, rgba(217, 70, 239, 0.6) 100%)`
+- **Background**: `linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)`
+
+### Animations
 ```css
-.loading {
-  opacity: 0.6;
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(14, 165, 233, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.8); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+```
+
+## React Flow Styling
+
+### Node Styling
+```css
+.workflow-node {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.workflow-node:hover {
+  border-color: #0ea5e9;
+  transform: translateY(-1px);
+}
+
+.workflow-node.selected {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+}
+```
+
+### Edge Styling
+```css
+.react-flow__edge-path {
+  stroke: #0ea5e9;
+  stroke-width: 2px;
+}
+
+.react-flow__edge-path.animated {
+  stroke-dasharray: 5;
+  animation: dash 20s linear infinite;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #0ea5e9;
+  stroke-width: 3px;
+}
+```
+
+### Handle Styling
+```css
+.react-flow__handle {
+  background: #0ea5e9 !important;
+  border: 2px solid #0f172a !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.react-flow__handle:hover {
+  background: #38bdf8 !important;
+  transform: scale(1.05);
+}
+```
+
+## Background Effects
+
+### Canvas Background
+```css
+.react-flow__pane {
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(217, 70, 239, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.02) 0%, transparent 50%);
+}
+```
+
+### Floating Particles
+```css
+.react-flow__pane::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(14, 165, 233, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(217, 70, 239, 0.3), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(34, 197, 94, 0.3), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: float 20s linear infinite;
+  opacity: 0.1;
   pointer-events: none;
 }
-
-.loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--gray-200);
-  border-top: 2px solid var(--primary-600);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 ```
 
-### Hover States
-```css
-.hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+## Data Display
 
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
+### Metrics Cards
+```tsx
+<div className="text-2xl font-bold text-primary-500">
+  {value.toLocaleString()}
+</div>
+<div className="text-xs text-dark-text-secondary">
+  {label}
+</div>
 ```
 
-### Focus States
-```css
-.focus-ring {
-  transition: box-shadow 0.2s ease;
-}
-
-.focus-ring:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
+### Status Text
+```tsx
+<span className="text-sm font-semibold text-dark-text-primary">
+  {status}
+</span>
 ```
 
-## Responsive Design
+## Navigation Patterns
 
-### Breakpoints
-```css
---breakpoint-sm: 640px;
---breakpoint-md: 768px;
---breakpoint-lg: 1024px;
---breakpoint-xl: 1280px;
---breakpoint-2xl: 1536px;
+### Sidebar Items
+```tsx
+<div className="flex items-center gap-3 p-3 rounded-lg bg-dark-card border border-dark-border-primary cursor-grab transition-all duration-200 hover:bg-dark-card-hover hover:border-dark-border-secondary hover:-translate-y-0.5">
+  <div className="w-6 h-6 bg-dark-tertiary rounded-md flex items-center justify-center text-dark-text-secondary">
+    {icon}
+  </div>
+  <div className="flex-1">
+    <div className="text-sm font-medium text-dark-text-primary">{name}</div>
+    <div className="text-xs text-dark-text-secondary">{description}</div>
+  </div>
+</div>
 ```
 
-### Responsive Utilities
-```css
-/* Mobile First */
-.container {
-  padding: 0 var(--space-4);
-}
+## Usage Guidelines
 
-/* Tablet */
-@media (min-width: 768px) {
-  .container {
-    padding: 0 var(--space-6);
-  }
-}
+### Do's
+- Use blue primary color for active states and highlights
+- Apply gradient backgrounds for depth and visual interest
+- Use backdrop blur for modern glass-morphism effects
+- Implement smooth transitions and hover animations
+- Use glow effects sparingly for emphasis
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .container {
-    padding: 0 var(--space-8);
-  }
-}
+### Don'ts
+- Don't use too many bright colors simultaneously
+- Don't overuse glow effects
+- Don't make animations too fast or jarring
+- Don't use gradients that don't follow the color palette
 
-/* Responsive Grid */
-.grid-responsive {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: 1fr;
-}
+## Code Examples
 
-@media (min-width: 768px) {
-  .grid-responsive {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid-responsive {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
+### Complete Card Component
+```tsx
+<div className="bg-dark-card border border-dark-border-primary rounded-2xl p-6 backdrop-blur-xl transition-all duration-300 relative overflow-hidden cursor-pointer min-h-[160px] group">
+  <div className="absolute inset-0 rounded-2xl opacity-30 bg-gradient-to-br from-primary-500/10 to-secondary-500/5" />
+  <div className="relative z-10">
+    <div className="flex items-center gap-3 mb-4">
+      <div className="w-8 h-8 bg-dark-tertiary rounded-lg flex items-center justify-center text-lg">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-dark-text-primary mb-1">{title}</h3>
+        <p className="text-xs text-dark-text-secondary">{description}</p>
+      </div>
+    </div>
+    {children}
+  </div>
+</div>
 ```
 
-## Accessibility
-
-### Color Contrast
-- All text meets WCAG AA standards (4.5:1 ratio)
-- Interactive elements have sufficient contrast
-- Status colors are distinguishable for colorblind users
-
-### Keyboard Navigation
-```css
-/* Focus indicators */
-.focus-visible {
-  outline: 2px solid var(--primary-500);
-  outline-offset: 2px;
-}
-
-/* Skip links */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--primary-600);
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  border-radius: 4px;
-  z-index: 1000;
-}
-
-.skip-link:focus {
-  top: 6px;
-}
-```
-
-### Screen Reader Support
-```css
-/* Visually hidden text */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ARIA labels */
-[aria-label] {
-  /* Ensure proper labeling */
-}
-```
-
-## Implementation Guidelines
-
-### CSS Custom Properties
-Use CSS custom properties for consistent theming:
-```css
-:root {
-  /* Define all design tokens here */
-}
-
-/* Use in components */
-.my-component {
-  color: var(--primary-600);
-  padding: var(--space-4);
-  font-size: var(--text-base);
-}
+This design system emphasized modern aesthetics with blue accents, gradient effects, and smooth animations, creating a sophisticated and engaging user interface.

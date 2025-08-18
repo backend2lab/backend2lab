@@ -163,13 +163,17 @@ You can return the answer in any order.`,
           <div className="border-b border-dark-border-primary bg-dark-card">
             <div className="tabby flex overflow-x-auto">
               {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`tab-button ${activeTab === tab ? 'active' : 'inactive'}`}
-                >
-                  {tab}
-                </button>
+                                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-4 sm:px-6 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap focus:outline-none ${
+                      activeTab === tab 
+                        ? 'bg-dark-card text-primary-600 border-none' 
+                        : 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-card-hover'
+                    }`}
+                  >
+                    {tab}
+                  </button>
               ))}
             </div>
           </div>

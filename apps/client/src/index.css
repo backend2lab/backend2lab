@@ -223,6 +223,33 @@
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace !important;
   }
 
+  /* Monaco Editor customizations */
+  .monaco-editor .margin {
+    background-color: #1E1E1E !important;
+  }
+
+  .monaco-editor .monaco-editor-background {
+    background-color: #1E1E1E !important;
+  }
+
+  .monaco-editor .line-numbers {
+    color: #858585 !important;
+  }
+
+  .monaco-editor .current-line {
+    background-color: #2A2D2E !important;
+  }
+
+  .monaco-editor .selection {
+    background-color: #264F78 !important;
+  }
+
+  /* Editor container styling */
+  .monaco-editor-container {
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;

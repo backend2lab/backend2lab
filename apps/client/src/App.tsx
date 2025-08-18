@@ -291,7 +291,7 @@ You can return the answer in any order.`,
           </div>
 
           {/* Code Editor */}
-          <div className="flex-1">
+          <div className="flex-1 bg-gray-900">
             <CodeEditor 
               code={code} 
               runCode={setCode} 

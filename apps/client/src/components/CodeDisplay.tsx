@@ -13,6 +13,13 @@ export function CodeDisplay({
   showLineNumbers = true, 
   className = "" 
 }: CodeDisplayProps) {
+  // Calculate height based on number of lines
+  const lineCount = code.split('\n').length;
+  const lineHeight = 18; // matches fontSize 13 with lineHeight 18
+  const padding = 16; // 8px top + 8px bottom
+  const minHeight = 60; // minimum height for very short code
+  const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + padding);
+
   return (
     <div className={`bg-neutral-900 rounded-lg overflow-hidden border border-tactical-border-primary ${className}`}>
       <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-b border-tactical-border-primary">
@@ -24,11 +31,11 @@ export function CodeDisplay({
           className="h-6 w-6 p-0 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors"
         >
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
         </button>
       </div>
-      <div className="h-64">
+      <div style={{ height: `${calculatedHeight}px` }}>
         <Editor
           height="100%"
           defaultLanguage={language}
@@ -45,9 +52,9 @@ export function CodeDisplay({
             automaticLayout: true,
             theme: "vs-dark",
             scrollbar: {
-              vertical: 'visible',
-              horizontal: 'visible',
-              verticalScrollbarSize: 8,
+              vertical: 'hidden',
+              horizontal: 'auto',
+              verticalScrollbarSize: 0,
               horizontalScrollbarSize: 8,
               useShadows: false,
             },

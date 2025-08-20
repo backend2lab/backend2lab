@@ -182,47 +182,56 @@ You can return the answer in any order.`,
                   <div className="space-y-8">
                     <StepCard
                       stepNumber={1}
-                      title="Understanding the Problem"
-                      description="The Two Sum problem is a classic algorithmic challenge that tests your understanding of hash tables and efficient searching. You need to find two numbers in an array that add up to a specific target value."
+                      title="Module 1: API Basics & Express Setup"
+                      description="Welcome to your first step in backend API development! 🎉 In this module, you'll learn the fundamentals of APIs, HTTP, and how to build your first server."
                       additionalContent={
                         <div className="space-y-4">
                           <p>
-                            Given an array of integers <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">nums</code> and an integer <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">target</code>, return indices of the two numbers such that they add up to <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">target</code>.
+                            <strong>What you'll learn:</strong>
                           </p>
-                          <p>
-                            You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the <em>same</em> element twice.
-                          </p>
+                          <ul className="space-y-2">
+                            <li className="flex items-start gap-2">
+                              <span className="text-tactical-primary mt-1">•</span>
+                              <span>What an API is and how it works</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-tactical-primary mt-1">•</span>
+                              <span>HTTP methods, status codes, and request/response cycle</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-tactical-primary mt-1">•</span>
+                              <span>How to set up a Node.js server from scratch</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-tactical-primary mt-1">•</span>
+                              <span>Building your first API endpoints</span>
+                            </li>
+                          </ul>
                         </div>
                       }
                     />
 
                     <StepCard
                       stepNumber={2}
-                      title="Brute Force Approach"
-                      description="Start with a simple brute force solution using nested loops. This approach has O(n²) time complexity but is easy to understand."
-                      codeBlock={{
-                        language: "javascript",
-                        code: `function twoSumBruteForce(nums, target) {
-  for (let i = 0; i < nums.length; i++) {
-    for (let j = i + 1; j < nums.length; j++) {
-      if (nums[i] + nums[j] === target) {
-        return [i, j];
-      }
-    }
-  }
-  return [];
-}`,
-                        showLineNumbers: true
-                      }}
+                      title="🌐 What is an API?"
+                      description="An API (Application Programming Interface) allows two systems to communicate. In web development, APIs use HTTP protocol."
                       additionalContent={
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-tactical-primary">•</span>
-                            <span>Time Complexity: O(n²)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-tactical-primary">•</span>
-                            <span>Space Complexity: O(1)</span>
+                        <div className="space-y-4">
+                          <p>
+                            APIs are like waiters in a restaurant - they take your request, communicate with the kitchen (server), and bring back your food (response).
+                          </p>
+                          <div className="bg-tactical-surface p-4 rounded-lg border border-tactical-border-primary">
+                            <p className="text-sm font-semibold mb-2">Example Request/Response Cycle:</p>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <span className="text-green-400">Client:</span>
+                                <code className="bg-neutral-900 px-2 py-1 rounded">GET /hello</code>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-blue-400">Server:</span>
+                                <code className="bg-neutral-900 px-2 py-1 rounded">{'{ "message": "Hello, World!" }'}</code>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       }
@@ -230,36 +239,51 @@ You can return the answer in any order.`,
 
                     <StepCard
                       stepNumber={3}
-                      title="Hash Table Optimization"
-                      description="Use a hash table to store previously seen numbers. This reduces time complexity to O(n) by trading space for time."
-                      codeBlock={{
-                        language: "javascript",
-                        code: `function twoSum(nums, target) {
-  const map = new Map();
-  
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    
-    if (map.has(complement)) {
-      return [map.get(complement), i];
-    }
-    
-    map.set(nums[i], i);
-  }
-  
-  return [];
-}`,
-                        showLineNumbers: true
-                      }}
+                      title="🛠️ HTTP Basics"
+                      description="HTTP is the language that APIs use to communicate. Understanding HTTP methods and status codes is crucial."
                       additionalContent={
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-tactical-primary">•</span>
-                            <span>Time Complexity: O(n)</span>
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold mb-2">HTTP Methods:</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <code className="bg-green-900 text-green-300 px-2 py-1 rounded text-xs">GET</code>
+                                <span>→ retrieve data</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-blue-900 text-blue-300 px-2 py-1 rounded text-xs">POST</code>
+                                <span>→ send new data</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-yellow-900 text-yellow-300 px-2 py-1 rounded text-xs">PUT/PATCH</code>
+                                <span>→ update existing data</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-red-900 text-red-300 px-2 py-1 rounded text-xs">DELETE</code>
+                                <span>→ remove data</span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-tactical-primary">•</span>
-                            <span>Space Complexity: O(n)</span>
+                          <div>
+                            <h4 className="font-semibold mb-2">Common Status Codes:</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <code className="bg-green-900 text-green-300 px-2 py-1 rounded text-xs">200</code>
+                                <span>OK → Success</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-yellow-900 text-yellow-300 px-2 py-1 rounded text-xs">400</code>
+                                <span>Bad Request → Invalid input</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-red-900 text-red-300 px-2 py-1 rounded text-xs">404</code>
+                                <span>Not Found → Resource not found</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <code className="bg-red-900 text-red-300 px-2 py-1 rounded text-xs">500</code>
+                                <span>Internal Server Error → Something broke</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       }
@@ -267,24 +291,162 @@ You can return the answer in any order.`,
 
                     <StepCard
                       stepNumber={4}
-                      title="Testing Your Solution"
-                      description="Test your implementation with the provided test cases to ensure correctness."
+                      title="🚀 Setting up a Node.js Server"
+                      description="Let's build a simple HTTP server using pure Node.js (no frameworks). This teaches you the fundamentals."
+                      codeBlock={{
+                        language: "javascript",
+                        code: `const http = require('http');
+
+// Create HTTP server
+const server = http.createServer((req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle different routes
+  if (req.url === '/hello' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Hello, World!' }));
+  } else if (req.url === '/api/users' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify([
+      { id: 1, name: 'John Doe' },
+      { id: 2, name: 'Jane Smith' }
+    ]));
+  } else {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Not Found' }));
+  }
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(\`Server running on http://localhost:\${PORT}\`);
+});`,
+                        showLineNumbers: true
+                      }}
+                      additionalContent={
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Pure Node.js - no external dependencies</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Handles multiple routes and HTTP methods</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Includes CORS headers for web compatibility</span>
+                          </div>
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={5}
+                      title="📝 Adding POST Endpoint"
+                      description="Let's add a POST endpoint to handle data creation. This shows how to parse request bodies."
+                      codeBlock={{
+                        language: "javascript",
+                        code: `const http = require('http');
+
+// In-memory storage (in real apps, use a database)
+let users = [
+  { id: 1, name: 'John Doe', email: 'john@example.com' }
+];
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.url === '/api/users' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(users));
+  } else if (req.url === '/api/users' && req.method === 'POST') {
+    let body = '';
+    
+    // Collect data from request stream
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    // Process complete request
+    req.on('end', () => {
+      try {
+        const newUser = JSON.parse(body);
+        newUser.id = users.length + 1;
+        users.push(newUser);
+        
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(newUser));
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid JSON' }));
+      }
+    });
+  } else {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Not Found' }));
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(\`Server running on http://localhost:\${PORT}\`);
+});`,
+                        showLineNumbers: true
+                      }}
+                      additionalContent={
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Handles JSON request bodies</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Returns 201 status for successful creation</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Includes error handling for invalid JSON</span>
+                          </div>
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={6}
+                      title="🧪 Testing Your API"
+                      description="Test your API endpoints using curl, Postman, or your browser. Here are some example requests."
                       additionalContent={
                         <div className="space-y-4">
                           <CodeDisplay
-                            code={`// Test cases
-const nums1 = [2, 7, 11, 15];
-const target1 = 9;
-console.log(twoSum(nums1, target1)); // Expected: [0, 1]
+                            code={`# Test GET endpoint
+curl http://localhost:3000/api/users
 
-const nums2 = [3, 2, 4];
-const target2 = 6;
-console.log(twoSum(nums2, target2)); // Expected: [1, 2]
+# Test POST endpoint
+curl -X POST http://localhost:3000/api/users \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "Alice Johnson", "email": "alice@example.com"}'
 
-const nums3 = [3, 3];
-const target3 = 6;
-console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
-                            language="javascript"
+# Test with JavaScript fetch
+fetch('http://localhost:3000/api/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Bob Wilson',
+    email: 'bob@example.com'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));`}
+                            language="bash"
                             showLineNumbers={true}
                           />
                         </div>
@@ -292,34 +454,47 @@ console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
                     />
 
                     <StepCard
-                      stepNumber={5}
-                      title="Key Insights"
-                      description="Understanding the core concepts behind this problem will help you solve similar challenges."
+                      stepNumber={7}
+                      title="🔧 Next Steps & Best Practices"
+                      description="Now that you have a basic API, here are some important concepts to learn next."
                       additionalContent={
                         <div className="space-y-3">
                           <div className="flex items-start gap-2">
                             <span className="text-tactical-primary mt-1">•</span>
-                            <span><strong>Hash Tables:</strong> Perfect for O(1) lookups when you need to find complements</span>
+                            <span><strong>Input Validation:</strong> Always validate and sanitize user input</span>
                           </div>
                           <div className="flex items-start gap-2">
                             <span className="text-tactical-primary mt-1">•</span>
-                            <span><strong>Single Pass:</strong> You only need to iterate through the array once</span>
+                            <span><strong>Error Handling:</strong> Implement proper error handling and logging</span>
                           </div>
                           <div className="flex items-start gap-2">
                             <span className="text-tactical-primary mt-1">•</span>
-                            <span><strong>Complement Strategy:</strong> For each number, look for (target - current_number)</span>
+                            <span><strong>Database Integration:</strong> Replace in-memory storage with a real database</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">•</span>
+                            <span><strong>Authentication:</strong> Add user authentication and authorization</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">•</span>
+                            <span><strong>Environment Variables:</strong> Use .env files for configuration</span>
                           </div>
                         </div>
                       }
                       links={[
                         {
-                          text: "Practice Similar Problems",
+                          text: "Express.js Tutorial",
                           href: "#",
                           external: true
                         },
                         {
-                          text: "Hash Table Tutorial",
-                          href: "#",
+                          text: "Node.js Documentation",
+                          href: "https://nodejs.org/docs",
+                          external: true
+                        },
+                        {
+                          text: "HTTP Status Codes",
+                          href: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status",
                           external: true
                         }
                       ]}
@@ -330,16 +505,226 @@ console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
             )}
 
             {activeTab === 'Exercise' && (
-              <div className="space-y-4">
-                <h3 className="tactical-section-header">CONSTRAINTS:</h3>
-                <ul className="space-y-2">
-                  {problemData.constraints.map((constraint, index) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <span className="text-tactical-text-secondary mt-1">•</span>
-                      <span className="text-tactical-text-secondary font-tactical">{constraint}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="space-y-8">
+                <div className="max-w-4xl mx-auto">
+                  <div className="space-y-8">
+                    <StepCard
+                      stepNumber={1}
+                      title="🎯 Exercise: Build a Hello World Server"
+                      description="Your task is to create a simple Node.js HTTP server that returns 'Hello, World!' when accessed. This exercise will test your understanding of basic HTTP server creation."
+                      additionalContent={
+                        <div className="space-y-4">
+                          <div className="bg-tactical-surface p-4 rounded-lg border border-tactical-border-primary">
+                            <h4 className="font-semibold mb-3 text-tactical-text-primary">Task Requirements:</h4>
+                            <ul className="space-y-2 text-sm">
+                              <li className="flex items-start gap-2">
+                                <span className="text-tactical-primary mt-1">•</span>
+                                <span>Create an HTTP server using Node.js built-in <code className="bg-neutral-900 px-1 rounded text-xs">http</code> module</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-tactical-primary mt-1">•</span>
+                                <span>Server should listen on port 3000</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-tactical-primary mt-1">•</span>
+                                <span>Handle GET requests to the root path <code className="bg-neutral-900 px-1 rounded text-xs">/</code></span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-tactical-primary mt-1">•</span>
+                                <span>Return JSON response: <code className="bg-neutral-900 px-1 rounded text-xs">{'{ "message": "Hello, World!" }'}</code></span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-tactical-primary mt-1">•</span>
+                                <span>Set proper Content-Type header to <code className="bg-neutral-900 px-1 rounded text-xs">application/json</code></span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={2}
+                      title="📋 Test Cases"
+                      description="Test your server with these scenarios to ensure it works correctly."
+                      additionalContent={
+                        <div className="space-y-4">
+                          <div className="test-case-card-tactical">
+                            <h4 className="font-semibold text-tactical-text-primary mb-3 font-tactical">Test Case 1: Basic GET Request</h4>
+                            <div className="space-y-4">
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request (Postman):</span>
+                                <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
+                                  {/* Postman Header */}
+                                  <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
+                                      <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
+                                      <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
+                                      <span className="text-xs text-tactical-text-secondary ml-2">Postman</span>
+                                    </div>
+                                  </div>
+                                  {/* Request URL */}
+                                  <div className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                      <select className="bg-tactical-surface text-tactical-text-primary text-sm px-2 py-1 rounded border border-tactical-border-primary">
+                                        <option>GET</option>
+                                      </select>
+                                      <input 
+                                        type="text" 
+                                        value="http://localhost:3000/" 
+                                        readOnly
+                                        className="flex-1 bg-tactical-surface text-tactical-text-primary text-sm px-3 py-1 rounded border border-tactical-border-primary"
+                                      />
+                                      <button className="bg-tactical-primary text-white px-4 py-1 rounded text-sm">Send</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response (Postman):</span>
+                                <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
+                                  {/* Response Header */}
+                                  <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-tactical-text-secondary">Response</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs text-green-400 font-semibold">200 OK</span>
+                                        <span className="text-xs text-tactical-text-secondary">•</span>
+                                        <span className="text-xs text-tactical-text-secondary">127ms</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* Response Body */}
+                                  <div className="p-4">
+                                    <div className="bg-neutral-950 rounded border border-tactical-border-primary p-3">
+                                      <pre className="text-sm text-tactical-text-primary font-mono">
+{`{
+  "message": "Hello, World!"
+}`}
+                                      </pre>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical">Explanation:</span>
+                                <span className="text-sm text-tactical-text-secondary font-tactical">The server should respond with a 200 status and return the expected JSON message for the root path.</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="test-case-card-tactical">
+                            <h4 className="font-semibold text-tactical-text-primary mb-3 font-tactical">Test Case 2: Wrong Path</h4>
+                            <div className="space-y-4">
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request (Postman):</span>
+                                <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
+                                  {/* Postman Header */}
+                                  <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
+                                      <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
+                                      <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
+                                      <span className="text-xs text-tactical-text-secondary ml-2">Postman</span>
+                                    </div>
+                                  </div>
+                                  {/* Request URL */}
+                                  <div className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                      <select className="bg-tactical-surface text-tactical-text-primary text-sm px-2 py-1 rounded border border-tactical-border-primary">
+                                        <option>GET</option>
+                                      </select>
+                                      <input 
+                                        type="text" 
+                                        value="http://localhost:3000/hello" 
+                                        readOnly
+                                        className="flex-1 bg-tactical-surface text-tactical-text-primary text-sm px-3 py-1 rounded border border-tactical-border-primary"
+                                      />
+                                      <button className="bg-tactical-primary text-white px-4 py-1 rounded text-sm">Send</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response (Postman):</span>
+                                <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
+                                  {/* Response Header */}
+                                  <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-tactical-text-secondary">Response</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs text-red-400 font-semibold">404 Not Found</span>
+                                        <span className="text-xs text-tactical-text-secondary">•</span>
+                                        <span className="text-xs text-tactical-text-secondary">45ms</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* Response Body */}
+                                  <div className="p-4">
+                                    <div className="bg-neutral-950 rounded border border-tactical-border-primary p-3">
+                                      <pre className="text-sm text-tactical-text-primary font-mono">
+{`{
+  "error": "Not Found"
+}`}
+                                      </pre>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical">Explanation:</span>
+                                <span className="text-sm text-tactical-text-secondary font-tactical">The server should return a 404 status for any path that is not the root path.</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={3}
+                      title="💡 Hints"
+                      description="Need help? Here are some hints to guide you."
+                      additionalContent={
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">💡</span>
+                            <span>Use <code className="bg-neutral-900 px-1 rounded text-xs">http.createServer()</code> to create your server</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">💡</span>
+                            <span>Check <code className="bg-neutral-900 px-1 rounded text-xs">req.url</code> to determine the requested path</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">💡</span>
+                            <span>Use <code className="bg-neutral-900 px-1 rounded text-xs">res.writeHead()</code> to set status and headers</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">💡</span>
+                            <span>Use <code className="bg-neutral-900 px-1 rounded text-xs">JSON.stringify()</code> to convert objects to JSON</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">💡</span>
+                            <span>Don't forget to call <code className="bg-neutral-900 px-1 rounded text-xs">res.end()</code> to send the response</span>
+                          </div>
+                        </div>
+                      }
+                      links={[
+                        {
+                          text: "Node.js HTTP Documentation",
+                          href: "https://nodejs.org/api/http.html",
+                          external: true
+                        },
+                        {
+                          text: "HTTP Status Codes",
+                          href: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status",
+                          external: true
+                        }
+                      ]}
+                    />
+                  </div>
+                </div>
               </div>
             )}
 

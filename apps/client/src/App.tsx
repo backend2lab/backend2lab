@@ -3,10 +3,10 @@ import CodeEditor from "./components/Editor";
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 type Language = 'JavaScript' | 'Python' | 'Java' | 'C++';
-type Tab = 'Description' | 'Examples' | 'Constraints' | 'Submissions';
+type Tab = 'Lab' | 'Exercise' | 'Test cases';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('Description');
+  const [activeTab, setActiveTab] = useState<Tab>('Lab');
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('JavaScript');
   const [code, setCode] = useState(`// Two Sum Solution
 function twoSum(nums, target) {
@@ -112,7 +112,7 @@ You can return the answer in any order.`,
     }
   };
 
-  const tabs: Tab[] = ['Description', 'Examples', 'Constraints', 'Submissions'];
+  const tabs: Tab[] = ['Lab', 'Exercise', 'Test cases'];
 
   return (
     <div className="min-h-screen bg-tactical-background">
@@ -176,7 +176,7 @@ You can return the answer in any order.`,
 
           {/* Tab Content */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-tactical-background">
-            {activeTab === 'Description' && (
+            {activeTab === 'Lab' && (
               <div className="space-y-6">
                 <div className="prose prose-sm max-w-none">
                   <p className="text-tactical-text-secondary leading-relaxed whitespace-pre-line font-tactical">
@@ -211,7 +211,7 @@ You can return the answer in any order.`,
               </div>
             )}
 
-            {activeTab === 'Examples' && (
+            {activeTab === 'Exercise' && (
               <div className="space-y-6">
                 {problemData.examples.map((example, index) => (
                   <div key={index} className="test-case-card-tactical">
@@ -237,7 +237,7 @@ You can return the answer in any order.`,
               </div>
             )}
 
-            {activeTab === 'Constraints' && (
+            {activeTab === 'Test cases' && (
               <div className="space-y-4">
                 <h3 className="tactical-section-header">CONSTRAINTS:</h3>
                 <ul className="space-y-2">
@@ -248,18 +248,6 @@ You can return the answer in any order.`,
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-
-            {activeTab === 'Submissions' && (
-              <div className="text-center py-12">
-                <div className="text-tactical-text-secondary">
-                  <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="text-lg font-medium text-tactical-text-primary font-tactical">No submissions yet</p>
-                  <p className="text-sm text-tactical-text-secondary font-tactical">Submit your solution to see your submission history</p>
-                </div>
               </div>
             )}
           </div>

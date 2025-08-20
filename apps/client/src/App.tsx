@@ -1,13 +1,13 @@
 import { useState } from "react";
 import CodeEditor from "./components/Editor";
+import { StepCard } from "./components/StepCard";
+import { CodeDisplay } from "./components/CodeDisplay";
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
-type Language = 'JavaScript' | 'Python' | 'Java' | 'C++';
 type Tab = 'Lab' | 'Exercise' | 'Test cases';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('JavaScript');
   const [code, setCode] = useState(`// Two Sum Solution
 function twoSum(nums, target) {
     const map = new Map();
@@ -177,35 +177,153 @@ You can return the answer in any order.`,
           {/* Tab Content */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-tactical-background">
             {activeTab === 'Lab' && (
-              <div className="space-y-6">
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-tactical-text-secondary leading-relaxed whitespace-pre-line font-tactical">
-                    {problemData.description}
-                  </p>
-                </div>
+              <div className="space-y-8">
+                <div className="max-w-4xl mx-auto">
+                  <div className="space-y-8">
+                    <StepCard
+                      stepNumber={1}
+                      title="Understanding the Problem"
+                      description="The Two Sum problem is a classic algorithmic challenge that tests your understanding of hash tables and efficient searching. You need to find two numbers in an array that add up to a specific target value."
+                      additionalContent={
+                        <div className="space-y-4">
+                          <p>
+                            Given an array of integers <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">nums</code> and an integer <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">target</code>, return indices of the two numbers such that they add up to <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-text-primary">target</code>.
+                          </p>
+                          <p>
+                            You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the <em>same</em> element twice.
+                          </p>
+                        </div>
+                      }
+                    />
 
-                {/* Sample Test Cases */}
-                <div>
-                  <h3 className="tactical-section-header mb-4">SAMPLE TEST CASES</h3>
-                  <div className="space-y-4">
-                    {problemData.testCases.map((testCase, index) => (
-                      <div key={index} className="test-case-card-tactical">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="input-label-tactical">Input</label>
-                            <div className="test-case-input-tactical">
-                              {testCase.input}
-                            </div>
+                    <StepCard
+                      stepNumber={2}
+                      title="Brute Force Approach"
+                      description="Start with a simple brute force solution using nested loops. This approach has O(n²) time complexity but is easy to understand."
+                      codeBlock={{
+                        language: "javascript",
+                        code: `function twoSumBruteForce(nums, target) {
+  for (let i = 0; i < nums.length; i++) {
+    for (let j = i + 1; j < nums.length; j++) {
+      if (nums[i] + nums[j] === target) {
+        return [i, j];
+      }
+    }
+  }
+  return [];
+}`,
+                        showLineNumbers: true
+                      }}
+                      additionalContent={
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Time Complexity: O(n²)</span>
                           </div>
-                          <div>
-                            <label className="input-label-tactical">Expected Output</label>
-                            <div className="test-case-input-tactical">
-                              {testCase.output}
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Space Complexity: O(1)</span>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={3}
+                      title="Hash Table Optimization"
+                      description="Use a hash table to store previously seen numbers. This reduces time complexity to O(n) by trading space for time."
+                      codeBlock={{
+                        language: "javascript",
+                        code: `function twoSum(nums, target) {
+  const map = new Map();
+  
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    
+    map.set(nums[i], i);
+  }
+  
+  return [];
+}`,
+                        showLineNumbers: true
+                      }}
+                      additionalContent={
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Time Complexity: O(n)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tactical-primary">•</span>
+                            <span>Space Complexity: O(n)</span>
+                          </div>
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={4}
+                      title="Testing Your Solution"
+                      description="Test your implementation with the provided test cases to ensure correctness."
+                      additionalContent={
+                        <div className="space-y-4">
+                          <CodeDisplay
+                            code={`// Test cases
+const nums1 = [2, 7, 11, 15];
+const target1 = 9;
+console.log(twoSum(nums1, target1)); // Expected: [0, 1]
+
+const nums2 = [3, 2, 4];
+const target2 = 6;
+console.log(twoSum(nums2, target2)); // Expected: [1, 2]
+
+const nums3 = [3, 3];
+const target3 = 6;
+console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
+                            language="javascript"
+                            showLineNumbers={true}
+                          />
+                        </div>
+                      }
+                    />
+
+                    <StepCard
+                      stepNumber={5}
+                      title="Key Insights"
+                      description="Understanding the core concepts behind this problem will help you solve similar challenges."
+                      additionalContent={
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">•</span>
+                            <span><strong>Hash Tables:</strong> Perfect for O(1) lookups when you need to find complements</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">•</span>
+                            <span><strong>Single Pass:</strong> You only need to iterate through the array once</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-tactical-primary mt-1">•</span>
+                            <span><strong>Complement Strategy:</strong> For each number, look for (target - current_number)</span>
+                          </div>
+                        </div>
+                      }
+                      links={[
+                        {
+                          text: "Practice Similar Problems",
+                          href: "#",
+                          external: true
+                        },
+                        {
+                          text: "Hash Table Tutorial",
+                          href: "#",
+                          external: true
+                        }
+                      ]}
+                    />
                   </div>
                 </div>
               </div>

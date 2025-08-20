@@ -576,7 +576,6 @@ fetch('http://localhost:3000/api/users', {
                                         readOnly
                                         className="flex-1 bg-tactical-surface text-tactical-text-primary text-sm px-3 py-1 rounded border border-tactical-border-primary"
                                       />
-                                      <button className="bg-tactical-primary text-white px-4 py-1 rounded text-sm">Send</button>
                                     </div>
                                   </div>
                                 </div>
@@ -641,7 +640,6 @@ fetch('http://localhost:3000/api/users', {
                                         readOnly
                                         className="flex-1 bg-tactical-surface text-tactical-text-primary text-sm px-3 py-1 rounded border border-tactical-border-primary"
                                       />
-                                      <button className="bg-tactical-primary text-white px-4 py-1 rounded text-sm">Send</button>
                                     </div>
                                   </div>
                                 </div>

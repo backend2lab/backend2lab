@@ -18,70 +18,141 @@ interface Props {
 export default function CodeEditor({ code, runCode, readOnly }: Props) {
   const [files, setFiles] = useState<FileTab[]>([
     {
-      id: 'main.js',
-      name: 'main.js',
+      id: 'server.js',
+      name: 'server.js',
       language: 'javascript',
       content: code,
       isActive: true
     },
     {
-      id: 'solution.py',
-      name: 'solution.py',
-      language: 'python',
-      content: `# Two Sum Solution
-def two_sum(nums, target):
-    """
-    Given an array of integers nums and an integer target,
-    return indices of the two numbers such that they add up to target.
-    """
-    seen = {}
-    
-    for i, num in enumerate(nums):
-        complement = target - num
-        
-        if complement in seen:
-            return [seen[complement], i]
-        
-        seen[num] = i
-    
-    return []
+      id: 'test-cases.js',
+      name: 'test-cases.js',
+      language: 'javascript',
+      content: `// Test Cases for Hello World Server
+// These are the test cases that your server should pass
 
-# Test the function
-nums = [2, 7, 11, 15]
-target = 9
-print(two_sum(nums, target))  # Expected: [0, 1]`,
+const { expect } = require('chai');
+const http = require('http');
+
+// Utility function to make HTTP requests
+function makeRequest(method, path) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'localhost',
+      port: 3000,
+      path: path,
+      method: method,
+      timeout: 5000
+    };
+
+    const req = http.request(options, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        try {
+          const response = {
+            statusCode: res.statusCode,
+            headers: res.headers,
+            body: data ? JSON.parse(data) : null
+          };
+          resolve(response);
+        } catch (error) {
+          resolve({
+            statusCode: res.statusCode,
+            headers: res.headers,
+            body: data
+          });
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    req.on('timeout', () => {
+      reject(new Error('Request timeout'));
+    });
+
+    req.end();
+  });
+}
+
+describe('Hello World Server', () => {
+  it('should return 200 OK and correct JSON for GET /', async () => {
+    const response = await makeRequest('GET', '/');
+    
+    expect(response.statusCode).to.equal(200);
+    expect(response.body).to.deep.equal({ message: 'Hello, World!' });
+    expect(response.headers['content-type']).to.include('application/json');
+  });
+
+  it('should return 404 for GET /hello', async () => {
+    const response = await makeRequest('GET', '/hello');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+
+  it('should return 404 for POST /', async () => {
+    const response = await makeRequest('POST', '/');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+
+  it('should return 404 for PUT /', async () => {
+    const response = await makeRequest('PUT', '/');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+
+  it('should return 404 for DELETE /', async () => {
+    const response = await makeRequest('DELETE', '/');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+
+  it('should return 404 for GET /api', async () => {
+    const response = await makeRequest('GET', '/api');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+
+  it('should return 404 for GET /users', async () => {
+    const response = await makeRequest('GET', '/users');
+    
+    expect(response.statusCode).to.equal(404);
+  });
+});`,
       isActive: false
     },
     {
-      id: 'Solution.java',
-      name: 'Solution.java',
-      language: 'java',
-      content: `import java.util.*;
-
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
-        
-        for (int i = 0; i < nums.length; i++) {
-            int complement = target - nums[i];
-            
-            if (map.containsKey(complement)) {
-                return new int[] { map.get(complement), i };
-            }
-            
-            map.put(nums[i], i);
-        }
-        
-        return new int[0];
-    }
-    
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        int[] nums = {2, 7, 11, 15};
-        int target = 9;
-        int[] result = solution.twoSum(nums, target);
-        System.out.println(Arrays.toString(result)); // Expected: [0, 1]
-    }
+      id: 'package.json',
+      name: 'package.json',
+      language: 'json',
+      content: `{
+  "name": "hello-world-server",
+  "version": "1.0.0",
+  "description": "A simple Node.js HTTP server exercise",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha test-cases.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["nodejs", "http", "server", "api"],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "chai": "^4.3.7"
+  }
 }`,
       isActive: false
     }
@@ -112,6 +183,8 @@ class Solution {
         return '🐍';
       case 'java':
         return '☕';
+      case 'json':
+        return '📦';
       default:
         return '📄';
     }

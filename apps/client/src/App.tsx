@@ -8,27 +8,22 @@ type Tab = 'Lab' | 'Exercise' | 'Test cases';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
-  const [code, setCode] = useState(`// Two Sum Solution
-function twoSum(nums, target) {
-    const map = new Map();
-    
-    for (let i = 0; i < nums.length; i++) {
-        const complement = target - nums[i];
-        
-        if (map.has(complement)) {
-            return [map.get(complement), i];
-        }
-        
-        map.set(nums[i], i);
-    }
-    
-    return [];
-}
+  const [code, setCode] = useState(`// Hello World Server
+// Your task: Create a Node.js HTTP server that returns "Hello, World!"
 
-// Test the function
-const nums = [2, 7, 11, 15];
-const target = 9;
-console.log(twoSum(nums, target)); // Expected: [0, 1]`);
+const http = require('http');
+
+// TODO: Implement your server here
+// 1. Create an HTTP server using http.createServer()
+// 2. Handle GET requests to the root path "/"
+// 3. Return JSON response: { "message": "Hello, World!" }
+// 4. Set Content-Type header to "application/json"
+// 5. Handle other paths with 404 status
+// 6. Listen on port 3000
+
+// Your implementation goes here...
+
+console.log('Server starting...');`);
 
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning] = useState(false);

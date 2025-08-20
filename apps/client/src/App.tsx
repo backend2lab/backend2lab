@@ -4,7 +4,7 @@ import { StepCard } from "./components/StepCard";
 import { CodeDisplay } from "./components/CodeDisplay";
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
-type Tab = 'Lab' | 'Exercise' | 'Test cases';
+type Tab = 'Lab' | 'Exercise';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
@@ -107,7 +107,7 @@ You can return the answer in any order.`,
     }
   };
 
-  const tabs: Tab[] = ['Lab', 'Exercise', 'Test cases'];
+  const tabs: Tab[] = ['Lab', 'Exercise'];
 
   return (
     <div className="min-h-screen bg-tactical-background">
@@ -718,32 +718,6 @@ fetch('http://localhost:3000/api/users', {
                     />
                   </div>
                 </div>
-              </div>
-            )}
-
-            {activeTab === 'Test cases' && (
-              <div className="space-y-6">
-                {problemData.examples.map((example, index) => (
-                  <div key={index} className="test-case-card-tactical">
-                    <h4 className="font-semibold text-tactical-text-primary mb-3 font-tactical">Example {index + 1}:</h4>
-                    <div className="space-y-3">
-                      <div>
-                        <span className="text-sm font-medium text-tactical-text-secondary font-tactical">Input: </span>
-                        <code className="bg-tactical-surface px-2 py-1 rounded-lg text-sm font-tactical border border-tactical-border-primary text-tactical-text-primary">{example.input}</code>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-tactical-text-secondary font-tactical">Output: </span>
-                        <code className="bg-tactical-surface px-2 py-1 rounded-lg text-sm font-tactical border border-tactical-border-primary text-tactical-text-primary">{example.output}</code>
-                      </div>
-                      {example.explanation && (
-                        <div>
-                          <span className="text-sm font-medium text-tactical-text-secondary font-tactical">Explanation: </span>
-                          <span className="text-sm text-tactical-text-secondary font-tactical">{example.explanation}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
               </div>
             )}
           </div>

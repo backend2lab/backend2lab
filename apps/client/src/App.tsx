@@ -330,6 +330,20 @@ console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
             )}
 
             {activeTab === 'Exercise' && (
+              <div className="space-y-4">
+                <h3 className="tactical-section-header">CONSTRAINTS:</h3>
+                <ul className="space-y-2">
+                  {problemData.constraints.map((constraint, index) => (
+                    <li key={index} className="flex items-start space-x-2">
+                      <span className="text-tactical-text-secondary mt-1">•</span>
+                      <span className="text-tactical-text-secondary font-tactical">{constraint}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {activeTab === 'Test cases' && (
               <div className="space-y-6">
                 {problemData.examples.map((example, index) => (
                   <div key={index} className="test-case-card-tactical">
@@ -352,20 +366,6 @@ console.log(twoSum(nums3, target3)); // Expected: [0, 1]`}
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-
-            {activeTab === 'Test cases' && (
-              <div className="space-y-4">
-                <h3 className="tactical-section-header">CONSTRAINTS:</h3>
-                <ul className="space-y-2">
-                  {problemData.constraints.map((constraint, index) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <span className="text-tactical-text-secondary mt-1">•</span>
-                      <span className="text-tactical-text-secondary font-tactical">{constraint}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             )}
           </div>

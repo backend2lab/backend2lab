@@ -31,7 +31,7 @@ export function CodeDisplay({
           className="h-6 w-6 p-0 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors"
         >
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
         </button>
       </div>
@@ -50,7 +50,7 @@ export function CodeDisplay({
             roundedSelection: false,
             scrollBeyondLastLine: false,
             automaticLayout: true,
-            theme: "vs-dark",
+            theme: "tactical-dark",
             scrollbar: {
               vertical: 'hidden',
               horizontal: 'auto',
@@ -83,49 +83,11 @@ export function CodeDisplay({
               bottom: 8,
             },
           }}
-          theme="vs-dark"
+          theme="tactical-dark"
           className="rounded-none"
-          beforeMount={(monaco) => {
-            // Customize the dark theme for tactical design
-            monaco.editor.defineTheme('tactical-dark', {
-              base: 'vs-dark',
-              inherit: true,
-              rules: [
-                { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-                { token: 'keyword', foreground: 'DCDCAA', fontStyle: 'bold' },
-                { token: 'string', foreground: 'CE9178' },
-                { token: 'number', foreground: 'B5CEA8' },
-                { token: 'operator', foreground: 'D4D4D4' },
-                { token: 'function', foreground: 'DCDCAA' },
-                { token: 'variable', foreground: '9CDCFE' },
-                { token: 'type', foreground: '4EC9B0' },
-              ],
-              colors: {
-                'editor.background': '#000000',
-                'editor.foreground': '#ffffff',
-                'editor.lineHighlightBackground': '#262626',
-                'editor.selectionBackground': '#f97316',
-                'editor.inactiveSelectionBackground': '#404040',
-                'editorCursor.foreground': '#f97316',
-                'editorWhitespace.foreground': '#404040',
-                'editorIndentGuide.background': '#404040',
-                'editorIndentGuide.activeBackground': '#737373',
-                'editorLineNumber.foreground': '#737373',
-                'editorLineNumber.activeForeground': '#ffffff',
-                'editorGutter.background': '#000000',
-                'editorError.foreground': '#ef4444',
-                'editorWarning.foreground': '#f59e0b',
-                'editorInfo.foreground': '#3b82f6',
-                'editorBracketMatch.background': '#f97316',
-                'editorBracketMatch.border': '#f97316',
-              }
-            });
-          }}
           onMount={(editor) => {
-            // Set the custom theme
-            editor.updateOptions({
-              theme: 'tactical-dark'
-            });
+            // Just focus the editor
+            editor.focus();
           }}
         />
       </div>

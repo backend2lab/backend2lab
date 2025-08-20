@@ -237,7 +237,7 @@ class Solution {
               inherit: true,
               rules: [
                 { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-                { token: 'keyword', foreground: 'f97316', fontStyle: 'bold' },
+                { token: 'keyword', foreground: 'DCDCAA', fontStyle: 'bold' },
                 { token: 'string', foreground: 'CE9178' },
                 { token: 'number', foreground: 'B5CEA8' },
                 { token: 'operator', foreground: 'D4D4D4' },
@@ -249,9 +249,9 @@ class Solution {
                 'editor.background': '#000000',
                 'editor.foreground': '#ffffff',
                 'editor.lineHighlightBackground': '#262626',
-                'editor.selectionBackground': '#f97316',
+                'editor.selectionBackground': '#404040',
                 'editor.inactiveSelectionBackground': '#404040',
-                'editorCursor.foreground': '#f97316',
+                'editorCursor.foreground': '#ffffff',
                 'editorWhitespace.foreground': '#404040',
                 'editorIndentGuide.background': '#404040',
                 'editorIndentGuide.activeBackground': '#737373',
@@ -261,8 +261,8 @@ class Solution {
                 'editorError.foreground': '#ef4444',
                 'editorWarning.foreground': '#f59e0b',
                 'editorInfo.foreground': '#3b82f6',
-                'editorBracketMatch.background': '#f97316',
-                'editorBracketMatch.border': '#f97316',
+                'editorBracketMatch.background': '#404040',
+                'editorBracketMatch.border': '#737373',
               }
             });
           }}

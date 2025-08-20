@@ -92,7 +92,7 @@ export function CodeDisplay({
               inherit: true,
               rules: [
                 { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-                { token: 'keyword', foreground: 'f97316', fontStyle: 'bold' },
+                { token: 'keyword', foreground: 'DCDCAA', fontStyle: 'bold' },
                 { token: 'string', foreground: 'CE9178' },
                 { token: 'number', foreground: 'B5CEA8' },
                 { token: 'operator', foreground: 'D4D4D4' },

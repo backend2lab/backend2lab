@@ -50,7 +50,7 @@ export function CodeDisplay({
             roundedSelection: false,
             scrollBeyondLastLine: false,
             automaticLayout: true,
-            theme: "tactical-dark",
+            theme: "vs-dark",
             scrollbar: {
               vertical: 'hidden',
               horizontal: 'auto',
@@ -83,7 +83,7 @@ export function CodeDisplay({
               bottom: 8,
             },
           }}
-          theme="tactical-dark"
+          theme="vs-dark"
           className="rounded-none"
           onMount={(editor) => {
             // Just focus the editor

@@ -303,48 +303,7 @@ describe('Hello World Server', () => {
           }}
           theme="vs-dark"
           className="rounded-none"
-          beforeMount={(monaco) => {
-            // Customize the dark theme for tactical design
-            monaco.editor.defineTheme('tactical-dark', {
-              base: 'vs-dark',
-              inherit: true,
-              rules: [
-                { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-                { token: 'keyword', foreground: 'DCDCAA', fontStyle: 'bold' },
-                { token: 'string', foreground: 'CE9178' },
-                { token: 'number', foreground: 'B5CEA8' },
-                { token: 'operator', foreground: 'D4D4D4' },
-                { token: 'function', foreground: 'DCDCAA' },
-                { token: 'variable', foreground: '9CDCFE' },
-                { token: 'type', foreground: '4EC9B0' },
-              ],
-              colors: {
-                'editor.background': '#000000',
-                'editor.foreground': '#ffffff',
-                'editor.lineHighlightBackground': '#262626',
-                'editor.selectionBackground': '#404040',
-                'editor.inactiveSelectionBackground': '#404040',
-                'editorCursor.foreground': '#ffffff',
-                'editorWhitespace.foreground': '#404040',
-                'editorIndentGuide.background': '#404040',
-                'editorIndentGuide.activeBackground': '#737373',
-                'editorLineNumber.foreground': '#737373',
-                'editorLineNumber.activeForeground': '#ffffff',
-                'editorGutter.background': '#000000',
-                'editorError.foreground': '#ef4444',
-                'editorWarning.foreground': '#f59e0b',
-                'editorInfo.foreground': '#3b82f6',
-                'editorBracketMatch.background': '#404040',
-                'editorBracketMatch.border': '#737373',
-              }
-            });
-          }}
           onMount={(editor) => {
-            // Set the custom theme
-            editor.updateOptions({
-              theme: 'tactical-dark'
-            });
-            
             // Focus the editor
             editor.focus();
           }}

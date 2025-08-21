@@ -30,9 +30,8 @@ console.log('Server starting...');`);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const moduleData = {
-    title: "Hello World Server",
+    title: "Hello Server",
     difficulty: 'Beginner' as Difficulty,
-    completionRate: "85.2%",
     description: "Build your first Node.js HTTP server that returns a JSON response. This is the foundation of backend development.",
     learningObjectives: [
       "Understand HTTP server basics",
@@ -94,14 +93,12 @@ console.log('Server starting...');`);
 
             {/* Module Info */}
             <div className="flex-1 flex justify-center max-w-2xl">
-              <div className="text-center">
+              <div className="text-center flex">
                 <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">{moduleData.title}</h1>
-                <div className="flex items-center justify-center space-x-3 mt-1">
+                <div className="flex items-center justify-center space-x-3 mt- ml-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(moduleData.difficulty)}`}>
                     {moduleData.difficulty}
                   </span>
-                  <span className="text-xs text-tactical-text-secondary font-tactical">•</span>
-                  <span className="text-xs text-tactical-text-secondary font-tactical">{moduleData.completionRate} completion rate</span>
                 </div>
               </div>
             </div>

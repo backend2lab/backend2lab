@@ -156,12 +156,12 @@ You can return the answer in any order.`,
         <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col shadow-tactical">
           {/* Tab Navigation */}
           <div className="border-b border-tactical-border-primary bg-tactical-surface">
-            <div className="flex overflow-x-auto">
+            <div className="flex overflow-x-auto justify-evenly">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`tab-button-tactical ${activeTab === tab ? 'active' : 'inactive'}`}
+                  className={`tab-button-tactical ${activeTab === tab ? 'active' : 'inactive'} w-full`}
                 >
                   {tab}
                 </button>

@@ -187,11 +187,11 @@
   }
 
   .tab-button-tactical.active {
-    @apply bg-tactical-surface text-tactical-primary;
+    @apply bg-tactical-background text-tactical-primary;
   }
 
   .tab-button-tactical.inactive {
-    @apply text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
+    @apply bg-tactical-surface text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
   }
 
   /* Console Components */

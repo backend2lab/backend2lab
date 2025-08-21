@@ -1,0 +1,324 @@
+/* Import Geist Mono font */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles using @apply */
+@layer components {
+  /* Tactical Operations Design System Components */
+  
+  /* Cards */
+  .tactical-card {
+    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg shadow-tactical;
+  }
+
+  .tactical-card-hover {
+    @apply hover:bg-neutral-800 transition-colors;
+  }
+
+  /* Status Indicators */
+  .status-active {
+    @apply w-2 h-2 bg-tactical-success rounded-full animate-tactical-pulse;
+  }
+
+  .status-standby {
+    @apply w-2 h-2 bg-tactical-warning rounded-full;
+  }
+
+  .status-error {
+    @apply w-2 h-2 bg-tactical-error rounded-full;
+  }
+
+  /* Data Display */
+  .tactical-data {
+    @apply text-2xl font-bold text-tactical-text-primary font-tactical;
+  }
+
+  .tactical-label {
+    @apply text-xs text-tactical-text-secondary font-tactical;
+  }
+
+  /* Navigation Items */
+  .tactical-nav-item {
+    @apply w-full flex items-center gap-3 p-3 rounded transition-colors font-tactical;
+  }
+
+  .tactical-nav-item-active {
+    @apply bg-tactical-primary text-white;
+  }
+
+  .tactical-nav-item-inactive {
+    @apply text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
+  }
+
+  /* Section Headers */
+  .tactical-section-header {
+    @apply text-sm font-medium text-tactical-text-secondary tracking-wider font-tactical;
+  }
+
+  /* Button Components */
+  .btn-tactical-primary {
+    @apply bg-tactical-primary text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-orange-600 focus:outline-none font-tactical;
+  }
+
+  .btn-tactical-secondary {
+    @apply bg-transparent text-tactical-primary px-6 py-3 rounded-lg font-medium border-2 border-tactical-primary cursor-pointer transition-colors hover:bg-tactical-primary hover:text-white focus:outline-none font-tactical;
+  }
+
+  .btn-tactical-success {
+    @apply bg-success-600 text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-success-700 focus:outline-none font-tactical;
+  }
+
+  /* Code Editor Components */
+  .code-editor-tactical {
+    @apply border border-tactical-border-primary rounded-xl overflow-hidden bg-tactical-background shadow-tactical;
+  }
+
+  .editor-header-tactical {
+    @apply bg-tactical-surface px-4 py-3 border-b border-tactical-border-primary flex justify-between items-center;
+  }
+
+  .editor-content-tactical {
+    @apply min-h-[400px] font-tactical;
+  }
+
+  /* Problem Card Components */
+  .problem-card-tactical {
+    @apply bg-tactical-surface border border-tactical-border-primary rounded-xl p-6 shadow-tactical transition-colors hover:shadow-tactical-lg;
+  }
+
+  .problem-title-tactical {
+    @apply text-xl font-semibold text-tactical-text-primary mb-2 font-tactical;
+  }
+
+  .problem-difficulty-tactical {
+    @apply inline-block px-3 py-1 rounded-2xl text-sm font-medium mb-4;
+  }
+
+  .difficulty-easy-tactical {
+    @apply bg-success-100 text-success-700;
+  }
+
+  .difficulty-medium-tactical {
+    @apply bg-warning-100 text-warning-700;
+  }
+
+  .difficulty-hard-tactical {
+    @apply bg-error-100 text-error-700;
+  }
+
+  /* Navigation Components */
+  .navbar-tactical {
+    @apply bg-tactical-surface border-b border-tactical-border-primary py-4 sticky top-0 z-50 shadow-tactical;
+  }
+
+  .nav-container-tactical {
+    @apply flex justify-between items-center max-w-6xl mx-auto px-4;
+  }
+
+  .nav-logo-tactical {
+    @apply text-xl font-bold text-tactical-primary font-tactical;
+  }
+
+  .nav-menu-tactical {
+    @apply flex gap-6 items-center;
+  }
+
+  .nav-link-tactical {
+    @apply text-tactical-text-secondary no-underline font-medium transition-colors hover:text-tactical-primary focus:outline-none rounded font-tactical;
+  }
+
+  .nav-link-tactical.active {
+    @apply text-tactical-primary;
+  }
+
+  /* Status Badge Components */
+  .status-badge-tactical {
+    @apply inline-flex items-center gap-2 px-3 py-2 rounded-3xl text-sm font-medium font-tactical;
+  }
+
+  .status-running-tactical {
+    @apply bg-tactical-primary bg-opacity-20 text-tactical-primary;
+  }
+
+  .status-success-tactical {
+    @apply bg-success-100 text-success-700;
+  }
+
+  .status-error-tactical {
+    @apply bg-error-100 text-error-700;
+  }
+
+  .status-warning-tactical {
+    @apply bg-warning-100 text-warning-700;
+  }
+
+  /* Form Components */
+  .input-field-tactical {
+    @apply w-full px-4 py-3 border-2 border-tactical-border-primary rounded-lg text-base transition-colors focus:outline-none focus:border-tactical-primary bg-tactical-surface text-tactical-text-primary font-tactical;
+  }
+
+  .input-field-tactical.error {
+    @apply border-tactical-error;
+  }
+
+  .input-label-tactical {
+    @apply block text-sm font-medium text-tactical-text-secondary mb-2 font-tactical;
+  }
+
+  .input-error-tactical {
+    @apply text-sm text-tactical-error mt-1 font-tactical;
+  }
+
+  /* Loading Components */
+  .loading-tactical {
+    @apply opacity-60 pointer-events-none;
+  }
+
+  .loading-spinner-tactical {
+    @apply w-5 h-5 border-2 border-tactical-border-primary border-t-tactical-primary rounded-full animate-spin;
+  }
+
+  /* Tab Components */
+  .tab-button-tactical {
+    @apply px-4 sm:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap focus:outline-none font-tactical;
+  }
+
+  .tab-button-tactical.active {
+    @apply bg-tactical-background text-tactical-primary;
+  }
+
+  .tab-button-tactical.inactive {
+    @apply bg-tactical-surface text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
+  }
+
+  /* Console Components */
+  .console-container-tactical {
+    @apply border-t border-tactical-border-primary bg-tactical-background;
+  }
+
+  .console-header-tactical {
+    @apply px-4 sm:px-6 py-3 border-b border-tactical-border-primary bg-tactical-surface;
+  }
+
+  .console-content-tactical {
+    @apply p-4 h-32 sm:h-48 overflow-y-auto bg-tactical-surface;
+  }
+
+  .console-output-tactical {
+    @apply font-tactical text-sm text-tactical-text-primary whitespace-pre-wrap bg-neutral-900 p-3 rounded-lg border border-tactical-border-primary;
+  }
+
+  /* Test Case Components */
+  .test-case-card-tactical {
+    @apply bg-neutral-900 rounded-lg p-4 border border-tactical-border-primary;
+  }
+
+  .test-case-input-tactical {
+    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg p-3 font-tactical text-sm text-tactical-text-primary;
+  }
+
+  /* Activity Log Entry */
+  .activity-log-entry {
+    @apply text-xs border-l-2 border-tactical-primary pl-3 hover:bg-neutral-800 p-2 rounded transition-colors font-tactical;
+  }
+
+  .activity-timestamp {
+    @apply text-tactical-text-secondary font-tactical;
+  }
+
+  .activity-content {
+    @apply text-tactical-text-primary;
+  }
+
+  .activity-highlight {
+    @apply text-tactical-primary font-tactical;
+  }
+
+  /* Utility Classes */
+  .hover-lift-tactical {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-tactical-lg;
+  }
+
+  .focus-ring-tactical {
+    @apply transition-colors focus:outline-none focus:ring-2 focus:ring-tactical-primary focus:ring-offset-2 focus:ring-offset-tactical-background;
+  }
+
+  /* Screen Reader Only */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+}
+
+/* Base styles */
+@layer base {
+  html {
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  }
+
+  body {
+    @apply bg-tactical-background text-tactical-text-primary font-tactical;
+  }
+
+  /* Code syntax highlighting */
+  .monaco-editor {
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace !important;
+  }
+
+  /* Monaco Editor customizations */
+  .monaco-editor .margin {
+    background-color: #000000 !important;
+  }
+
+  .monaco-editor .monaco-editor-background {
+    background-color: #000000 !important;
+  }
+
+  .monaco-editor .line-numbers {
+    color: #737373 !important;
+  }
+
+  .monaco-editor .current-line {
+    background-color: #262626 !important;
+  }
+
+  .monaco-editor .selection {
+    background-color: #f97316 !important;
+    opacity: 0.3;
+  }
+
+  /* Editor container styling */
+  .monaco-editor-container {
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-tactical-border-primary rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-tactical-border-secondary;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-tactical-primary text-white;
+  }
+
+  ::-moz-selection {
+    @apply bg-tactical-primary text-white;
+  }
+}

@@ -3,7 +3,7 @@ import CodeEditor from "./components/Editor";
 import { StepCard } from "./components/StepCard";
 import { CodeDisplay } from "./components/CodeDisplay";
 
-type Difficulty = 'Easy' | 'Medium' | 'Hard';
+type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
 
 export default function App() {
@@ -29,81 +29,47 @@ console.log('Server starting...');`);
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const problemData = {
-    title: "Two Sum",
-    difficulty: 'Easy' as Difficulty,
-    acceptanceRate: "48.5%",
-    description: `Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.
-
-You may assume that each input would have ***exactly one solution***, and you may not use the *same* element twice.
-
-You can return the answer in any order.`,
-    examples: [
-      {
-        input: "nums = [2,7,11,15], target = 9",
-        output: "[0,1]",
-        explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]."
-      },
-      {
-        input: "nums = [3,2,4], target = 6",
-        output: "[1,2]",
-        explanation: "Because nums[1] + nums[2] == 6, we return [1, 2]."
-      },
-      {
-        input: "nums = [3,3], target = 6",
-        output: "[0,1]",
-        explanation: "Because nums[0] + nums[1] == 6, we return [0, 1]."
-      }
-    ],
-    constraints: [
-      "2 <= nums.length <= 10⁴",
-      "-10⁹ <= nums[i] <= 10⁹",
-      "-10⁹ <= target <= 10⁹",
-      "Only one valid answer exists."
-    ],
-    testCases: [
-      {
-        input: "[2, 7, 11, 15]\n9",
-        output: "[0, 1]"
-      },
-      {
-        input: "[3, 2, 4]\n6",
-        output: "[1, 2]"
-      }
+  const moduleData = {
+    title: "Hello World Server",
+    difficulty: 'Beginner' as Difficulty,
+    completionRate: "85.2%",
+    description: "Build your first Node.js HTTP server that returns a JSON response. This is the foundation of backend development.",
+    learningObjectives: [
+      "Understand HTTP server basics",
+      "Learn request/response handling",
+      "Practice JSON response formatting",
+      "Master error handling patterns"
     ]
   };
 
   const handleRunCode = async () => {
     setIsRunning(true);
-    setOutput("Running test cases...\n");
+    setOutput("Running server...\n");
     
-    // Simulate test case execution
+    // Simulate server execution
     setTimeout(() => {
-      const results = problemData.testCases.map((testCase, index) => {
-        return `Test case ${index + 1}:\nInput: ${testCase.input}\nExpected: ${testCase.output}\nOutput: [0, 1]\nStatus: ✅ Passed\n`;
-      }).join('\n');
-      
-      setOutput(results + "\nAll test cases passed! 🎉");
+      setOutput("✅ Server started successfully!\n\nListening on port 3000\nGET / → { \"message\": \"Hello, World!\" }\n\nYour server is running correctly!");
       setIsRunning(false);
     }, 2000);
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    setOutput("Submitting solution...\n");
+    setOutput("Testing server...\n");
     
-    // Simulate submission
+    // Simulate testing
     setTimeout(() => {
-      setOutput("✅ Accepted!\n\nRuntime: 84 ms (beats 67.8%)\nMemory: 42.3 MB (beats 89.2%)\n\nGreat job! Your solution is efficient.");
+      setOutput("✅ All tests passed!\n\nServer responds correctly to all requests\nPerformance: Excellent\nCode quality: Great\n\nCongratulations! You've successfully built your first Node.js server!");
       setIsSubmitting(false);
     }, 3000);
   };
 
   const getDifficultyColor = (difficulty: Difficulty) => {
     switch (difficulty) {
-      case 'Easy': return 'bg-success-100 text-success-700';
-      case 'Medium': return 'bg-warning-100 text-warning-700';
-      case 'Hard': return 'bg-error-100 text-error-700';
+      case 'Beginner': return 'bg-success-100 text-success-700';
+      case 'Intermediate': return 'bg-warning-100 text-warning-700';
+      case 'Advanced': return 'bg-error-100 text-error-700';
+      default: return 'bg-success-100 text-success-700';
     }
   };
 
@@ -112,56 +78,66 @@ You can return the answer in any order.`,
   return (
     <div className="min-h-screen bg-tactical-background">
       {/* Header Bar */}
-      <header className="navbar-tactical">
-        <div className="nav-container-tactical">
-          {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 bg-tactical-primary rounded-lg flex items-center justify-center shadow-tactical">
-              <span className="text-white font-bold text-sm font-tactical">LC</span>
-            </div>
-            <span className="text-xl font-bold text-tactical-text-primary font-tactical">LeetCode</span>
-          </div>
-
-          {/* Problem Title */}
-          <div className="flex-1 flex justify-center">
-            <div className="text-center">
-              <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">{problemData.title}</h1>
-              <div className="flex items-center justify-center space-x-2 mt-1">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(problemData.difficulty)}`}>
-                  {problemData.difficulty}
-                </span>
-                <span className="text-xs text-tactical-text-secondary font-tactical">Acceptance: {problemData.acceptanceRate}</span>
+      <header className="bg-tactical-surface border-b border-tactical-border-primary shadow-sm">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo and Brand */}
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-tactical-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm font-tactical">B2L</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-tactical-text-primary font-tactical">Backend2Lab</span>
+                <span className="text-xs text-tactical-text-secondary font-tactical">Learn Backend Development</span>
               </div>
             </div>
-          </div>
 
-          {/* User Profile */}
-          <div className="flex items-center space-x-4">
-            <button className="p-2 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors rounded-lg hover:bg-neutral-800">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </button>
-            <div className="w-8 h-8 bg-tactical-border-primary rounded-full flex items-center justify-center hover:bg-neutral-800 transition-colors cursor-pointer">
-              <span className="text-tactical-text-primary font-medium text-sm font-tactical">U</span>
+            {/* Module Info */}
+            <div className="flex-1 flex justify-center max-w-2xl">
+              <div className="text-center">
+                <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">{moduleData.title}</h1>
+                <div className="flex items-center justify-center space-x-3 mt-1">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(moduleData.difficulty)}`}>
+                    {moduleData.difficulty}
+                  </span>
+                  <span className="text-xs text-tactical-text-secondary font-tactical">•</span>
+                  <span className="text-xs text-tactical-text-secondary font-tactical">{moduleData.completionRate} completion rate</span>
+                </div>
+              </div>
+            </div>
+
+            {/* User Actions */}
+            <div className="flex items-center space-x-3">
+              <button className="p-2 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors rounded-lg hover:bg-neutral-800">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+              <div className="w-8 h-8 bg-gradient-to-br from-tactical-border-primary to-neutral-700 rounded-full flex items-center justify-center hover:bg-neutral-800 transition-colors cursor-pointer">
+                <span className="text-tactical-text-primary font-medium text-sm font-tactical">U</span>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)] bg-tactical-background">
-        {/* Left Panel - Problem Description */}
-        <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col shadow-tactical">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-tactical-background">
+        {/* Left Panel - Learning Content */}
+        <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col">
           {/* Tab Navigation */}
           <div className="border-b border-tactical-border-primary bg-tactical-surface">
-            <div className="flex overflow-x-auto justify-evenly">
+            <div className="flex">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`tab-button-tactical ${activeTab === tab ? 'active' : 'inactive'} w-full`}
+                  className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 border-b-2 ${
+                    activeTab === tab 
+                      ? 'text-tactical-primary border-tactical-primary bg-tactical-background' 
+                      : 'text-tactical-text-secondary border-transparent hover:text-tactical-text-primary hover:bg-neutral-800'
+                  }`}
                 >
                   {tab}
                 </button>
@@ -170,11 +146,9 @@ You can return the answer in any order.`,
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-tactical-background">
+          <div className="flex-1 overflow-y-auto bg-tactical-background">
             {activeTab === 'Lab' && (
-              <div className="space-y-8">
-                <div className="max-w-4xl mx-auto">
-                  <div className="space-y-8">
+              <div className="max-w-4xl mx-auto p-6 space-y-8">
                     <StepCard
                       stepNumber={1}
                       title="Module 1: API Basics & Express Setup"
@@ -495,14 +469,10 @@ fetch('http://localhost:3000/api/users', {
                       ]}
                     />
                   </div>
-                </div>
-              </div>
             )}
 
             {activeTab === 'Exercise' && (
-              <div className="space-y-8">
-                <div className="max-w-4xl mx-auto">
-                  <div className="space-y-8">
+              <div className="max-w-4xl mx-auto p-6 space-y-8">
                     <StepCard
                       stepNumber={1}
                       title="🎯 Exercise: Build a Hello World Server"
@@ -717,8 +687,6 @@ fetch('http://localhost:3000/api/users', {
                       ]}
                     />
                   </div>
-                </div>
-              </div>
             )}
           </div>
         </div>
@@ -759,10 +727,10 @@ fetch('http://localhost:3000/api/users', {
                 {isSubmitting ? (
                   <>
                     <div className="loading-spinner-tactical mr-2"></div>
-                    Submitting...
+                    Testing...
                   </>
                 ) : (
-                  'Submit'
+                  'Test Server'
                 )}
               </button>
             </div>

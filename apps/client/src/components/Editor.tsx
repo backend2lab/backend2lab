@@ -128,33 +128,6 @@ describe('Hello World Server', () => {
   });
 });`,
       isActive: false
-    },
-    {
-      id: 'package.json',
-      name: 'package.json',
-      language: 'json',
-      content: `{
-  "name": "hello-world-server",
-  "version": "1.0.0",
-  "description": "A simple Node.js HTTP server exercise",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "test": "mocha test-cases.js",
-    "dev": "node server.js"
-  },
-  "keywords": ["nodejs", "http", "server", "api"],
-  "author": "Your Name",
-  "license": "MIT",
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "devDependencies": {
-    "mocha": "^10.2.0",
-    "chai": "^4.3.7"
-  }
-}`,
-      isActive: false
     }
   ]);
 

@@ -515,15 +515,14 @@ fetch('http://localhost:3000/api/users', {
                             <h4 className="font-semibold text-tactical-text-primary mb-3 font-tactical">Test Case 1: Basic GET Request</h4>
                             <div className="space-y-4">
                               <div>
-                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request (Postman):</span>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request:</span>
                                 <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
-                                  {/* Postman Header */}
+                                  {/* Client Header */}
                                   <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
                                     <div className="flex items-center gap-2">
                                       <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
                                       <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
                                       <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
-                                      <span className="text-xs text-tactical-text-secondary ml-2">Postman</span>
                                     </div>
                                   </div>
                                   {/* Request URL */}
@@ -543,12 +542,12 @@ fetch('http://localhost:3000/api/users', {
                                 </div>
                               </div>
                               <div>
-                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response (Postman):</span>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response:</span>
                                 <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
                                   {/* Response Header */}
                                   <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
                                     <div className="flex items-center justify-between">
-                                      <span className="text-xs text-tactical-text-secondary">Response</span>
+                                      <span className="text-xs text-tactical-text-secondary">Body</span>
                                       <div className="flex items-center gap-2">
                                         <span className="text-xs text-green-400 font-semibold">200 OK</span>
                                         <span className="text-xs text-tactical-text-secondary">•</span>
@@ -579,15 +578,14 @@ fetch('http://localhost:3000/api/users', {
                             <h4 className="font-semibold text-tactical-text-primary mb-3 font-tactical">Test Case 2: Wrong Path</h4>
                             <div className="space-y-4">
                               <div>
-                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request (Postman):</span>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Request:</span>
                                 <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
-                                  {/* Postman Header */}
+                                  {/* Client Header */}
                                   <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
                                     <div className="flex items-center gap-2">
                                       <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
                                       <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
                                       <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
-                                      <span className="text-xs text-tactical-text-secondary ml-2">Postman</span>
                                     </div>
                                   </div>
                                   {/* Request URL */}
@@ -607,12 +605,12 @@ fetch('http://localhost:3000/api/users', {
                                 </div>
                               </div>
                               <div>
-                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response (Postman):</span>
+                                <span className="text-sm font-medium text-tactical-text-secondary font-tactical mb-2 block">Response:</span>
                                 <div className="bg-neutral-900 rounded-lg border border-tactical-border-primary overflow-hidden">
                                   {/* Response Header */}
                                   <div className="bg-tactical-surface px-4 py-2 border-b border-tactical-border-primary">
                                     <div className="flex items-center justify-between">
-                                      <span className="text-xs text-tactical-text-secondary">Response</span>
+                                      <span className="text-xs text-tactical-text-secondary">Error</span>
                                       <div className="flex items-center gap-2">
                                         <span className="text-xs text-red-400 font-semibold">404 Not Found</span>
                                         <span className="text-xs text-tactical-text-secondary">•</span>

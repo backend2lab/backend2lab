@@ -77,6 +77,15 @@ Each module has a `module.json` file that defines:
 5. **Create exercise files**: All files in `exercise/` directory
 6. **Update index.ts**: Module will be auto-discovered
 
+## Module Management
+
+The `index.ts` file provides utilities to:
+
+- `getAllModules()`: Get all available modules
+- `getModuleById(id)`: Get specific module by ID
+- `getModuleContent(id)`: Get complete module content
+- `getAvailableModules()`: Get module list for UI
+
 ## Content Guidelines
 
 ### Lab Content (README.md)

@@ -13,10 +13,8 @@ modules/
 │   └── exercise/
 │       ├── README.md               # Exercise instructions
 │       ├── server.js               # Template file for Monaco editor
-│       ├── ...*.js                 # Other Template file for Monaco editor
 │       ├── test.js                 # Mocha test cases
-│       ├── server.solution.js      # Complete working solution
-│       ├── ...*.solution.js        # Complete working solution for other addition files
+│       ├── solution.js      # Complete working solution
 │       └── package.json            # Exercise dependencies
 ├── module-2/
 │   └── ...
@@ -42,7 +40,6 @@ Each module has a `module.json` file that defines:
     "exercise": {
       "readme": "exercise/README.md",
       "server": "exercise/server.js",
-      "other-file": "exercise/other-file.js",
       "test": "exercise/test.js",
       "solution": "exercise/solution.js",
       "package": "exercise/package.json"
@@ -103,3 +100,4 @@ Each module has a `module.json` file that defines:
 - Error handling for missing or malformed modules
 - TypeScript interfaces for type safety
 - Support for different difficulty levels and tags
+

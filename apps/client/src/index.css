@@ -364,11 +364,106 @@
   }
 
   .prose code {
-    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary;
+    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-border-primary;
   }
 
   .prose pre {
-    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg overflow-hidden mb-4;
+    @apply bg-black border border-tactical-border-primary rounded-lg overflow-hidden mb-4 shadow-lg;
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  }
+
+  /* Code block improvements */
+  .prose pre code {
+    @apply bg-transparent border-none p-0 text-sm leading-relaxed;
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  }
+
+  /* Monaco-style syntax highlighting */
+  .hljs {
+    @apply bg-transparent text-white;
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  }
+
+  .hljs-keyword {
+    @apply text-blue-400 font-semibold;
+  }
+
+  .hljs-string {
+    @apply text-green-400;
+  }
+
+  .hljs-number {
+    @apply text-blue-300;
+  }
+
+  .hljs-comment {
+    @apply text-gray-500 italic;
+  }
+
+  .hljs-function {
+    @apply text-yellow-400;
+  }
+
+  .hljs-variable {
+    @apply text-white;
+  }
+
+  .hljs-operator {
+    @apply text-white;
+  }
+
+  .hljs-punctuation {
+    @apply text-gray-400;
+  }
+
+  .hljs-property {
+    @apply text-purple-400;
+  }
+
+  .hljs-built_in {
+    @apply text-cyan-400;
+  }
+
+  .hljs-literal {
+    @apply text-orange-400;
+  }
+
+  .hljs-type {
+    @apply text-blue-300;
+  }
+
+  .hljs-params {
+    @apply text-white;
+  }
+
+  .hljs-title {
+    @apply text-yellow-400;
+  }
+
+  .hljs-attr {
+    @apply text-purple-400;
+  }
+
+  .hljs-value {
+    @apply text-green-400;
+  }
+
+  /* Monaco-style code block enhancements */
+  .monaco-style-code {
+    @apply bg-black text-white;
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    line-height: 1.5;
+  }
+
+  .monaco-style-code .hljs {
+    @apply bg-transparent;
+    padding: 0 !important;
+  }
+
+  /* Line numbers (optional) */
+  .monaco-line-numbers {
+    @apply text-gray-600 text-xs select-none;
+    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   }
 
   .prose blockquote {

@@ -13,8 +13,11 @@ export function CodeDisplay({
   showLineNumbers = true, 
   className = "" 
 }: CodeDisplayProps) {
+  // Ensure code is a string
+  const safeCode = typeof code === 'string' ? code : String(code || '');
+  
   // Calculate height based on number of lines
-  const lineCount = code.split('\n').length;
+  const lineCount = safeCode.split('\n').length;
   const lineHeight = 18; // matches fontSize 13 with lineHeight 18
   const padding = 16; // 8px top + 8px bottom
   const minHeight = 60; // minimum height for very short code
@@ -27,7 +30,7 @@ export function CodeDisplay({
           {language}
         </span>
         <button
-          onClick={() => navigator.clipboard.writeText(code)}
+          onClick={() => navigator.clipboard.writeText(safeCode)}
           className="h-6 w-6 p-0 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors"
         >
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,7 +42,7 @@ export function CodeDisplay({
         <Editor
           height="100%"
           defaultLanguage={language}
-          value={code}
+          value={safeCode}
           options={{
             readOnly: true,
             minimap: { enabled: false },

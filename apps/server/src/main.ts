@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { TestRunner } from './utils/testRunner';
 import { getAllModules, getModuleContent } from './modules';
 
 const host: string = process.env.HOST ?? 'localhost';
@@ -33,6 +34,21 @@ app.get('/api/modules/:moduleId', (req: Request, res: Response) => {
   }
 });
 
+app.post('/api/test/:moduleId', async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required' });
+    }
+    
+    const testResult = await TestRunner.runTests(moduleId, code);
+    res.json(testResult);
+  } catch (error) {
+    res.status(500).json({ error: 'Test execution failed' });
+  }
+});
 
 app.listen(port, host, () => {
   console.log(`Backend2Lab Server running at http://${host}:${port}`);

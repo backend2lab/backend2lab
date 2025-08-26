@@ -328,15 +328,15 @@
   }
 
   .prose h1 {
-    @apply text-3xl font-bold text-tactical-text-primary mb-6;
+    @apply text-3xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0;
   }
 
   .prose h2 {
-    @apply text-2xl font-semibold text-tactical-text-primary mb-4;
+    @apply text-2xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0;
   }
 
   .prose h3 {
-    @apply text-xl font-medium text-tactical-text-primary mb-3;
+    @apply text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0;
   }
 
   .prose p {

@@ -156,9 +156,9 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             title={section.title}
             description={section.description || ''}
             additionalContent={
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {section.contentBlocks && section.contentBlocks.map((block, index) => (
-                  <div key={index}>
+                  <div key={index} className="first:mt-0">
                     {block.type === 'text' ? (
                       <div className="prose prose-invert max-w-none">
                         <ReactMarkdown
@@ -166,13 +166,13 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                           rehypePlugins={[rehypeHighlight]}
                           components={{
                             h1: ({ children }) => (
-                              <h1 className="text-2xl font-bold text-tactical-text-primary mb-4">{children}</h1>
+                              <h1 className="text-2xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0">{children}</h1>
                             ),
                             h2: ({ children }) => (
-                              <h2 className="text-xl font-semibold text-tactical-text-primary mb-3">{children}</h2>
+                              <h2 className="text-xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0">{children}</h2>
                             ),
                             h3: ({ children }) => (
-                              <h3 className="text-lg font-medium text-tactical-text-primary mb-2">{children}</h3>
+                              <h3 className="text-lg font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
                             ),
                             p: ({ children }) => (
                               <p className="text-tactical-text-secondary mb-3 leading-relaxed">{children}</p>
@@ -294,13 +294,13 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
         rehypePlugins={[rehypeHighlight]}
       components={{
           h1: ({ children }) => (
-            <h1 className="text-3xl font-bold text-tactical-text-primary mb-6">{children}</h1>
+            <h1 className="text-3xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0">{children}</h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-2xl font-semibold text-tactical-text-primary mb-4">{children}</h2>
+            <h2 className="text-2xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-xl font-medium text-tactical-text-primary mb-3">{children}</h3>
+            <h3 className="text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
           ),
         p: ({ children }) => (
             <p className="text-tactical-text-secondary mb-4 leading-relaxed">{children}</p>

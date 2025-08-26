@@ -321,4 +321,73 @@
   ::-moz-selection {
     @apply bg-tactical-primary text-white;
   }
+
+  /* Markdown/Prose styles */
+  .prose {
+    @apply text-tactical-text-primary;
+  }
+
+  .prose h1 {
+    @apply text-3xl font-bold text-tactical-text-primary mb-6;
+  }
+
+  .prose h2 {
+    @apply text-2xl font-semibold text-tactical-text-primary mb-4;
+  }
+
+  .prose h3 {
+    @apply text-xl font-medium text-tactical-text-primary mb-3;
+  }
+
+  .prose p {
+    @apply text-tactical-text-secondary mb-4 leading-relaxed;
+  }
+
+  .prose ul {
+    @apply list-disc list-inside space-y-2 text-tactical-text-secondary mb-4;
+  }
+
+  .prose ol {
+    @apply list-decimal list-inside space-y-2 text-tactical-text-secondary mb-4;
+  }
+
+  .prose li {
+    @apply text-tactical-text-secondary;
+  }
+
+  .prose strong {
+    @apply font-semibold text-tactical-text-primary;
+  }
+
+  .prose em {
+    @apply italic text-tactical-text-secondary;
+  }
+
+  .prose code {
+    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary;
+  }
+
+  .prose pre {
+    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg overflow-hidden mb-4;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-tactical-primary pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4;
+  }
+
+  .prose a {
+    @apply text-tactical-primary hover:text-blue-400 underline;
+  }
+
+  .prose table {
+    @apply w-full border-collapse border border-tactical-border-primary mb-4;
+  }
+
+  .prose th {
+    @apply bg-tactical-surface border border-tactical-border-primary px-4 py-2 text-left font-semibold text-tactical-text-primary;
+  }
+
+  .prose td {
+    @apply border border-tactical-border-primary px-4 py-2 text-tactical-text-secondary;
+  }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 
 interface FileTab {
@@ -11,11 +11,13 @@ interface FileTab {
 
 interface Props {
   code: string;
+  onCodeChange: (code: string) => void;
+  testCases: string;
   runCode?: (code: string) => void;
   readOnly?: boolean;
 }
 
-export default function CodeEditor({ code, runCode, readOnly }: Props) {
+export default function CodeEditor({ code, onCodeChange, testCases, runCode, readOnly }: Props) {
   const [files, setFiles] = useState<FileTab[]>([
     {
       id: 'server.js',
@@ -28,108 +30,23 @@ export default function CodeEditor({ code, runCode, readOnly }: Props) {
       id: 'test-cases.js',
       name: 'test-cases.js',
       language: 'javascript',
-      content: `// Test Cases for Hello World Server
-// These are the test cases that your server should pass
-
-const { expect } = require('chai');
-const http = require('http');
-
-// Utility function to make HTTP requests
-function makeRequest(method, path) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'localhost',
-      port: 3000,
-      path: path,
-      method: method,
-      timeout: 5000
-    };
-
-    const req = http.request(options, (res) => {
-      let data = '';
-      
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      
-      res.on('end', () => {
-        try {
-          const response = {
-            statusCode: res.statusCode,
-            headers: res.headers,
-            body: data ? JSON.parse(data) : null
-          };
-          resolve(response);
-        } catch (error) {
-          resolve({
-            statusCode: res.statusCode,
-            headers: res.headers,
-            body: data
-          });
-        }
-      });
-    });
-
-    req.on('error', (error) => {
-      reject(error);
-    });
-
-    req.on('timeout', () => {
-      reject(new Error('Request timeout'));
-    });
-
-    req.end();
-  });
-}
-
-describe('Hello World Server', () => {
-  it('should return 200 OK and correct JSON for GET /', async () => {
-    const response = await makeRequest('GET', '/');
-    
-    expect(response.statusCode).to.equal(200);
-    expect(response.body).to.deep.equal({ message: 'Hello, World!' });
-    expect(response.headers['content-type']).to.include('application/json');
-  });
-
-  it('should return 404 for GET /hello', async () => {
-    const response = await makeRequest('GET', '/hello');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-
-  it('should return 404 for POST /', async () => {
-    const response = await makeRequest('POST', '/');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-
-  it('should return 404 for PUT /', async () => {
-    const response = await makeRequest('PUT', '/');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-
-  it('should return 404 for DELETE /', async () => {
-    const response = await makeRequest('DELETE', '/');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-
-  it('should return 404 for GET /api', async () => {
-    const response = await makeRequest('GET', '/api');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-
-  it('should return 404 for GET /users', async () => {
-    const response = await makeRequest('GET', '/users');
-    
-    expect(response.statusCode).to.equal(404);
-  });
-});`,
+      content: testCases,
       isActive: false
     }
   ]);
+
+  // Update files when props change
+  useEffect(() => {
+    setFiles(prevFiles => 
+      prevFiles.map(file => 
+        file.id === 'server.js' 
+          ? { ...file, content: code }
+          : file.id === 'test-cases.js'
+          ? { ...file, content: testCases }
+          : file
+      )
+    );
+  }, [code, testCases]);
 
   const activeFile = files.find(file => file.isActive) || files[0];
 
@@ -141,11 +58,19 @@ describe('Hello World Server', () => {
   };
 
   const handleCodeChange = (value: string | undefined) => {
+    const newValue = value || "";
+    
+    // Update the files state
     setFiles(files.map(file => 
       file.isActive 
-        ? { ...file, content: value || "" }
+        ? { ...file, content: newValue }
         : file
     ));
+
+    // If the active file is server.js, call onCodeChange
+    if (activeFile.id === 'server.js') {
+      onCodeChange(newValue);
+    }
   };
 
   const getFileIcon = (language: string) => {

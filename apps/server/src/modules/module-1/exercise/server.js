@@ -1,16 +1,1 @@
-// Hello World Server
-// Your task: Create a Node.js HTTP server that returns "Hello, World!"
-
-const http = require('http');
-
-// TODO: Implement your server here
-// 1. Create an HTTP server using http.createServer()
-// 2. Handle GET requests to the root path "/"
-// 3. Return JSON response: { "message": "Hello, World!" }
-// 4. Set Content-Type header to "application/json"
-// 5. Handle other paths with 404 status
-// 6. Listen on port 3000
-
-// Your implementation goes here...
-
-console.log('Server starting...');
+const http = require("http"); const server = http.createServer((req, res) => { if (req.method === "GET" && req.url === "/") { res.writeHead(200, { "Content-Type": "application/json" }); res.end(JSON.stringify({ message: "Hello, World!" })); } else { res.writeHead(404, { "Content-Type": "application/json" }); res.end(JSON.stringify({ error: "Not Found" })); } }); server.listen(3000, () => { console.log("Hello World Server running at http://localhost:3000"); });

@@ -2,7 +2,7 @@
 
 Your task is to create a simple Node.js HTTP server that returns 'Hello, World!' when accessed. This exercise will test your understanding of basic HTTP server creation.
 
-## 🎯 Task Requirements
+## 1. 🎯 Task Requirements
 
 Create an HTTP server that:
 
@@ -12,7 +12,7 @@ Create an HTTP server that:
 4. **Sets proper Content-Type header**: `application/json`
 5. **Returns 404 for all other routes**
 
-## 📋 Test Cases
+## 2. 📋 Test Cases
 
 Your server should pass these test cases:
 
@@ -47,7 +47,7 @@ Your server should pass these test cases:
   ```
 - **Status Code**: 404 Not Found
 
-## 💡 Hints
+## 3. 💡 Hints
 
 1. **Use Node.js built-in `http` module**
 2. **Check `req.method` and `req.url`**
@@ -55,14 +55,14 @@ Your server should pass these test cases:
 4. **Send JSON with `JSON.stringify()`**
 5. **Don't forget to call `res.end()`**
 
-## 🚀 Getting Started
+## 4. 🚀 Getting Started
 
 1. Open the `server.js` file in the editor
 2. Implement your server logic
 3. Use the test cases to verify your solution
 4. Run your server and test with the provided test cases
 
-## 📝 Code Structure
+## 5. 📝 Code Structure
 
 Your `server.js` should follow this basic structure:
 

@@ -1,0 +1,31 @@
+{
+  "id": "module-1",
+  "title": "API Basics & Node.js Server Setup",
+  "description": "Learn the fundamentals of APIs, HTTP, and how to build your first Node.js server",
+  "difficulty": "Beginner",
+  "estimatedTime": "30 minutes",
+  "tags": ["nodejs", "http", "api", "server", "basics"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand HTTP server basics",
+    "Learn request/response handling",
+    "Practice JSON response formatting",
+    "Master error handling patterns"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of HTTP protocol"
+  ]
+}
+

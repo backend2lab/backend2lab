@@ -39,15 +39,17 @@ export default function App() {
     }
   };
 
-  const handleRunCode = async () => {
+  const handleRunCode = async (codeToRun?: string) => {
     if (!moduleContent) return;
+    
+    const codeContent = codeToRun || code;
     
     setIsRunning(true);
     setOutput("Running server...\n");
     
     try {
       // Send code to server for execution
-      const result: RunResult = await ModuleService.runCode(currentModuleId, code);
+      const result: RunResult = await ModuleService.runCode(currentModuleId, codeContent);
       
       if (result.success) {
         setOutput(`✅ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
@@ -220,6 +222,8 @@ export default function App() {
               code={code} 
               onCodeChange={setCode}
               testCases={moduleContent.exerciseContent.editorFiles.test}
+              solution={moduleContent.exerciseContent.solution}
+              runCode={handleRunCode}
             />
           </div>
           
@@ -229,7 +233,7 @@ export default function App() {
               <h3 className="text-sm font-semibold text-tactical-text-primary">Output</h3>
               <div className="flex space-x-2">
                 <button
-                  onClick={handleRunCode}
+                  onClick={() => handleRunCode()}
                   disabled={isRunning}
                   className="px-3 py-1.5 text-xs font-medium bg-tactical-primary text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >

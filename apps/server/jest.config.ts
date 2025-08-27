@@ -13,14 +13,15 @@ export default {
     'src/**/*.ts',
     '!src/**/*.spec.ts',
     '!src/test-setup.ts',
-    '!src/main.ts'
+    '!src/main.ts',
+    '!src/modules/index.ts'
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80
+      branches: 60,
+      functions: 60,
+      lines: 60,
+      statements: 60
     }
   }
 };

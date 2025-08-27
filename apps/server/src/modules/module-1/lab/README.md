@@ -67,7 +67,7 @@ const server = http.createServer((req, res) => {
 - **res.end()**: Send response and close connection
 - **JSON.stringify()**: Convert objects to JSON strings
 
-## 4. 📝 Best Practices
+## 4. Best Practices
 
 1. **Always set Content-Type header** for JSON responses
 2. **Handle all routes** - return 404 for unknown paths
@@ -75,7 +75,7 @@ const server = http.createServer((req, res) => {
 4. **Validate request methods** - only allow what you need
 5. **Error handling** - graceful error responses
 
-## 5. 🔗 Next Steps
+## 5. Next Steps
 
 In the Exercise section, you'll build your own Hello World server that:
 - Responds to GET requests at the root path

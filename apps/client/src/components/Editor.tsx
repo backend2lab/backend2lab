@@ -89,9 +89,9 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-tactical-background">
+    <div className="w-full h-full flex flex-col bg-tactical-background min-h-0">
       {/* Tabs Bar */}
-      <div className="w-full flex items-center bg-tactical-surface border-b border-tactical-border-primary h-12">
+      <div className="w-full flex items-center bg-tactical-surface border-b border-tactical-border-primary h-12 flex-shrink-0">
         {files.map((file) => (
           <div
             key={file.id}
@@ -109,7 +109,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
       </div>
 
       {/* Editor Header */}
-      <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary">
+      <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary flex-shrink-0">
         <div className="flex items-center space-x-4">
           <span className="text-sm font-medium text-tactical-text-secondary font-tactical">{activeFile.name}</span>
           <div className="flex items-center space-x-1">
@@ -124,7 +124,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
       </div>
 
       {/* Monaco Editor Container */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative min-h-0">
         <Editor
           height="100%"
           defaultLanguage={activeFile.language}
@@ -148,6 +148,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
               horizontalScrollbarSize: 12,
               useShadows: false,
             },
+            fixedOverflowWidgets: true,
             overviewRulerBorder: false,
             hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
@@ -209,7 +210,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
       </div>
 
       {/* Editor Footer */}
-      <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical">
+      <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical flex-shrink-0">
         <div className="flex items-center space-x-4">
           <span>Ln 1, Col 1</span>
           <span>Spaces: 2</span>

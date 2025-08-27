@@ -20,7 +20,102 @@ export interface TestSuiteResult {
   executionTime: number;
 }
 
+export interface RunResult {
+  moduleId: string;
+  success: boolean;
+  message: string;
+  executionTime: number;
+  serverOutput?: string;
+  error?: string;
+}
+
 export class TestRunner {
+  static async runCode(moduleId: string, inputCode: string): Promise<RunResult> {
+    const startTime = Date.now();
+    let serverProcess: any = null;
+    let serverOutput = '';
+
+    try {
+      // Get the module path
+      const modulePath = join(process.cwd(), 'apps/server/src/modules', moduleId);
+      const serverFilePath = join(modulePath, 'exercise/server.js');
+
+      // Check if module exists
+      if (!existsSync(modulePath)) {
+        return {
+          moduleId,
+          success: false,
+          message: `Module ${moduleId} not found`,
+          executionTime: Date.now() - startTime
+        };
+      }
+
+      // Kill any existing processes on port 3000
+      await this.killProcessOnPort(3000);
+
+      // Write input code to server.js
+      writeFileSync(serverFilePath, inputCode);
+      
+      serverProcess = spawn('node', [serverFilePath]);
+
+      // Wait for server to start
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Server startup timeout'));
+        }, 5000);
+
+        serverProcess.stdout.on('data', (data: Buffer) => {
+          const output = data.toString();
+          serverOutput += output;
+          if (output.includes('Server running') || output.includes('listening')) {
+            clearTimeout(timeout);
+            resolve();
+          }
+        });
+
+        serverProcess.stderr.on('data', (data: Buffer) => {
+          const error = data.toString();
+          serverOutput += error;
+          if (error.includes('EADDRINUSE')) {
+            clearTimeout(timeout);
+            reject(new Error('Port already in use'));
+          }
+        });
+
+        serverProcess.on('error', (error: any) => {
+          clearTimeout(timeout);
+          reject(error);
+        });
+      });
+
+      // Wait a bit more to ensure server is fully started
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      return {
+        moduleId,
+        success: true,
+        message: 'Server started successfully',
+        executionTime: Date.now() - startTime,
+        serverOutput: serverOutput.trim()
+      };
+
+    } catch (error: any) {
+      return {
+        moduleId,
+        success: false,
+        message: 'Server failed to start',
+        executionTime: Date.now() - startTime,
+        error: error.message,
+        serverOutput: serverOutput.trim()
+      };
+    } finally {
+      // Clean up: kill the server process
+      if (serverProcess) {
+        serverProcess.kill('SIGTERM');
+      }
+    }
+  }
+
   static async runTests(moduleId: string, inputCode: string): Promise<TestSuiteResult> {
     const startTime = Date.now();
     const results: TestResult[] = [];

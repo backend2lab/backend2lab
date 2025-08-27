@@ -273,19 +273,8 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
             className="relative min-h-0 border-l border-tactical-border-primary"
             style={{ width: `${100 - splitPosition}%` }}
           >
-            {/* Solution Header */}
-            <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary flex-shrink-0">
-              <div className="flex items-center space-x-4">
-                <span className="text-sm font-medium text-tactical-text-secondary font-tactical">solution.js</span>
-                <span className="text-xs bg-tactical-warning text-white px-2 py-1 rounded font-tactical">Solution</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs text-tactical-text-secondary capitalize font-tactical">javascript</span>
-              </div>
-            </div>
-
             <Editor
-              height="calc(100% - 48px)"
+              height="100%"
               defaultLanguage="javascript"
               value={solution}
               options={{ 

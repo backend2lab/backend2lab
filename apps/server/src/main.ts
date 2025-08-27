@@ -63,6 +63,22 @@ app.post('/api/test/:moduleId', async (req: Request, res: Response) => {
   }
 });
 
+app.post('/api/run/:moduleId', async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required' });
+    }
+    
+    const runResult = await TestRunner.runCode(moduleId, code);
+    res.json(runResult);
+  } catch (error) {
+    res.status(500).json({ error: 'Code execution failed' });
+  }
+});
+
 app.listen(port, host, () => {
   console.log(`Backend2Lab Server running at http://${host}:${port}`);
 });

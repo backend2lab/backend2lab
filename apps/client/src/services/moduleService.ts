@@ -39,8 +39,8 @@ export interface TestResult {
   testName: string;
   passed: boolean;
   error?: string;
-  expected?: any;
-  actual?: any;
+  expected?: unknown;
+  actual?: unknown;
 }
 
 export interface TestSuiteResult {
@@ -50,6 +50,15 @@ export interface TestSuiteResult {
   failedTests: number;
   results: TestResult[];
   executionTime: number;
+}
+
+export interface RunResult {
+  moduleId: string;
+  success: boolean;
+  message: string;
+  executionTime: number;
+  serverOutput?: string;
+  error?: string;
 }
 
 const API_BASE_URL = 'http://localhost:4000/api';
@@ -82,6 +91,22 @@ export class ModuleService {
     
     if (!response.ok) {
       throw new Error(`Failed to run tests: ${response.statusText}`);
+    }
+    
+    return response.json();
+  }
+
+  static async runCode(moduleId: string, code: string): Promise<RunResult> {
+    const response = await fetch(`${API_BASE_URL}/run/${moduleId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to run code: ${response.statusText}`);
     }
     
     return response.json();

@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "nx serve client",
+    "dev": "concurrently \"nx serve client\" \"npm run server:dev\"",
     "build": "nx build client",
     "lint": "nx lint client",
     "preview": "nx preview client",
@@ -44,6 +44,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.21",
     "chai": "^4.3.7",
+    "concurrently": "^9.2.1",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-react-hooks": "^5.2.0",

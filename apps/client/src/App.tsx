@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult } from "./services/moduleService.js";
+import type { ModuleContent, TestSuiteResult, RunResult } from "./services/moduleService.js";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -45,11 +45,23 @@ export default function App() {
     setIsRunning(true);
     setOutput("Running server...\n");
     
-    // Simulate server execution
-    setTimeout(() => {
-      setOutput("✅ Server started successfully!\n\nListening on port 3000\nGET / → { \"message\": \"Hello, World!\" }\n\nYour server is running correctly!");
+    try {
+      // Send code to server for execution
+      const result: RunResult = await ModuleService.runCode(currentModuleId, code);
+      
+      if (result.success) {
+        setOutput(`✅ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
+      } else {
+        setOutput(`❌ Server failed to start.\n\n--- Server Output ---\n${result.serverOutput || 'No server output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
+      }
+      
+      // Clear test results when just running code
+      setTestResults(null);
+    } catch (err) {
+      setOutput(`❌ Server execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
       setIsRunning(false);
-    }, 2000);
+    }
   };
 
   const handleSubmit = async () => {
@@ -164,11 +176,11 @@ export default function App() {
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-tactical-background">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-tactical-background overflow-hidden">
         {/* Left Panel - Learning Content */}
-        <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col">
+        <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col min-h-0">
           {/* Tab Navigation */}
-          <div className="border-b border-tactical-border-primary bg-tactical-surface">
+          <div className="border-b border-tactical-border-primary bg-tactical-surface flex-shrink-0">
             <div className="flex">
               {tabs.map((tab) => (
                 <button
@@ -187,7 +199,7 @@ export default function App() {
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto bg-tactical-background">
+          <div className="flex-1 overflow-y-auto bg-tactical-background min-h-0">
             {activeTab === 'Lab' && (
               <div className="max-w-4xl mx-auto p-6 space-y-8">
                 <MarkdownRenderer content={moduleContent.labContent} />
@@ -202,15 +214,17 @@ export default function App() {
         </div>
 
         {/* Right Panel - Code Editor */}
-        <div className="w-full lg:w-1/2 bg-tactical-background flex flex-col">
-          <CodeEditor 
-            code={code} 
-            onCodeChange={setCode}
-            testCases={moduleContent.exerciseContent.editorFiles.test}
-          />
+        <div className="w-full lg:w-1/2 bg-tactical-background flex flex-col min-h-0">
+          <div className="flex-1 min-h-0">
+            <CodeEditor 
+              code={code} 
+              onCodeChange={setCode}
+              testCases={moduleContent.exerciseContent.editorFiles.test}
+            />
+          </div>
           
           {/* Output Panel */}
-          <div className="border-t border-tactical-border-primary bg-tactical-surface p-4">
+          <div className="border-t border-tactical-border-primary bg-tactical-surface p-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-tactical-text-primary">Output</h3>
               <div className="flex space-x-2">

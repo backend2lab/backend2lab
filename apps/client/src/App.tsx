@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult } from "./services/moduleService.js";
+import type { ModuleContent, TestSuiteResult, RunResult } from "./services/moduleService.js";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -45,11 +45,23 @@ export default function App() {
     setIsRunning(true);
     setOutput("Running server...\n");
     
-    // Simulate server execution
-    setTimeout(() => {
-      setOutput("✅ Server started successfully!\n\nListening on port 3000\nGET / → { \"message\": \"Hello, World!\" }\n\nYour server is running correctly!");
+    try {
+      // Send code to server for execution
+      const result: RunResult = await ModuleService.runCode(currentModuleId, code);
+      
+      if (result.success) {
+        setOutput(`✅ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
+      } else {
+        setOutput(`❌ Server failed to start.\n\n--- Server Output ---\n${result.serverOutput || 'No server output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
+      }
+      
+      // Clear test results when just running code
+      setTestResults(null);
+    } catch (err) {
+      setOutput(`❌ Server execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
       setIsRunning(false);
-    }, 2000);
+    }
   };
 
   const handleSubmit = async () => {

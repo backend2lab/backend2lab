@@ -39,6 +39,8 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   const [showSolution, setShowSolution] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50); // percentage
   const [serverSolutionState, setServerSolutionState] = useState(false); // track solution state for server tab
+  const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 });
+  const [selectionInfo, setSelectionInfo] = useState('');
 
   // Update files when props change
   useEffect(() => {
@@ -251,6 +253,27 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
             className="rounded-none"
             onMount={(editor) => {
               editor.focus();
+              
+              // Track cursor position changes
+              editor.onDidChangeCursorPosition((e: any) => {
+                setCursorPosition({
+                  line: e.position.lineNumber,
+                  column: e.position.column
+                });
+              });
+              
+              // Track selection changes
+              editor.onDidChangeCursorSelection((e: any) => {
+                const selection = e.selection;
+                if (selection.startLineNumber === selection.endLineNumber && 
+                    selection.startColumn === selection.endColumn) {
+                  setSelectionInfo('');
+                } else {
+                  const lines = selection.endLineNumber - selection.startLineNumber + 1;
+                  const chars = selection.endColumn - selection.startColumn;
+                  setSelectionInfo(` ${lines} lines, ${chars} chars`);
+                }
+              });
             }}
           />
         </div>
@@ -357,7 +380,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {/* Editor Footer */}
       <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical flex-shrink-0">
         <div className="flex items-center space-x-4">
-          <span>Ln 1, Col 1</span>
+          <span>Ln {cursorPosition.line}, Col {cursorPosition.column}{selectionInfo}</span>
           <span>Spaces: 2</span>
           <span>UTF-8</span>
         </div>

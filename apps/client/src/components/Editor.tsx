@@ -376,7 +376,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
                   showSolution 
                     ? 'bg-tactical-error text-white hover:bg-red-600' 
-                    : 'bg-tactical-warning text-white hover:bg-yellow-600'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
                 {showSolution ? 'Hide Solution' : 'Show Solution'}

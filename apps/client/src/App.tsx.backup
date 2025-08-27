@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import CodeEditor from "./components/Editor";
-import MarkdownRenderer from "./components/MarkdownRenderer";
+import { StepCard } from "./components/StepCard";
+import { CodeDisplay } from "./components/CodeDisplay";
 import { ModuleService } from "./services/moduleService.js";
 import type { ModuleContent, TestSuiteResult } from "./services/moduleService.js";
+import { MarkdownParser } from "./utils/markdownParser";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -190,12 +192,140 @@ export default function App() {
           <div className="flex-1 overflow-y-auto bg-tactical-background">
             {activeTab === 'Lab' && (
               <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.labContent} />
+                {(() => {
+                  try {
+                    const parsed = MarkdownParser.parse(moduleContent.labContent);
+                    
+                    return (
+                      <>
+                        {/* Welcome section */}
+                        {parsed.metadata.title && parsed.metadata.description && (
+                          <div className="mb-8">
+                            <h1 className="text-2xl font-bold text-tactical-text-primary mb-4">
+                              {parsed.metadata.title}
+                            </h1>
+                            <p className="text-tactical-text-secondary text-lg">
+                              {parsed.metadata.description}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {/* Sections */}
+                        {parsed.sections.map((section) => {
+                          const additionalContent = (
+                            <div className="space-y-4">
+                              {section.content && (
+                                <div 
+                                  className="prose prose-invert max-w-none"
+                                  dangerouslySetInnerHTML={{ 
+                                    __html: section.content
+                                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                      .replace(/`(.*?)`/g, '<code class="bg-neutral-800 px-1 py-0.5 rounded text-sm">$1</code>')
+                                      .replace(/\n/g, '<br>')
+                                  }}
+                                />
+                              )}
+                              {section.codeBlock && (
+                                <CodeDisplay
+                                  code={section.codeBlock.code}
+                                  language={section.codeBlock.language}
+                                  showLineNumbers={section.codeBlock.showLineNumbers}
+                                />
+                              )}
+                            </div>
+                          );
+
+                          return (
+                            <StepCard
+                              key={section.id}
+                              stepNumber={section.stepNumber || 1}
+                              title={section.title}
+                              description={section.description}
+                              additionalContent={additionalContent}
+                            />
+                          );
+                        })}
+                      </>
+                    );
+                  } catch (err) {
+                    console.error('Error parsing lab content:', err);
+                    return (
+                      <div className="text-red-500">
+                        Error parsing content. Please check the console for details.
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             )}
             {activeTab === 'Exercise' && (
               <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.exerciseContent.readme} />
+                {(() => {
+                  try {
+                    const parsed = MarkdownParser.parse(moduleContent.exerciseContent.readme);
+                    
+                    return (
+                      <>
+                        {/* Welcome section */}
+                        {parsed.metadata.title && parsed.metadata.description && (
+                          <div className="mb-8">
+                            <h1 className="text-2xl font-bold text-tactical-text-primary mb-4">
+                              {parsed.metadata.title}
+                            </h1>
+                            <p className="text-tactical-text-secondary text-lg">
+                              {parsed.metadata.description}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {/* Sections */}
+                        {parsed.sections.map((section) => {
+                          const additionalContent = (
+                            <div className="space-y-4">
+                              {section.content && (
+                                <div 
+                                  className="prose prose-invert max-w-none"
+                                  dangerouslySetInnerHTML={{ 
+                                    __html: section.content
+                                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                      .replace(/`(.*?)`/g, '<code class="bg-neutral-800 px-1 py-0.5 rounded text-sm">$1</code>')
+                                      .replace(/\n/g, '<br>')
+                                  }}
+                                />
+                              )}
+                              {section.codeBlock && (
+                                <CodeDisplay
+                                  code={section.codeBlock.code}
+                                  language={section.codeBlock.language}
+                                  showLineNumbers={section.codeBlock.showLineNumbers}
+                                />
+                              )}
+                            </div>
+                          );
+
+                          return (
+                            <StepCard
+                              key={section.id}
+                              stepNumber={section.stepNumber || 1}
+                              title={section.title}
+                              description={section.description}
+                              additionalContent={additionalContent}
+                            />
+                          );
+                        })}
+                      </>
+                    );
+                  } catch (err) {
+                    console.error('Error parsing exercise content:', err);
+                    return (
+                      <div className="text-red-500">
+                        Error parsing content. Please check the console for details.
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             )}
           </div>

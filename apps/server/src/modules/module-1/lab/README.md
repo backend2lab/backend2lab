@@ -4,7 +4,7 @@ Welcome to your first step in backend API development! 🎉
 
 In this module, you'll learn the fundamentals of APIs, HTTP, and how to build your first server.
 
-## 🌐 What is an API?
+## 1. What is an API?
 
 An **API (Application Programming Interface)** allows two systems to communicate. In web development, APIs use **HTTP** protocol.
 
@@ -12,7 +12,9 @@ An **API (Application Programming Interface)** allows two systems to communicate
 - **Client**: `GET /hello`
 - **Server**: responds with `{ "message": "Hello, World!" }`
 
-## 🛠️ HTTP Basics
+APIs are like waiters in a restaurant - they take your request, communicate with the kitchen (server), and bring back your food (response).
+
+## 2. HTTP Basics
 
 ### HTTP Methods:
 - **GET** → retrieve data
@@ -26,9 +28,9 @@ An **API (Application Programming Interface)** allows two systems to communicate
 - **404 Not Found** → Resource not found
 - **500 Internal Server Error** → Something broke
 
-## 🚀 Setting up a Node.js Server
+## 3. Setting up a Node.js Server
 
-### 1. Basic HTTP Server Structure
+### Basic HTTP Server Structure
 
 ```javascript
 const http = require('http');
@@ -42,7 +44,7 @@ server.listen(3000, () => {
 });
 ```
 
-### 2. Request Handling
+### Request Handling
 
 ```javascript
 const server = http.createServer((req, res) => {
@@ -57,7 +59,7 @@ const server = http.createServer((req, res) => {
 });
 ```
 
-### 3. Key Concepts
+### Key Concepts
 
 - **req.method**: HTTP method (GET, POST, etc.)
 - **req.url**: Requested URL path
@@ -65,7 +67,7 @@ const server = http.createServer((req, res) => {
 - **res.end()**: Send response and close connection
 - **JSON.stringify()**: Convert objects to JSON strings
 
-## 📝 Best Practices
+## 4. Best Practices
 
 1. **Always set Content-Type header** for JSON responses
 2. **Handle all routes** - return 404 for unknown paths
@@ -73,7 +75,7 @@ const server = http.createServer((req, res) => {
 4. **Validate request methods** - only allow what you need
 5. **Error handling** - graceful error responses
 
-## 🔗 Next Steps
+## 5. Next Steps
 
 In the Exercise section, you'll build your own Hello World server that:
 - Responds to GET requests at the root path

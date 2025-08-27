@@ -31,9 +31,9 @@ export function StepCard({
         <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-tactical-primary text-white font-semibold text-sm">
           {stepNumber}
         </div>
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
           <div>
-            <h3 className="text-xl font-semibold text-tactical-text-primary mb-2 font-tactical">
+            <h3 className="text-xl font-semibold text-tactical-text-primary mb-3 font-tactical">
               {title}
             </h3>
             <p className="text-tactical-text-secondary leading-relaxed font-tactical">
@@ -42,7 +42,7 @@ export function StepCard({
           </div>
 
           {additionalContent && (
-            <div className="text-tactical-text-secondary">{additionalContent}</div>
+            <div className="text-tactical-text-secondary mt-6 space-y-4">{additionalContent}</div>
           )}
 
           {codeBlock && (

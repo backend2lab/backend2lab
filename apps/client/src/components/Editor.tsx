@@ -383,12 +383,6 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               </button>
             )}
           </div>
-          <button 
-            onClick={() => runCode(activeFile.content)}
-            className="btn-tactical-primary"
-          >
-            Run Code
-          </button>
         </div>
       )}
     </div>

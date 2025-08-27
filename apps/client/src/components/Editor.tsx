@@ -38,6 +38,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
 
   const [showSolution, setShowSolution] = useState(false);
   const [splitPosition, setSplitPosition] = useState(50); // percentage
+  const [serverSolutionState, setServerSolutionState] = useState(false); // track solution state for server tab
 
   // Update files when props change
   useEffect(() => {
@@ -55,10 +56,22 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   const activeFile = files.find(file => file.isActive) || files[0];
 
   const handleTabClick = (fileId: string) => {
+    // Save current solution state if we're on server tab
+    if (activeFile.id === 'server.js') {
+      setServerSolutionState(showSolution);
+    }
+    
     setFiles(files.map(file => ({
       ...file,
       isActive: file.id === fileId
     })));
+    
+    // Update solution visibility based on the new tab
+    if (fileId === 'server.js') {
+      setShowSolution(serverSolutionState);
+    } else {
+      setShowSolution(false);
+    }
   };
 
   const handleCodeChange = (value: string | undefined) => {
@@ -78,7 +91,9 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   };
 
   const handleShowSolution = () => {
-    setShowSolution(!showSolution);
+    const newState = !showSolution;
+    setShowSolution(newState);
+    setServerSolutionState(newState);
   };
 
   const handleSplitDrag = (e: React.MouseEvent) => {
@@ -155,7 +170,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         {/* Main Editor */}
         <div 
           className="relative min-h-0"
-          style={{ width: showSolution ? `${splitPosition}%` : '100%' }}
+          style={{ width: (showSolution && activeFile.id === 'server.js') ? `${splitPosition}%` : '100%' }}
         >
           <Editor
             height="100%"
@@ -241,7 +256,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         </div>
 
         {/* Split Resizer */}
-        {showSolution && (
+        {showSolution && activeFile.id === 'server.js' && (
           <div 
             className="w-1 bg-tactical-border-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
             onMouseDown={handleSplitDrag}
@@ -253,7 +268,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         )}
 
         {/* Solution Editor */}
-        {showSolution && solution && (
+        {showSolution && solution && activeFile.id === 'server.js' && (
           <div 
             className="relative min-h-0 border-l border-tactical-border-primary"
             style={{ width: `${100 - splitPosition}%` }}
@@ -366,7 +381,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {!readOnly && runCode && (
         <div className="flex justify-between items-center p-4 bg-tactical-surface border-t border-tactical-border-primary">
           <div className="flex items-center space-x-2">
-            {solution && (
+            {solution && activeFile.id === 'server.js' && (
               <button 
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${

@@ -13,11 +13,12 @@ interface Props {
   code: string;
   onCodeChange: (code: string) => void;
   testCases: string;
+  solution?: string;
   runCode?: (code: string) => void;
   readOnly?: boolean;
 }
 
-export default function CodeEditor({ code, onCodeChange, testCases, runCode, readOnly }: Props) {
+export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly }: Props) {
   const [files, setFiles] = useState<FileTab[]>([
     {
       id: 'server.js',
@@ -35,6 +36,10 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
     }
   ]);
 
+  const [showSolution, setShowSolution] = useState(false);
+  const [splitPosition, setSplitPosition] = useState(50); // percentage
+  const [serverSolutionState, setServerSolutionState] = useState(false); // track solution state for server tab
+
   // Update files when props change
   useEffect(() => {
     setFiles(prevFiles => 
@@ -51,10 +56,22 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
   const activeFile = files.find(file => file.isActive) || files[0];
 
   const handleTabClick = (fileId: string) => {
+    // Save current solution state if we're on server tab
+    if (activeFile.id === 'server.js') {
+      setServerSolutionState(showSolution);
+    }
+    
     setFiles(files.map(file => ({
       ...file,
       isActive: file.id === fileId
     })));
+    
+    // Update solution visibility based on the new tab
+    if (fileId === 'server.js') {
+      setShowSolution(serverSolutionState);
+    } else {
+      setShowSolution(false);
+    }
   };
 
   const handleCodeChange = (value: string | undefined) => {
@@ -71,6 +88,31 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
     if (activeFile.id === 'server.js') {
       onCodeChange(newValue);
     }
+  };
+
+  const handleShowSolution = () => {
+    const newState = !showSolution;
+    setShowSolution(newState);
+    setServerSolutionState(newState);
+  };
+
+  const handleSplitDrag = (e: React.MouseEvent) => {
+    const container = e.currentTarget.parentElement;
+    if (!container) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
+      setSplitPosition(Math.max(20, Math.min(80, newPosition)));
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   const getFileIcon = (language: string) => {
@@ -123,90 +165,193 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
         </div>
       </div>
 
-      {/* Monaco Editor Container */}
-      <div className="flex-1 relative min-h-0">
-        <Editor
-          height="100%"
-          defaultLanguage={activeFile.language}
-          value={activeFile.content}
-          onChange={handleCodeChange}
-          options={{ 
-            readOnly: readOnly || false,
-            minimap: { enabled: false },
-            fontSize: 14,
-            lineHeight: 20,
-            fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
-            lineNumbers: "on",
-            roundedSelection: false,
-            scrollBeyondLastLine: false,
-            automaticLayout: true,
-            theme: "vs-dark",
-            scrollbar: {
-              vertical: 'visible',
-              horizontal: 'visible',
-              verticalScrollbarSize: 12,
-              horizontalScrollbarSize: 12,
-              useShadows: false,
-            },
-            fixedOverflowWidgets: true,
-            overviewRulerBorder: false,
-            hideCursorInOverviewRuler: true,
-            overviewRulerLanes: 0,
-            lineDecorationsWidth: 10,
-            glyphMargin: false,
-            folding: true,
-            foldingStrategy: 'indentation',
-            lineNumbersMinChars: 3,
-            renderLineHighlight: 'all',
-            selectOnLineNumbers: true,
-            wordWrap: 'on',
-            wrappingStrategy: 'advanced',
-            suggestOnTriggerCharacters: true,
-            acceptSuggestionOnEnter: 'on',
-            tabCompletion: 'on',
-            wordBasedSuggestions: 'on',
-            parameterHints: {
-              enabled: true,
-              cycle: true,
-            },
-            autoIndent: 'full',
-            formatOnPaste: true,
-            formatOnType: true,
-            dragAndDrop: true,
-            links: true,
-            colorDecorators: true,
-            lightbulb: {
-              enabled: true,
-            },
-            codeActionsOnSave: {
-              'source.fixAll': true,
-              'source.organizeImports': true,
-            },
-            bracketPairColorization: {
-              enabled: true,
-            },
-            guides: {
-              bracketPairs: true,
-              indentation: true,
-            },
-            renderWhitespace: 'selection',
-            cursorBlinking: 'smooth',
-            cursorSmoothCaretAnimation: 'on',
-            smoothScrolling: true,
-            mouseWheelScrollSensitivity: 1,
-            fastScrollSensitivity: 5,
-            padding: {
-              top: 8,
-              bottom: 8,
-            },
-          }}
-          theme="vs-dark"
-          className="rounded-none"
-          onMount={(editor) => {
-            // Focus the editor
-            editor.focus();
-          }}
-        />
+      {/* Split Editor Container */}
+      <div className="flex-1 relative min-h-0 flex">
+        {/* Main Editor */}
+        <div 
+          className="relative min-h-0"
+          style={{ width: (showSolution && activeFile.id === 'server.js') ? `${splitPosition}%` : '100%' }}
+        >
+          <Editor
+            height="100%"
+            defaultLanguage={activeFile.language}
+            value={activeFile.content}
+            onChange={handleCodeChange}
+            options={{ 
+              readOnly: readOnly || false,
+              minimap: { enabled: false },
+              fontSize: 14,
+              lineHeight: 20,
+              fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+              lineNumbers: "on",
+              roundedSelection: false,
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              theme: "vs-dark",
+              scrollbar: {
+                vertical: 'visible',
+                horizontal: 'visible',
+                verticalScrollbarSize: 12,
+                horizontalScrollbarSize: 12,
+                useShadows: false,
+              },
+              fixedOverflowWidgets: true,
+              overviewRulerBorder: false,
+              hideCursorInOverviewRuler: true,
+              overviewRulerLanes: 0,
+              lineDecorationsWidth: 10,
+              glyphMargin: false,
+              folding: true,
+              foldingStrategy: 'indentation',
+              lineNumbersMinChars: 3,
+              renderLineHighlight: 'all',
+              selectOnLineNumbers: true,
+              wordWrap: 'on',
+              wrappingStrategy: 'advanced',
+              suggestOnTriggerCharacters: true,
+              acceptSuggestionOnEnter: 'on',
+              tabCompletion: 'on',
+              wordBasedSuggestions: 'on',
+              parameterHints: {
+                enabled: true,
+                cycle: true,
+              },
+              autoIndent: 'full',
+              formatOnPaste: true,
+              formatOnType: true,
+              dragAndDrop: true,
+              links: true,
+              colorDecorators: true,
+              lightbulb: {
+                enabled: true,
+              },
+              codeActionsOnSave: {
+                'source.fixAll': true,
+                'source.organizeImports': true,
+              },
+              bracketPairColorization: {
+                enabled: true,
+              },
+              guides: {
+                bracketPairs: true,
+                indentation: true,
+              },
+              renderWhitespace: 'selection',
+              cursorBlinking: 'smooth',
+              cursorSmoothCaretAnimation: 'on',
+              smoothScrolling: true,
+              mouseWheelScrollSensitivity: 1,
+              fastScrollSensitivity: 5,
+              padding: {
+                top: 8,
+                bottom: 8,
+              },
+            }}
+            theme="vs-dark"
+            className="rounded-none"
+            onMount={(editor) => {
+              editor.focus();
+            }}
+          />
+        </div>
+
+        {/* Split Resizer */}
+        {showSolution && activeFile.id === 'server.js' && (
+          <div 
+            className="w-1 bg-tactical-border-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
+            onMouseDown={handleSplitDrag}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-1 h-8 bg-tactical-border-primary rounded-full"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Solution Editor */}
+        {showSolution && solution && activeFile.id === 'server.js' && (
+          <div 
+            className="relative min-h-0 border-l border-tactical-border-primary"
+            style={{ width: `${100 - splitPosition}%` }}
+          >
+            <Editor
+              height="100%"
+              defaultLanguage="javascript"
+              value={solution}
+              options={{ 
+                readOnly: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                lineHeight: 20,
+                fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+                lineNumbers: "on",
+                roundedSelection: false,
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+                theme: "vs-dark",
+                scrollbar: {
+                  vertical: 'visible',
+                  horizontal: 'visible',
+                  verticalScrollbarSize: 12,
+                  horizontalScrollbarSize: 12,
+                  useShadows: false,
+                },
+                fixedOverflowWidgets: true,
+                overviewRulerBorder: false,
+                hideCursorInOverviewRuler: true,
+                overviewRulerLanes: 0,
+                lineDecorationsWidth: 10,
+                glyphMargin: false,
+                folding: true,
+                foldingStrategy: 'indentation',
+                lineNumbersMinChars: 3,
+                renderLineHighlight: 'all',
+                selectOnLineNumbers: true,
+                wordWrap: 'on',
+                wrappingStrategy: 'advanced',
+                suggestOnTriggerCharacters: true,
+                acceptSuggestionOnEnter: 'on',
+                tabCompletion: 'on',
+                wordBasedSuggestions: 'on',
+                parameterHints: {
+                  enabled: true,
+                  cycle: true,
+                },
+                autoIndent: 'full',
+                formatOnPaste: true,
+                formatOnType: true,
+                dragAndDrop: true,
+                links: true,
+                colorDecorators: true,
+                lightbulb: {
+                  enabled: true,
+                },
+                codeActionsOnSave: {
+                  'source.fixAll': true,
+                  'source.organizeImports': true,
+                },
+                bracketPairColorization: {
+                  enabled: true,
+                },
+                guides: {
+                  bracketPairs: true,
+                  indentation: true,
+                },
+                renderWhitespace: 'selection',
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: 'on',
+                smoothScrolling: true,
+                mouseWheelScrollSensitivity: 1,
+                fastScrollSensitivity: 5,
+                padding: {
+                  top: 8,
+                  bottom: 8,
+                },
+              }}
+              theme="vs-dark"
+              className="rounded-none"
+            />
+          </div>
+        )}
       </div>
 
       {/* Editor Footer */}
@@ -223,13 +368,21 @@ export default function CodeEditor({ code, onCodeChange, testCases, runCode, rea
       </div>
 
       {!readOnly && runCode && (
-        <div className="flex justify-end p-4 bg-tactical-surface border-t border-tactical-border-primary">
-          <button 
-            onClick={() => runCode(activeFile.content)}
-            className="btn-tactical-primary"
-          >
-            Run Code
-          </button>
+        <div className="flex justify-between items-center p-4 bg-tactical-surface border-t border-tactical-border-primary">
+          <div className="flex items-center space-x-2">
+            {solution && activeFile.id === 'server.js' && (
+              <button 
+                onClick={handleShowSolution}
+                className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                  showSolution 
+                    ? 'bg-tactical-error text-white hover:bg-red-600' 
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                }`}
+              >
+                {showSolution ? 'Hide Solution' : 'Show Solution'}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

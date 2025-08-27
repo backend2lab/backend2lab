@@ -60,7 +60,7 @@
 
   /* Button Components */
   .btn-tactical-primary {
-    @apply bg-tactical-primary text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-orange-600 focus:outline-none font-tactical;
+    @apply bg-tactical-primary text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-blue-600 focus:outline-none font-tactical;
   }
 
   .btn-tactical-secondary {
@@ -361,7 +361,7 @@
   }
 
   .test-case-header {
-    @apply text-tactical-primary font-semibold border-l-4 border-tactical-primary pl-4 bg-tactical-surface/30 py-2 rounded-r mb-4;
+    @apply text-tactical-accent font-semibold border-l-4 border-tactical-accent pl-4 bg-tactical-surface/30 py-2 rounded-r mb-4;
   }
 
   .test-case-details {
@@ -377,7 +377,7 @@
   }
 
   .prose code {
-    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-border-primary;
+    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-highlight border border-tactical-border-primary;
   }
 
   .prose pre {
@@ -480,7 +480,7 @@
   }
 
   .prose blockquote {
-    @apply border-l-4 border-tactical-primary pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4;
+    @apply border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4;
   }
 
   .prose a {

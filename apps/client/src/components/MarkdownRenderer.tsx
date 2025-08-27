@@ -181,7 +181,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               // Check if this is a test case heading
                               if (text.includes('Test Case')) {
                                 return (
-                                  <h3 className="text-lg font-semibold text-tactical-primary mb-4 mt-6 first:mt-0 border-l-4 border-tactical-primary pl-4 bg-tactical-surface/30 py-2 rounded-r">
+                                  <h3 className="text-lg font-semibold text-tactical-accent mb-4 mt-6 first:mt-0 border-l-4 border-tactical-accent pl-4 bg-tactical-surface/30 py-2 rounded-r">
                                     {children}
                                   </h3>
                                 );
@@ -233,14 +233,14 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               // Special styling for test case details
                               if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
                                 return (
-                                  <code className="bg-tactical-primary/20 px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-primary/30 font-semibold">
+                                  <code className="bg-tactical-accent/20 px-2 py-1 rounded text-sm font-mono text-tactical-accent border border-tactical-accent/30 font-semibold">
                                     {children}
                                   </code>
                                 );
                               }
                               
                               return (
-                                <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-border-primary">
+                                <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-highlight border border-tactical-border-primary">
                                   {children}
                                 </code>
                               );
@@ -305,7 +305,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               );
                             },
                             blockquote: ({ children }) => (
-                              <blockquote className="border-l-4 border-tactical-primary pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-2 rounded-r">
+                              <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-2 rounded-r">
                                 {children}
                               </blockquote>
                             ),
@@ -344,9 +344,20 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
           h2: ({ children }) => (
             <h2 className="text-2xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0">{children}</h2>
           ),
-          h3: ({ children }) => (
-            <h3 className="text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
-          ),
+          h3: ({ children }) => {
+            const text = String(children);
+            // Check if this is a test case heading
+            if (text.includes('Test Case')) {
+              return (
+                <h3 className="text-xl font-semibold text-tactical-accent mb-4 mt-6 first:mt-0 border-l-4 border-tactical-accent pl-4 bg-tactical-surface/30 py-2 rounded-r">
+                  {children}
+                </h3>
+              );
+            }
+            return (
+              <h3 className="text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
+            );
+          },
         p: ({ children }) => (
             <p className="text-tactical-text-secondary mb-4 leading-relaxed">{children}</p>
           ),
@@ -367,8 +378,19 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
         ),
                   code: ({ children, className }) => {
             const language = className?.replace('language-', '') || 'text';
+            const text = String(children);
+            
+            // Special styling for test case details
+            if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
+              return (
+                <code className="bg-tactical-accent/20 px-2 py-1 rounded text-sm font-mono text-tactical-accent border border-tactical-accent/30 font-semibold">
+                  {children}
+                </code>
+              );
+            }
+            
             return (
-              <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-border-primary">
+              <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-highlight border border-tactical-border-primary">
                 {children}
               </code>
             );
@@ -414,7 +436,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             );
           },
         blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-tactical-primary pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4">
+            <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4">
             {children}
           </blockquote>
         ),

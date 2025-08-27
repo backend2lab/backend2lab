@@ -9,15 +9,17 @@ export default {
       colors: {
         // Tactical Operations Design System Colors
         tactical: {
-          primary: '#f97316', // orange-500 - Primary brand color
+          primary: '#3b82f6', // blue-500 - Primary brand color (reduced orange)
+          accent: '#10b981', // emerald-500 - Accent color for highlights
+          highlight: '#8b5cf6', // violet-500 - Highlight color for special elements
           background: '#000000', // black - Main background
           surface: '#171717', // neutral-900 - Card backgrounds
           'text-primary': '#ffffff', // white - Primary text
           'text-secondary': '#737373', // neutral-500 - Secondary text
           'border-primary': '#404040', // neutral-700 - Card borders
           'border-secondary': '#262626', // neutral-800 - Subtle separators
-          success: '#ffffff', // white - Active status
-          warning: '#737373', // neutral-500 - Standby status
+          success: '#10b981', // emerald-500 - Success states
+          warning: '#f59e0b', // amber-500 - Warning states
           error: '#ef4444', // red-500 - Error states
         },
         // Legacy colors for backward compatibility
@@ -34,10 +36,10 @@ export default {
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
-          500: '#f97316', // Updated to tactical primary
-          600: '#ea580c',
-          700: '#c2410c',
-          900: '#7c2d12',
+          500: '#3b82f6', // Updated to tactical primary (blue)
+          600: '#2563eb',
+          700: '#1d4ed8',
+          900: '#1e3a8a',
         },
         success: {
           50: '#f0fdf4',

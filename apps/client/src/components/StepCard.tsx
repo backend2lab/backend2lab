@@ -42,7 +42,7 @@ export function StepCard({
           </div>
 
           {additionalContent && (
-            <div className="text-tactical-text-secondary mt-6">{additionalContent}</div>
+            <div className="text-tactical-text-secondary mt-6 space-y-4">{additionalContent}</div>
           )}
 
           {codeBlock && (

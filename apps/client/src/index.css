@@ -352,7 +352,20 @@
   }
 
   .prose li {
-    @apply text-tactical-text-secondary;
+    @apply text-tactical-text-secondary mb-4;
+  }
+
+  /* Test Case specific styles */
+  .test-case-section {
+    @apply bg-tactical-surface/10 border border-tactical-border-primary/20 rounded-lg p-4 mb-6;
+  }
+
+  .test-case-header {
+    @apply text-tactical-primary font-semibold border-l-4 border-tactical-primary pl-4 bg-tactical-surface/30 py-2 rounded-r mb-4;
+  }
+
+  .test-case-details {
+    @apply bg-tactical-surface/20 p-4 rounded-lg border border-tactical-border-primary/30 space-y-3;
   }
 
   .prose strong {

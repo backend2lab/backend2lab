@@ -67,12 +67,17 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
 
         // Start new section
         const title = line.replace(/^#+\s*/, '');
+        // Look for numbered sections with or without emojis
         const stepMatch = title.match(/^(\d+)\.\s*(.+)$/);
+        // Also look for sections that start with numbers followed by emoji and text
+        const emojiStepMatch = title.match(/^(\d+)\.\s*[^\w\s]+\s*(.+)$/);
+        
+        const matchedStep = stepMatch || emojiStepMatch;
         
         currentSection = {
           id: `section-${sections.length + 1}`,
-          title: stepMatch ? stepMatch[2] : title,
-          stepNumber: stepMatch ? parseInt(stepMatch[1]) : sections.length + 1
+          title: matchedStep ? matchedStep[2] : title,
+          stepNumber: matchedStep ? parseInt(matchedStep[1]) : sections.length + 1
         };
         currentContentBlocks = [];
         currentTextContent = [];
@@ -171,21 +176,50 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             h2: ({ children }) => (
                               <h2 className="text-xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0">{children}</h2>
                             ),
-                            h3: ({ children }) => (
-                              <h3 className="text-lg font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
-                            ),
+                            h3: ({ children }) => {
+                              const text = String(children);
+                              // Check if this is a test case heading
+                              if (text.includes('Test Case')) {
+                                return (
+                                  <h3 className="text-lg font-semibold text-tactical-primary mb-4 mt-6 first:mt-0 border-l-4 border-tactical-primary pl-4 bg-tactical-surface/30 py-2 rounded-r">
+                                    {children}
+                                  </h3>
+                                );
+                              }
+                              return (
+                                <h3 className="text-lg font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
+                              );
+                            },
                             p: ({ children }) => (
                               <p className="text-tactical-text-secondary mb-3 leading-relaxed">{children}</p>
                             ),
-                            ul: ({ children }) => (
-                              <ul className="list-disc list-inside space-y-1 text-tactical-text-secondary mb-3">{children}</ul>
-                            ),
+                            ul: ({ children }) => {
+                              // Check if this is a test cases list by looking at the parent context
+                              return (
+                                <ul className="list-disc list-inside space-y-3 text-tactical-text-secondary mb-6 bg-tactical-surface/20 p-4 rounded-lg border border-tactical-border-primary/30">
+                                  {children}
+                                </ul>
+                              );
+                            },
                             ol: ({ children }) => (
-                              <ol className="list-decimal list-inside space-y-1 text-tactical-text-secondary mb-3">{children}</ol>
+                              <ol className="list-decimal list-inside space-y-2 text-tactical-text-secondary mb-4">{children}</ol>
                             ),
-                            li: ({ children }) => (
-                              <li className="text-tactical-text-secondary">{children}</li>
-                            ),
+                            li: ({ children }) => {
+                              const text = String(children);
+                              // Check if this list item contains test case details
+                              if (text.includes('Request:') || text.includes('Expected Response:') || text.includes('Status Code:') || text.includes('Headers:')) {
+                                return (
+                                  <li className="text-tactical-text-secondary mb-3 leading-relaxed">
+                                    <div className="flex flex-col space-y-1">
+                                      {children}
+                                    </div>
+                                  </li>
+                                );
+                              }
+                              return (
+                                <li className="text-tactical-text-secondary mb-2">{children}</li>
+                              );
+                            },
                             strong: ({ children }) => (
                               <strong className="font-semibold text-tactical-text-primary">{children}</strong>
                             ),
@@ -194,6 +228,17 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             ),
                             code: ({ children, className }) => {
                               const language = className?.replace('language-', '') || 'text';
+                              const text = String(children);
+                              
+                              // Special styling for test case details
+                              if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
+                                return (
+                                  <code className="bg-tactical-primary/20 px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-primary/30 font-semibold">
+                                    {children}
+                                  </code>
+                                );
+                              }
+                              
                               return (
                                 <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-primary border border-tactical-border-primary">
                                   {children}
@@ -306,13 +351,13 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             <p className="text-tactical-text-secondary mb-4 leading-relaxed">{children}</p>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc list-inside space-y-2 text-tactical-text-secondary mb-4">{children}</ul>
+            <ul className="list-disc list-inside space-y-3 text-tactical-text-secondary mb-5">{children}</ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal list-inside space-y-2 text-tactical-text-secondary mb-4">{children}</ol>
+            <ol className="list-decimal list-inside space-y-3 text-tactical-text-secondary mb-5">{children}</ol>
           ),
           li: ({ children }) => (
-            <li className="text-tactical-text-secondary">{children}</li>
+            <li className="text-tactical-text-secondary mb-5">{children}</li>
         ),
         strong: ({ children }) => (
             <strong className="font-semibold text-tactical-text-primary">{children}</strong>

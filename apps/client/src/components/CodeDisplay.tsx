@@ -24,7 +24,7 @@ export function CodeDisplay({
   const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + padding);
 
   return (
-    <div className={`bg-neutral-900 rounded-lg overflow-hidden border border-tactical-border-primary ${className}`}>
+    <div className={`bg-neutral-900 rounded-lg overflow-hidden border border-tactical-border-primary my-3 ${className}`}>
       <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-b border-tactical-border-primary">
         <span className="text-sm text-tactical-text-secondary font-mono">
           {language}

@@ -1,1 +1,10 @@
-const http = require("http"); const server = http.createServer((req, res) => { if (req.method === "GET" && req.url === "/") { res.writeHead(200, { "Content-Type": "application/json" }); res.end(JSON.stringify({ message: "Hello, World!" })); } else { res.writeHead(404, { "Content-Type": "application/json" }); res.end(JSON.stringify({ error: "Not Found" })); } }); server.listen(3000, () => { console.log("Hello World Server running at http://localhost:3000"); });
+const http = require('http');
+
+// TODO: Implement your server here
+// 1. Create HTTP server
+// 2. Handle GET requests to "/"
+// 3. Return JSON response
+// 4. Handle 404 for other routes
+// 5. Listen on port 3000
+
+console.log('Server starting...');

@@ -10,6 +10,9 @@
     "preview": "nx preview client",
     "server": "tsx apps/server/src/main.ts",
     "server:dev": "tsx watch apps/server/src/main.ts",
+    "test": "nx test server",
+    "test:watch": "nx test server --watch",
+    "test:coverage": "nx test server --coverage",
     "nx": "nx"
   },
   "dependencies": {

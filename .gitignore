@@ -7,10 +7,28 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+*/node_modules
+
+# Build outputs
 dist
 dist-ssr
-*.local
+*/dist
+build
+*/build
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*/.env
+*/.env.local
+*/.env.development.local
+*/.env.test.local
+*/.env.production.local
 
 # Editor directories and files
 .vscode/*
@@ -23,13 +41,25 @@ dist-ssr
 *.sln
 *.sw?
 
+# Testing
+coverage
+*/coverage
+.nyc_output
+
+# Temporary files
+*.local
+tmp
+temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 
-.nx/cache
-.nx/workspace-data
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
-
-#misc
+#mics
 TODO.md
-**/coverage**

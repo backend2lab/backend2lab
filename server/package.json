@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "build": "tsc && npm run copy-modules",
+    "build": "tsc -p tsconfig.build.json && npm run copy-modules",
     "copy-modules": "cp -r src/modules/* dist/modules/",
     "start": "node dist/main.js",
     "test": "jest",
@@ -13,13 +13,13 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "~18.16.9",
+    "@types/jest": "^30.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
-    "@types/express": "^4.17.21",
-    "@types/jest": "^30.0.0",
-    "@types/node": "~18.16.9",
     "@types/supertest": "^6.0.3",
     "chai": "^4.3.7",
     "eslint": "^9.33.0",

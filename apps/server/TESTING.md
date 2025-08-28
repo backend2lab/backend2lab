@@ -269,3 +269,4 @@ When adding new features:
 3. **Update this documentation** if adding new test types
 4. **Maintain coverage thresholds**
 5. **Use existing test utilities** when possible
+

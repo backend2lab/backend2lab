@@ -2,10 +2,10 @@
   "name": "backend-playground-server",
   "private": true,
   "version": "0.0.1",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "build": "tsc",
+    "build": "tsc && npm run copy-modules",
+    "copy-modules": "cp -r src/modules/* dist/modules/",
     "start": "node dist/main.js",
     "test": "jest",
     "test:watch": "jest --watch",

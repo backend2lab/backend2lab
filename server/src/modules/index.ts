@@ -1,6 +1,5 @@
 import { readFileSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 export interface ModuleFile {
   readme?: string;
@@ -39,9 +38,8 @@ export interface ModuleContent {
   };
 }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const modulesPath = join(__dirname, '.');
+// Use dist directory for modules
+const modulesPath = __dirname;
 
 export function getAllModules(): Module[] {
   const modules: Module[] = [];

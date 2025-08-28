@@ -80,15 +80,15 @@ export function getModuleContent(moduleId: string): ModuleContent | null {
     const modulePath = join(modulesPath, moduleId);
     
     // Read lab content
-    const labReadmePath = join(modulePath, module.files.lab.readme);
+    const labReadmePath = join(modulePath, module.files.lab.readme || '');
     const labContent = readFileSync(labReadmePath, 'utf-8');
 
     // Read exercise content
-    const exerciseReadmePath = join(modulePath, module.files.exercise.readme);
-    const exerciseServerPath = join(modulePath, module.files.exercise.server);
-    const exerciseTestPath = join(modulePath, module.files.exercise.test);
-    const exerciseSolutionPath = join(modulePath, module.files.exercise.solution);
-    const exercisePackagePath = join(modulePath, module.files.exercise.package);
+    const exerciseReadmePath = join(modulePath, module.files.exercise.readme || '');
+    const exerciseServerPath = join(modulePath, module.files.exercise.server || '');
+    const exerciseTestPath = join(modulePath, module.files.exercise.test || '');
+    const exerciseSolutionPath = join(modulePath, module.files.exercise.solution || '');
+    const exercisePackagePath = join(modulePath, module.files.exercise.package || '');
 
     const exerciseContent = {
       readme: readFileSync(exerciseReadmePath, 'utf-8'),

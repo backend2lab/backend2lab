@@ -226,8 +226,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             em: ({ children }) => (
                               <em className="italic text-tactical-text-secondary">{children}</em>
                             ),
-                            code: ({ children, className }) => {
-                              const language = className?.replace('language-', '') || 'text';
+                            code: ({ children }) => {
                               const text = String(children);
                               
                               // Special styling for test case details
@@ -255,8 +254,9 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               if (children && typeof children === 'object') {
                                 console.log('pre children keys:', Object.keys(children));
                                 if ('props' in children) {
-                                  console.log('pre children.props:', children.props);
-                                  console.log('pre children.props.children:', children.props.children);
+                                  const childrenProps = children.props as { children?: any };
+                                  console.log('pre children.props:', childrenProps);
+                                  console.log('pre children.props.children:', childrenProps.children);
                                 }
                               }
                               
@@ -274,10 +274,11 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                                   }
                                   return String(child || '');
                                 }).join('');
-                              } else if (children && typeof children === 'object' && 'props' in children) {
-                                console.log('Extracting from props.children:', children.props.children);
-                                if (Array.isArray(children.props.children)) {
-                                  codeContent = children.props.children.map(child => {
+                              } else                               if (children && typeof children === 'object' && 'props' in children) {
+                                const childrenProps = children.props as { children?: any };
+                                console.log('Extracting from props.children:', childrenProps.children);
+                                if (Array.isArray(childrenProps.children)) {
+                                  codeContent = childrenProps.children.map((child: any) => {
                                     console.log('props child:', child, 'type:', typeof child);
                                     if (typeof child === 'string') return child;
                                     if (child && typeof child === 'object' && 'props' in child) {
@@ -286,7 +287,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                                     return String(child || '');
                                   }).join('');
                                 } else {
-                                  codeContent = String(children.props.children || '');
+                                  codeContent = String(childrenProps.children || '');
                                 }
                               } else if (typeof children === 'string') {
                                 codeContent = children;
@@ -376,8 +377,8 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
         em: ({ children }) => (
             <em className="italic text-tactical-text-secondary">{children}</em>
         ),
-                  code: ({ children, className }) => {
-            const language = className?.replace('language-', '') || 'text';
+                  code: ({ children }) => {
+            // const language = className?.replace('language-', '') || 'text';
             const text = String(children);
             
             // Special styling for test case details
@@ -418,7 +419,8 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                 return String(child || '');
               }).join('');
             } else if (children && typeof children === 'object' && 'props' in children) {
-              codeContent = String(children.props?.children || '');
+              const childrenProps = children.props as { children?: any };
+              codeContent = String(childrenProps?.children || '');
             } else if (typeof children === 'string') {
               codeContent = children;
             } else {

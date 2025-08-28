@@ -43,7 +43,7 @@ describe('TestRunner', () => {
       mockExistsSync.mockReturnValue(true);
       
       // Mock successful server startup
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           callback(Buffer.from('Server running on port 3000'));
         }
@@ -90,7 +90,7 @@ describe('TestRunner', () => {
       mockExistsSync.mockReturnValue(true);
       
       // Mock timeout scenario
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           // Don't call callback to simulate timeout
         }
@@ -107,7 +107,7 @@ describe('TestRunner', () => {
         serverOutput: ''
       });
       expect(mockServerProcess.kill).toHaveBeenCalledWith('SIGTERM');
-    });
+    }, 10000);
 
     it('should handle port already in use error', async () => {
       const moduleId = 'module-1';
@@ -115,7 +115,7 @@ describe('TestRunner', () => {
       
       mockExistsSync.mockReturnValue(true);
       
-      mockServerProcess.stderr.on.mockImplementation((event, callback) => {
+      mockServerProcess.stderr.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           callback(Buffer.from('EADDRINUSE: address already in use'));
         }
@@ -140,7 +140,7 @@ describe('TestRunner', () => {
       
       mockExistsSync.mockReturnValue(true);
       
-      mockServerProcess.on.mockImplementation((event, callback) => {
+      mockServerProcess.on.mockImplementation((event: string, callback: (error: Error) => void) => {
         if (event === 'error') {
           callback(new Error('Spawn failed'));
         }
@@ -168,7 +168,7 @@ describe('TestRunner', () => {
       mockExistsSync.mockReturnValue(true);
       
       // Mock successful server startup
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           callback(Buffer.from('Server running on port 3000'));
         }
@@ -245,7 +245,7 @@ describe('TestRunner', () => {
       
       mockExistsSync.mockReturnValue(true);
       
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           callback(Buffer.from('Server running on port 3000'));
         }
@@ -278,7 +278,7 @@ describe('TestRunner', () => {
       mockExistsSync.mockReturnValue(true);
       
       // Mock server startup failure
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           // Don't call callback to simulate timeout
         }
@@ -299,7 +299,7 @@ describe('TestRunner', () => {
         executionTime: expect.any(Number)
       });
       expect(mockServerProcess.kill).toHaveBeenCalledWith('SIGTERM');
-    });
+    }, 10000);
 
     it('should handle malformed test output', async () => {
       const moduleId = 'module-1';
@@ -307,7 +307,7 @@ describe('TestRunner', () => {
       
       mockExistsSync.mockReturnValue(true);
       
-      mockServerProcess.stdout.on.mockImplementation((event, callback) => {
+      mockServerProcess.stdout.on.mockImplementation((event: string, callback: (data: Buffer) => void) => {
         if (event === 'data') {
           callback(Buffer.from('Server running on port 3000'));
         }

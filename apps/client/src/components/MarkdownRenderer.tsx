@@ -226,8 +226,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             em: ({ children }) => (
                               <em className="italic text-tactical-text-secondary">{children}</em>
                             ),
-                            code: ({ children, className }) => {
-                              const language = className?.replace('language-', '') || 'text';
+                            code: ({ children }) => {
                               const text = String(children);
                               
                               // Special styling for test case details
@@ -256,7 +255,8 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                                 console.log('pre children keys:', Object.keys(children));
                                 if ('props' in children) {
                                   console.log('pre children.props:', children.props);
-                                  console.log('pre children.props.children:', children.props.children);
+                                  const props = children.props as { children?: unknown };
+                                  console.log('pre children.props.children:', props.children);
                                 }
                               }
                               
@@ -265,28 +265,31 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               
                               // Handle different types of children
                               if (Array.isArray(children)) {
-                                codeContent = children.map(child => {
+                                codeContent = children.map((child: unknown) => {
                                   console.log('child:', child, 'type:', typeof child);
                                   if (typeof child === 'string') return child;
                                   if (child && typeof child === 'object' && 'props' in child) {
-                                    console.log('child props:', child.props);
-                                    return String(child.props?.children || '');
+                                    const childProps = child.props as { children?: unknown };
+                                    console.log('child props:', childProps);
+                                    return String(childProps?.children || '');
                                   }
                                   return String(child || '');
                                 }).join('');
                               } else if (children && typeof children === 'object' && 'props' in children) {
-                                console.log('Extracting from props.children:', children.props.children);
-                                if (Array.isArray(children.props.children)) {
-                                  codeContent = children.props.children.map(child => {
+                                const props = children.props as { children?: unknown };
+                                console.log('Extracting from props.children:', props.children);
+                                if (Array.isArray(props.children)) {
+                                  codeContent = props.children.map((child: unknown) => {
                                     console.log('props child:', child, 'type:', typeof child);
                                     if (typeof child === 'string') return child;
                                     if (child && typeof child === 'object' && 'props' in child) {
-                                      return String(child.props?.children || '');
+                                      const childProps = child.props as { children?: unknown };
+                                      return String(childProps?.children || '');
                                     }
                                     return String(child || '');
                                   }).join('');
                                 } else {
-                                  codeContent = String(children.props.children || '');
+                                  codeContent = String(props.children || '');
                                 }
                               } else if (typeof children === 'string') {
                                 codeContent = children;
@@ -376,8 +379,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
         em: ({ children }) => (
             <em className="italic text-tactical-text-secondary">{children}</em>
         ),
-                  code: ({ children, className }) => {
-            const language = className?.replace('language-', '') || 'text';
+                  code: ({ children }) => {
             const text = String(children);
             
             // Special styling for test case details
@@ -408,17 +410,19 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             
             // Handle different types of children
             if (Array.isArray(children)) {
-              codeContent = children.map(child => {
+              codeContent = children.map((child: unknown) => {
                 console.log('fallback child:', child, 'type:', typeof child);
                 if (typeof child === 'string') return child;
                 if (child && typeof child === 'object' && 'props' in child) {
-                  console.log('fallback child props:', child.props);
-                  return String(child.props?.children || '');
+                  const childProps = child.props as { children?: unknown };
+                  console.log('fallback child props:', childProps);
+                  return String(childProps?.children || '');
                 }
                 return String(child || '');
               }).join('');
             } else if (children && typeof children === 'object' && 'props' in children) {
-              codeContent = String(children.props?.children || '');
+              const props = children.props as { children?: unknown };
+              codeContent = String(props?.children || '');
             } else if (typeof children === 'string') {
               codeContent = children;
             } else {

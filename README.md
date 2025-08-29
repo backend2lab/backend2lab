@@ -7,7 +7,7 @@ It combines **labs**, **exercises**, and a **code playground** for beginners to 
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- npm or yarn
+- npm, yarn or pnpm
 
 #### Start the Backend Server
 ```bash
@@ -64,7 +64,7 @@ Each application can be deployed independently to different platforms.
 2. Create a feature branch
 3. Make your changes
 4. Test both client and server
-5. Submit a pull request
+5. Submit a pull request again the dev branch
 
 ## License
 

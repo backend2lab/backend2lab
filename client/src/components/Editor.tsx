@@ -213,7 +213,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               suggestOnTriggerCharacters: true,
               acceptSuggestionOnEnter: 'on',
               tabCompletion: 'on',
-              wordBasedSuggestions: 'on',
+              wordBasedSuggestions: 'allDocuments',
               parameterHints: {
                 enabled: true,
                 cycle: true,
@@ -224,13 +224,6 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               dragAndDrop: true,
               links: true,
               colorDecorators: true,
-              lightbulb: {
-                enabled: true,
-              },
-              codeActionsOnSave: {
-                'source.fixAll': true,
-                'source.organizeImports': true,
-              },
               bracketPairColorization: {
                 enabled: true,
               },
@@ -334,7 +327,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 suggestOnTriggerCharacters: true,
                 acceptSuggestionOnEnter: 'on',
                 tabCompletion: 'on',
-                wordBasedSuggestions: 'on',
+                wordBasedSuggestions: 'allDocuments',
                 parameterHints: {
                   enabled: true,
                   cycle: true,
@@ -345,13 +338,6 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 dragAndDrop: true,
                 links: true,
                 colorDecorators: true,
-                lightbulb: {
-                  enabled: true,
-                },
-                codeActionsOnSave: {
-                  'source.fixAll': true,
-                  'source.organizeImports': true,
-                },
                 bracketPairColorization: {
                   enabled: true,
                 },

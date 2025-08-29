@@ -1,3 +1,5 @@
+import { config } from '../config/env';
+
 export interface Module {
   id: string;
   title: string;
@@ -61,7 +63,7 @@ export interface RunResult {
   error?: string;
 }
 
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = config.apiBaseUrl;
 
 export class ModuleService {
   static async getAllModules(): Promise<Module[]> {

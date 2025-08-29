@@ -77,7 +77,7 @@ export function CodeDisplay({
               indentation: false,
             },
             renderWhitespace: 'none',
-            cursorBlinking: 'hidden',
+            cursorBlinking: 'blink',
             smoothScrolling: true,
             mouseWheelScrollSensitivity: 1,
             fastScrollSensitivity: 5,

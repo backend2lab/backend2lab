@@ -20,5 +20,16 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          editor: ['@monaco-editor/react'],
+        },
+      },
+    },
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
 })

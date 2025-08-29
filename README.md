@@ -7,21 +7,36 @@ It combines **labs**, **exercises**, and a **code playground** for beginners to 
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- npm, yarn or pnpm
+- pnpm (recommended) or npm
 
-#### Start the Backend Server
+### Start All Services (Recommended)
+```bash
+# Install all dependencies
+pnpm install
+
+# Start both client and server simultaneously
+pnpm run dev
+```
+
+This will start:
+- **Client** at `http://localhost:4200`
+- **Server** at `http://localhost:4000`
+
+### Start Services Separately
+
+#### Start the Backend Server only
 ```bash
 cd server
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 The server will be available at `http://localhost:4000`
 
-#### Start the Frontend Client
+#### Start the Frontend Client only
 ```bash
 cd client
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 The client will be available at `http://localhost:4200`
 
@@ -30,25 +45,39 @@ The client will be available at `http://localhost:4200`
 
 ### Building for Production
 
-**Frontend:**
+**Build both client and server:**
 ```bash
-cd client
-npm run build
+pnpm run build
 ```
 
-**Backend:**
+**Build individually:**
 ```bash
+# Frontend
+cd client
+pnpm run build
+
+# Backend
 cd server
-npm run build
-npm start
+pnpm run build
+pnpm start
 ```
 
 ### Running Tests
 
-**Backend tests:**
+**Run all tests:**
 ```bash
+pnpm run test
+```
+
+**Run tests individually:**
+```bash
+# Backend tests
 cd server
-npm test
+pnpm test
+
+# Frontend linting
+cd client
+pnpm run lint
 ```
 
 ## Project Structure

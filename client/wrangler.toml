@@ -1,5 +1,0 @@
-name = "backend2lab-playground-client"
-compatibility_date = "2024-01-01"
-
-[site]
-bucket = "./dist"

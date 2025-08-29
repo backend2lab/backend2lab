@@ -38,7 +38,6 @@ export class TestRunner {
     try {
       // Get the module path
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      console.log(modulePath, 'module path-----')
       const serverFilePath = join(modulePath, 'exercise/server.js');
 
       // Check if module exists

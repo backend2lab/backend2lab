@@ -1,0 +1,34 @@
+{
+  "id": "module-3",
+  "title": "Express.js Foundation",
+  "description": "Learn Express.js fundamentals including routing, middleware, and building web servers with the most popular Node.js framework",
+  "difficulty": "Beginner",
+  "estimatedTime": "60 minutes",
+  "tags": ["nodejs", "express", "routing", "middleware", "web-framework"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/main.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand Express.js framework basics",
+    "Learn routing with Express",
+    "Master middleware concepts",
+    "Handle different HTTP methods",
+    "Send various response types",
+    "Build RESTful API endpoints"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of HTTP basics",
+    "Node.js fundamentals",
+    "NPM package management"
+  ]
+}

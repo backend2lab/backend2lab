@@ -1,0 +1,31 @@
+{
+  "name": "module-3-express-routes-exercise",
+  "version": "1.0.0",
+  "description": "Module 3 Exercise: Basic Express Routes",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "mocha test.js",
+    "dev": "node main.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "routing",
+    "api",
+    "exercise"
+  ],
+  "author": "Backend2Lab",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
+  }
+}

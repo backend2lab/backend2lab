@@ -151,7 +151,6 @@ function createLabReadme(moduleNumber, basePath) {
   fs.writeFileSync(path.join(basePath, 'lab', 'README.md'), readmeContent);
 }
 
-// Main function
 function createModule() {
   try {
     moduleNumber = getNextModuleNumber();
@@ -173,12 +172,9 @@ function createModule() {
     
   } catch (error) {
     throw error;
-    // console.error();
-    // process.exit(1);
   }
 }
 
-// Run the script
 if (require.main === module) {
   createModule();
 }

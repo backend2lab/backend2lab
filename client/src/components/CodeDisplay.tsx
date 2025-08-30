@@ -1,4 +1,5 @@
 import Editor from "@monaco-editor/react";
+import { useMemo } from "react";
 
 interface CodeDisplayProps {
   code: string;
@@ -15,6 +16,9 @@ export function CodeDisplay({
 }: CodeDisplayProps) {
   // Ensure code is a string
   const safeCode = typeof code === 'string' ? code : String(code || '');
+  
+  // Generate a unique ID for this editor instance to ensure complete isolation
+  const editorId = useMemo(() => `code-display-${Math.random().toString(36).substr(2, 9)}`, []);
   
   // Calculate height based on number of lines
   const lineCount = safeCode.split('\n').length;
@@ -40,6 +44,7 @@ export function CodeDisplay({
       </div>
       <div style={{ height: `${calculatedHeight}px` }}>
         <Editor
+          key={editorId}
           height="100%"
           defaultLanguage={language}
           value={safeCode}
@@ -88,10 +93,6 @@ export function CodeDisplay({
           }}
           theme="vs-dark"
           className="rounded-none"
-          onMount={(editor) => {
-            // Just focus the editor
-            editor.focus();
-          }}
         />
       </div>
     </div>

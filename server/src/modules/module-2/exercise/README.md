@@ -1,83 +1,162 @@
-# Module 2 Exercise: Hello World Server
+# Module 2 Exercise: Simple Web Server
 
-Your task is to create a simple Node.js HTTP server that returns 'Hello, World!' when accessed. This exercise will test your understanding of basic HTTP server creation.
+## Objective
+Create a basic HTTP server using Node.js that responds with a simple message when visited in a browser.
 
-## 1. Task Requirements
+## What You'll Build
+A web server that:
+- Listens on port 3000
+- Responds to browser requests
+- Returns a simple HTML message
 
-Create an HTTP server that:
+## Setup Instructions
 
-1. **Listens on port 3000**
-2. **Handles GET requests to the root path `/`**
-3. **Returns JSON response**: `{ "message": "Hello, World!" }`
-4. **Sets proper Content-Type header**: `application/json`
-5. **Returns 404 for all other routes**
+1. **Create project folder**:
+   ```bash
+   mkdir simple-server
+   cd simple-server
+   ```
 
-## 2. Test Cases
+2. **Create this file**:
+   ```
+   simple-server/
+   └── server.js
+   ```
 
-Your server should pass these test cases:
+## Your Task
 
-### Test Case 1: Basic GET Request
-- **Request**: `GET http://localhost:3000/`
-- **Expected Response**: 
-  ```json
-  {
-    "message": "Hello, World!"
-  }
-  ```
-- **Status Code**: 200 OK
-- **Headers**: `Content-Type: application/json`
-
-### Test Case 2: Invalid Route
-- **Request**: `GET http://localhost:3000/hello`
-- **Expected Response**: 
-  ```json
-  {
-    "error": "Not Found"
-  }
-  ```
-- **Status Code**: 404 Not Found
-
-### Test Case 3: Wrong HTTP Method
-- **Request**: `POST http://localhost:3000/`
-- **Expected Response**: 
-  ```json
-  {
-    "error": "Not Found"
-  }
-  ```
-- **Status Code**: 404 Not Found
-
-## 3. Hints
-
-1. **Use Node.js built-in `http` module**
-2. **Check `req.method` and `req.url`**
-3. **Set headers with `res.writeHead()`**
-4. **Send JSON with `JSON.stringify()`**
-5. **Don't forget to call `res.end()`**
-
-## 4. Getting Started
-
-1. Open the `main.js` file in the editor
-2. Implement your server logic
-3. Use the test cases to verify your solution
-4. Run your server and test with the provided test cases
-
-## 5. Code Structure
-
-Your `main.js` should follow this basic structure:
+Create `server.js` and complete the server function:
 
 ```javascript
 const http = require('http');
 
-// TODO: Implement your server here
-// 1. Create HTTP server
-// 2. Handle GET requests to "/"
-// 3. Return JSON response
-// 4. Handle 404 for other routes
-// 5. Listen on port 3000
+// TODO: Create a server that responds with "Hello from my first server!"
+// The server should:
+// - Use http.createServer()
+// - Set Content-Type to 'text/html' 
+// - Respond with status code 200
+// - Send an HTML message
 
-console.log('Server starting...');
+const server = http.createServer((req, res) => {
+    // Your code here
+    
+});
+
+// TODO: Make the server listen on port 3000
+// Add a console.log to show when server starts
+
+// Your code here
 ```
 
-Good luck! 🎉
+## Step-by-Step Guide
+
+1. **Import the http module** (already done)
+
+2. **Create the server** using `http.createServer()`
+
+3. **In the callback function**:
+   - Set the response header with `res.writeHead(200, { 'Content-Type': 'text/html' })`
+   - Send your message with `res.end('<h1>Hello from my first server!</h1>')`
+
+4. **Start the server**:
+   - Use `server.listen(3000, callback)`
+   - Add a console.log in the callback: `'Server running on http://localhost:3000'`
+
+## Testing Your Server
+
+1. **Run your server**:
+   ```bash
+   node server.js
+   ```
+
+2. **Open your browser** and visit: `http://localhost:3000`
+
+3. **Stop the server**: Press `Ctrl + C` in your terminal
+
+## Expected Output
+
+**In your terminal**:
+```
+Server running on http://localhost:3000
+```
+
+**In your browser**:
+```
+Hello from my first server!
+```
+(displayed as a large heading)
+
+## Solution
+
+<details>
+<summary>Click to see the solution (try it yourself first!)</summary>
+
+```javascript
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end('<h1>Hello from my first server!</h1>');
+});
+
+server.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});
+```
+
+</details>
+
+## Challenge Extensions
+
+Once you complete the basic version, try these:
+
+1. **Add more HTML**: Include CSS styling in your response
+2. **Show request info**: Display the URL that was requested
+3. **Add a timestamp**: Show when the request was made
+4. **Custom port**: Use environment variables for the port number
+
+## Example Extensions
+
+```javascript
+// Extension 1: Styled response
+res.end(`
+    <html>
+        <head><title>My Server</title></head>
+        <body style="font-family: Arial; text-align: center; margin-top: 50px;">
+            <h1 style="color: blue;">Hello from my first server!</h1>
+            <p>Welcome to Node.js web development!</p>
+        </body>
+    </html>
+`);
+
+// Extension 2: Show request URL
+res.end(`<h1>Hello! You requested: ${req.url}</h1>`);
+
+// Extension 3: Add timestamp
+res.end(`<h1>Hello from my server!</h1><p>Time: ${new Date()}</p>`);
+```
+
+## What You Learned
+
+- ✅ Creating HTTP servers with Node.js
+- ✅ Using the `http` module
+- ✅ Handling requests and responses
+- ✅ Setting HTTP headers
+- ✅ Serving HTML content
+- ✅ Starting servers on specific ports
+
+## Troubleshooting
+
+**Port already in use error?**
+- Stop any running servers with `Ctrl + C`
+- Try a different port number (like 3001)
+
+**Can't access localhost:3000?**
+- Make sure your server is still running
+- Check you're using the correct port number
+- Try refreshing your browser
+
+**Module not found?**
+- `http` is built into Node.js, no installation needed
+- Check your Node.js installation with `node --version`
 

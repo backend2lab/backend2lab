@@ -1,31 +1,31 @@
 {
   "id": "module-1",
-  "title": "API Basics & Node.js Server Setup",
-  "description": "Learn the fundamentals of APIs, HTTP, and how to build your first Node.js server",
+  "title": "Environment Setup & Node.js Basics",
+  "description": "Learn the fundamentals of Node.js, including runtime environment, modules, package management, and file system operations",
   "difficulty": "Beginner",
-  "estimatedTime": "30 minutes",
-  "tags": ["nodejs", "http", "api", "server", "basics"],
+  "estimatedTime": "45 minutes",
+  "tags": ["nodejs", "basics", "modules", "npm", "filesystem"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
     },
     "exercise": {
       "readme": "exercise/README.md",
-      "server": "exercise/server.js",
+      "server": "exercise/greetings.js",
       "test": "exercise/test.js",
       "solution": "exercise/solution.js",
       "package": "exercise/package.json"
     }
   },
   "learningObjectives": [
-    "Understand HTTP server basics",
-    "Learn request/response handling",
-    "Practice JSON response formatting",
-    "Master error handling patterns"
+    "Understand Node.js runtime environment",
+    "Learn module system and exports",
+    "Master package management with NPM",
+    "Practice file system operations",
+    "Create and use custom modules"
   ],
   "prerequisites": [
     "Basic JavaScript knowledge",
-    "Understanding of HTTP protocol"
+    "Understanding of functions and variables"
   ]
 }
-

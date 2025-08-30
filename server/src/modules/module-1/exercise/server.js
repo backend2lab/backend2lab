@@ -1,10 +1,13 @@
-const http = require('http');
+// TODO: Write your greeting function here
+// The function should:
+// - Take a 'name' parameter
+// - Return a greeting message like "Hello, [name]! Welcome to Node.js!"
 
-// TODO: Implement your server here
-// 1. Create HTTP server
-// 2. Handle GET requests to "/"
-// 3. Return JSON response
-// 4. Handle 404 for other routes
-// 5. Listen on port 3000
+function greetUser(name) {
+    // Your code here
+}
 
-console.log('Server starting...');
+// Export the function so it can be used in other files
+module.exports = {
+    greetUser
+};

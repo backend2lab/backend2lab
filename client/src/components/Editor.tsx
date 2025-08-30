@@ -207,7 +207,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               overviewRulerBorder: false,
               hideCursorInOverviewRuler: true,
               overviewRulerLanes: 0,
-              lineDecorationsWidth: 10,
+              lineDecorationsWidth: 20,
               glyphMargin: false,
               folding: false, // Disable folding for better performance
               lineNumbersMinChars: 3,
@@ -328,7 +328,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 overviewRulerBorder: false,
                 hideCursorInOverviewRuler: true,
                 overviewRulerLanes: 0,
-                lineDecorationsWidth: 10,
+                lineDecorationsWidth: 20,
                 glyphMargin: false,
                 folding: true,
                 foldingStrategy: 'indentation',

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult, RunResult } from "./services/moduleService.js";
+import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService.js";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -12,6 +12,7 @@ type Tab = 'Lab' | 'Exercise';
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
   const [moduleContent, setModuleContent] = useState<ModuleContent | null>(null);
+  const [availableModules, setAvailableModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState("");
@@ -20,13 +21,45 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState<TestSuiteResult | null>(null);
   const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
+  const [showModuleDropdown, setShowModuleDropdown] = useState(false);
 
   // Default module ID - could be made configurable later
-  const currentModuleId = 'module-1';
+  const [currentModuleId, setCurrentModuleId] = useState('module-1');
+
+  useEffect(() => {
+    loadAvailableModules();
+  }, []);
 
   useEffect(() => {
     loadModuleContent();
-  }, []);
+  }, [currentModuleId]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.module-dropdown')) {
+        setShowModuleDropdown(false);
+      }
+    };
+
+    if (showModuleDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showModuleDropdown]);
+
+  const loadAvailableModules = async () => {
+    try {
+      const modules = await ModuleService.getAllModules();
+      setAvailableModules(modules);
+    } catch (err) {
+      console.error('Failed to load available modules:', err);
+    }
+  };
 
   const loadModuleContent = async () => {
     try {
@@ -43,6 +76,13 @@ export default function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleModuleChange = (moduleId: string) => {
+    setCurrentModuleId(moduleId);
+    setShowModuleDropdown(false);
+    setOutput("");
+    setTestResults(null);
   };
 
   const handleRunCode = async (codeToRun?: string) => {
@@ -171,16 +211,42 @@ export default function App() {
               </div>
             </div>
 
-            {/* User Actions */}
+            {/* Module Selector */}
             <div className="flex items-center space-x-3">
-              <button className="p-2 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors rounded-lg hover:bg-neutral-800">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-              <div className="w-8 h-8 bg-gradient-to-br from-tactical-border-primary to-neutral-700 rounded-full flex items-center justify-center hover:bg-neutral-800 transition-colors cursor-pointer">
-                <span className="text-tactical-text-primary font-medium text-sm font-tactical">U</span>
+              <div className="relative module-dropdown">
+                <button 
+                  onClick={() => setShowModuleDropdown(!showModuleDropdown)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-tactical-surface border border-tactical-border-primary rounded-lg text-tactical-text-primary hover:bg-neutral-800 transition-colors"
+                >
+                  <span className="text-sm font-medium font-tactical">
+                    {availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}
+                  </span>
+                  <FontAwesomeIcon 
+                    icon={faChevronDown} 
+                    className={`text-xs transition-transform ${showModuleDropdown ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                
+                {showModuleDropdown && (
+                  <div className="absolute right-0 mt-2 bg-tactical-surface border border-tactical-border-primary rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto module-dropdown">
+                    {availableModules.map((module) => (
+                      <button
+                        key={module.id}
+                        onClick={() => handleModuleChange(module.id)}
+                        className={`w-full text-left px-4 py-2 hover:bg-neutral-800 transition-colors border-b border-tactical-border-primary last:border-b-0 ${
+                          module.id === currentModuleId 
+                            ? 'bg-tactical-primary text-white' 
+                            : 'text-tactical-text-primary'
+                        }`}
+                      >
+                        <span className="text-sm font-medium">
+                          <span className="mr-2">{module.id}:</span>
+                          {module.title}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

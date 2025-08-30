@@ -209,43 +209,50 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               overviewRulerLanes: 0,
               lineDecorationsWidth: 10,
               glyphMargin: false,
-              folding: true,
-              foldingStrategy: 'indentation',
+              folding: false, // Disable folding for better performance
               lineNumbersMinChars: 3,
-              renderLineHighlight: 'all',
+              renderLineHighlight: 'line', // Changed from 'all' to 'line' for better performance
               selectOnLineNumbers: true,
               wordWrap: 'on',
               wrappingStrategy: 'advanced',
               suggestOnTriggerCharacters: true,
               acceptSuggestionOnEnter: 'on',
               tabCompletion: 'on',
-              wordBasedSuggestions: 'allDocuments',
+              wordBasedSuggestions: 'off', // Disable word-based suggestions for better performance
               parameterHints: {
-                enabled: true,
-                cycle: true,
+                enabled: false, // Disable parameter hints for better performance
               },
               autoIndent: 'full',
-              formatOnPaste: true,
-              formatOnType: true,
-              dragAndDrop: true,
-              links: true,
-              colorDecorators: true,
+              formatOnPaste: false, // Disable format on paste for better performance
+              formatOnType: false, // Disable format on type for better performance
+              dragAndDrop: false, // Disable drag and drop for better performance
+              links: false, // Disable links for better performance
+              colorDecorators: false, // Disable color decorators for better performance
               bracketPairColorization: {
                 enabled: true,
               },
               guides: {
                 bracketPairs: true,
-                indentation: true,
+                indentation: false, // Disable indentation guides for better performance
               },
-              renderWhitespace: 'selection',
-              cursorBlinking: 'smooth',
-              cursorSmoothCaretAnimation: 'on',
-              smoothScrolling: true,
+              renderWhitespace: 'none', // Changed from 'selection' to 'none' for better performance
+              cursorBlinking: 'blink', // Changed from 'smooth' to 'blink' for better performance
+              smoothScrolling: false, // Disable smooth scrolling for better performance
               mouseWheelScrollSensitivity: 1,
               fastScrollSensitivity: 5,
               padding: {
                 top: 8,
                 bottom: 8,
+              },
+              // Additional performance optimizations
+              contextmenu: true,
+              quickSuggestions: {
+                other: true,
+                comments: false,
+                strings: false,
+              },
+              hover: {
+                enabled: false, // Disable hover for better performance
               },
             }}
             theme="vs-dark"

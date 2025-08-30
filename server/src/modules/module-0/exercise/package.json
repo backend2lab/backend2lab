@@ -1,0 +1,20 @@
+{
+  "name": "module-0-greeting-exercise",
+  "version": "1.0.0",
+  "description": "Simple greeting function exercise for Node.js basics",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha test.js"
+  },
+  "keywords": ["nodejs", "basics", "modules", "exercise"],
+  "author": "Backend Playground",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  }
+}

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
@@ -52,15 +54,15 @@ export default function App() {
       const result: RunResult = await ModuleService.runCode(currentModuleId, codeContent);
       
       if (result.success) {
-        setOutput(`✅ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
+        setOutput(`✓ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
       } else {
-        setOutput(`❌ Server failed to start.\n\n--- Server Output ---\n${result.serverOutput || 'No server output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
+        setOutput(`✗ Server failed to start.\n\n--- Server Output ---\n${result.serverOutput || 'No server output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
       }
       
       // Clear test results when just running code
       setTestResults(null);
     } catch (err) {
-      setOutput(`❌ Server execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setOutput(`✗ Server execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsRunning(false);
     }
@@ -77,12 +79,12 @@ export default function App() {
       setTestResults(results);
       
       if (results.passedTests === results.totalTests) {
-        setOutput(`✅ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
+        setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
       } else {
-        setOutput(`❌ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
+        setOutput(`✗ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
       }
     } catch (err) {
-      setOutput(`❌ Test execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setOutput(`✗ Test execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -264,7 +266,7 @@ export default function App() {
                     {testResults.results.map((result, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
-                          {result.passed ? '✅' : '❌'}
+                          {result.passed ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} />}
                         </span>
                         <span className="text-sm text-tactical-text-primary">{result.testName}</span>
                         {!result.passed && result.error && (

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFileCode, 
+  faFile,
+} from "@fortawesome/free-solid-svg-icons";
+import { faPython, faJava, faJs } from "@fortawesome/free-brands-svg-icons";
 
 interface FileTab {
   id: string;
@@ -120,15 +126,15 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   const getFileIcon = (language: string) => {
     switch (language) {
       case 'javascript':
-        return '⚡';
+        return <FontAwesomeIcon icon={faJs} className="text-yellow-400" />;
       case 'python':
-        return '🐍';
+        return <FontAwesomeIcon icon={faPython} className="text-blue-500" />;
       case 'java':
-        return '☕';
+        return <FontAwesomeIcon icon={faJava} className="text-red-500" />;
       case 'json':
-        return '📦';
+        return <FontAwesomeIcon icon={faFileCode} className="text-green-400" />;
       default:
-        return '📄';
+        return <FontAwesomeIcon icon={faFile} className="text-gray-400" />;
     }
   };
 

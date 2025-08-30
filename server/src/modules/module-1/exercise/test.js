@@ -5,9 +5,9 @@ describe('Greeting Function', () => {
 
   before(() => {
     try {
-      greetings = require('./greetings');
+      greetings = require('./main');
     } catch (error) {
-      throw new Error('Could not load greetings module. Make sure greetings.js exists and exports greetUser function.');
+      throw new Error('Could not load main module. Make sure main.js exists and exports greetUser function.');
     }
   });
 

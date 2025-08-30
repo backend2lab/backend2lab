@@ -11,7 +11,7 @@
     },
     "exercise": {
       "readme": "exercise/README.md",
-      "server": "exercise/server.js",
+      "server": "exercise/main.js",
       "test": "exercise/test.js",
       "solution": "exercise/solution.js",
       "package": "exercise/package.json"

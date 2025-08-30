@@ -2,11 +2,11 @@
   "name": "module-2-hello-world-server-exercise",
   "version": "1.0.0",
   "description": "Module 2 Exercise: Hello World Server",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node main.js",
     "test": "mocha test.js",
-    "dev": "node server.js"
+    "dev": "node main.js"
   },
   "keywords": [
     "nodejs",

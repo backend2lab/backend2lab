@@ -20,7 +20,7 @@ A greeting program that:
 2. **Create these files**:
    ```
    greeting-app/
-   ├── greetings.js
+   ├── main.js
    └── index.js
    ```
 
@@ -28,7 +28,7 @@ A greeting program that:
 
 ### Step 1: Create the Greetings Module
 
-Create `greetings.js`:
+Create `main.js`:
 
 ```javascript
 // TODO: Write your greeting function here
@@ -52,7 +52,7 @@ Create `index.js`:
 
 ```javascript
 // Import the greetings module
-const greetings = require('./greetings');
+const greetings = require('./main');
 
 // Test your function with different names
 console.log(greetings.greetUser('Alice'));
@@ -62,7 +62,7 @@ console.log(greetings.greetUser('Charlie'));
 
 ## Your Task
 
-Complete the `greetUser` function in `greetings.js`:
+Complete the `greetUser` function in `main.js`:
 
 1. The function should accept one parameter called `name`
 2. Return a greeting message that includes the name

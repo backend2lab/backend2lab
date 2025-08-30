@@ -57,14 +57,14 @@ Your server should pass these test cases:
 
 ## 4. Getting Started
 
-1. Open the `server.js` file in the editor
+1. Open the `main.js` file in the editor
 2. Implement your server logic
 3. Use the test cases to verify your solution
 4. Run your server and test with the provided test cases
 
 ## 5. Code Structure
 
-Your `server.js` should follow this basic structure:
+Your `main.js` should follow this basic structure:
 
 ```javascript
 const http = require('http');

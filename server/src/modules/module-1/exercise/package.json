@@ -2,9 +2,9 @@
   "name": "module-1-greeting-exercise",
   "version": "1.0.0",
   "description": "Simple greeting function exercise for Node.js basics",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node main.js",
     "test": "mocha test.js"
   },
   "keywords": ["nodejs", "basics", "modules", "exercise"],

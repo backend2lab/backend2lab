@@ -1,0 +1,22 @@
+{
+  "name": "module-4-exercise",
+  "version": "1.0.0",
+  "description": "RESTful API Design Exercise - Books API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "mocha test.js --reporter json"
+  },
+  "keywords": ["rest", "api", "express", "books"],
+  "author": "Backend Playground",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "chai": "^4.3.7",
+    "supertest": "^6.3.3"
+  }
+}

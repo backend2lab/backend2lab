@@ -79,10 +79,16 @@ export default function App() {
   };
 
   const handleModuleChange = (moduleId: string) => {
-    setCurrentModuleId(moduleId);
+    if (moduleId === currentModuleId) {
+      setShowModuleDropdown(false);
+      return;
+    }
+    
     setShowModuleDropdown(false);
+    setCurrentModuleId(moduleId);
     setOutput("");
     setTestResults(null);
+    setActiveTab('Lab'); // Reset to Lab tab when switching modules
   };
 
   const handleRunCode = async (codeToRun?: string) => {
@@ -149,7 +155,7 @@ export default function App() {
 
   const tabs: Tab[] = ['Lab', 'Exercise'];
 
-  if (loading) {
+  if (loading && !moduleContent) {
     return (
       <div className="min-h-screen bg-tactical-background flex items-center justify-center">
         <div className="text-center">
@@ -201,13 +207,24 @@ export default function App() {
 
             {/* Module Info */}
             <div className="flex-1 flex justify-center max-w-2xl">
-              <div className="text-center flex">
-                <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">{moduleContent.module.title}</h1>
-                <div className="flex items-center justify-center space-x-3 mt- ml-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(moduleContent.module.difficulty)}`}>
-                    {moduleContent.module.difficulty}
-                  </span>
-                </div>
+              <div className="text-center flex items-center">
+                <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">
+                  {loading && moduleContent ? (
+                    <div className="flex items-center space-x-2">
+                      <span>{moduleContent.module.title}</span>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-tactical-primary"></div>
+                    </div>
+                  ) : (
+                    moduleContent?.module.title || 'Loading...'
+                  )}
+                </h1>
+                {moduleContent && (
+                  <div className="flex items-center justify-center space-x-3 ml-2">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(moduleContent.module.difficulty)}`}>
+                      {moduleContent.module.difficulty}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -216,10 +233,18 @@ export default function App() {
               <div className="relative module-dropdown">
                 <button 
                   onClick={() => setShowModuleDropdown(!showModuleDropdown)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-tactical-surface border border-tactical-border-primary rounded-lg text-tactical-text-primary hover:bg-neutral-800 transition-colors"
+                  disabled={loading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-tactical-surface border border-tactical-border-primary rounded-lg text-tactical-text-primary hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-sm font-medium font-tactical">
-                    {availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}
+                    {loading ? (
+                      <div className="flex items-center space-x-2">
+                        <span>{availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}</span>
+                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-tactical-primary"></div>
+                      </div>
+                    ) : (
+                      availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'
+                    )}
                   </span>
                   <FontAwesomeIcon 
                     icon={faChevronDown} 

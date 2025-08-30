@@ -182,13 +182,13 @@ export default function App() {
         {/* Left Panel - Learning Content */}
         <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-tactical-border-primary bg-tactical-background flex flex-col min-h-0">
           {/* Tab Navigation */}
-          <div className="border-b border-tactical-border-primary bg-tactical-surface flex-shrink-0">
-            <div className="flex">
+          <div className="border-b border-tactical-border-primary bg-tactical-surface flex-shrink-0 h-12">
+            <div className="flex h-full">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 border-b-2 ${
+                  className={`flex-1 px-6 text-sm font-medium transition-all duration-200 border-b-2 flex items-center justify-center ${
                     activeTab === tab 
                       ? 'text-tactical-primary border-tactical-primary bg-tactical-background' 
                       : 'text-tactical-text-secondary border-transparent hover:text-tactical-text-primary hover:bg-neutral-800'

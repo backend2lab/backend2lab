@@ -22,7 +22,7 @@ export function CodeDisplay({
   
   // Calculate height based on number of lines
   const lineCount = safeCode.split('\n').length;
-  const lineHeight = 18; // matches fontSize 13 with lineHeight 18
+  const lineHeight = 22; // matches fontSize 13 with lineHeight 22
   const padding = 16; // 8px top + 8px bottom
   const minHeight = 60; // minimum height for very short code
   const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + padding);
@@ -52,7 +52,7 @@ export function CodeDisplay({
             readOnly: true,
             minimap: { enabled: false },
             fontSize: 13,
-            lineHeight: 18,
+            lineHeight: 22,
             fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
             lineNumbers: showLineNumbers ? "on" : "off",
             roundedSelection: false,
@@ -69,7 +69,7 @@ export function CodeDisplay({
             overviewRulerBorder: false,
             hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
-            lineDecorationsWidth: 10,
+            lineDecorationsWidth: 20,
             glyphMargin: false,
             folding: false,
             wordWrap: 'on',

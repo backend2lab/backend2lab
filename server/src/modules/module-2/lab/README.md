@@ -1,87 +1,196 @@
-# Module 2: API Basics & Node.js Server Setup
+# Module 2: HTTP Basics & First Server
 
-Welcome to your first step in backend API development! 🎉
+## What is HTTP?
 
-In this module, you'll learn the fundamentals of APIs, HTTP, and how to build your first server.
+HTTP (HyperText Transfer Protocol) is the foundation of web communication. It's how browsers talk to servers, and how servers respond back with data.
 
-## 1. What is an API?
+## HTTP Request-Response Cycle
 
-An **API (Application Programming Interface)** allows two systems to communicate. In web development, APIs use **HTTP** protocol.
+1. **Client** (browser/app) sends a **request** to server
+2. **Server** processes the request
+3. **Server** sends back a **response**
+4. **Client** receives and uses the response
 
-### Example Request/Response Cycle:
-- **Client**: `GET /hello`
-- **Server**: responds with `{ "message": "Hello, World!" }`
+```
+Client  ----[Request]---->  Server
+Client  <---[Response]---   Server
+```
 
-APIs are like waiters in a restaurant - they take your request, communicate with the kitchen (server), and bring back your food (response).
+## HTTP Methods
 
-## 2. HTTP Basics
+The most common HTTP methods:
 
-### HTTP Methods:
-- **GET** → retrieve data
-- **POST** → send new data
-- **PUT/PATCH** → update existing data
-- **DELETE** → remove data
+- **GET**: Retrieve data from server
+- **POST**: Send data to server
+- **PUT**: Update existing data
+- **DELETE**: Remove data
 
-### Status Codes:
-- **200 OK** → Success
-- **400 Bad Request** → Invalid input
-- **404 Not Found** → Resource not found
-- **500 Internal Server Error** → Something broke
+```javascript
+// Examples:
+GET /users        // Get all users
+GET /users/123    // Get user with ID 123
+POST /users       // Create a new user
+PUT /users/123    // Update user 123
+DELETE /users/123 // Delete user 123
+```
 
-## 3. Setting up a Node.js Server
+## HTTP Status Codes
 
-### Basic HTTP Server Structure
+Servers respond with status codes to indicate what happened:
+
+- **200**: OK - Everything worked
+- **201**: Created - New resource created
+- **400**: Bad Request - Client sent invalid data
+- **404**: Not Found - Resource doesn't exist
+- **500**: Internal Server Error - Server had a problem
+
+## Node.js HTTP Module
+
+Node.js has a built-in `http` module for creating servers:
 
 ```javascript
 const http = require('http');
 
+// Create a server
 const server = http.createServer((req, res) => {
-  // Handle requests here
+    // Handle requests here
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello World!');
 });
 
+// Start listening on port 3000
 server.listen(3000, () => {
-  console.log('Server running on port 3000');
+    console.log('Server running on http://localhost:3000');
 });
 ```
 
-### Request Handling
+## Request and Response Objects
+
+### Request Object (req)
+Contains information about the incoming request:
 
 ```javascript
 const server = http.createServer((req, res) => {
-  // Check the request method and URL
-  if (req.method === 'GET' && req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Hello, World!' }));
-  } else {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Not Found' }));
-  }
+    console.log('Method:', req.method);    // GET, POST, etc.
+    console.log('URL:', req.url);          // /users, /products, etc.
+    console.log('Headers:', req.headers);  // Browser info, content type, etc.
 });
 ```
 
-### Key Concepts
+### Response Object (res)
+Used to send data back to the client:
 
-- **req.method**: HTTP method (GET, POST, etc.)
-- **req.url**: Requested URL path
-- **res.writeHead()**: Set status code and headers
-- **res.end()**: Send response and close connection
-- **JSON.stringify()**: Convert objects to JSON strings
+```javascript
+const server = http.createServer((req, res) => {
+    // Set status code and headers
+    res.writeHead(200, { 
+        'Content-Type': 'text/html',
+        'Access-Control-Allow-Origin': '*'
+    });
+    
+    // Send response body
+    res.write('<h1>Hello World!</h1>');
+    res.end(); // Finish the response
+});
+```
 
-## 4. Best Practices
+## URL Parsing
 
-1. **Always set Content-Type header** for JSON responses
-2. **Handle all routes** - return 404 for unknown paths
-3. **Use proper HTTP status codes**
-4. **Validate request methods** - only allow what you need
-5. **Error handling** - graceful error responses
+Extract information from URLs:
 
-## 5. Next Steps
+```javascript
+const url = require('url');
 
-In the Exercise section, you'll build your own Hello World server that:
-- Responds to GET requests at the root path
-- Returns JSON with a "Hello, World!" message
-- Handles 404 errors for other routes
-- Uses proper HTTP status codes and headers
+const server = http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url, true);
+    
+    console.log('Pathname:', parsedUrl.pathname);  // /users
+    console.log('Query:', parsedUrl.query);        // { name: 'john', age: '25' }
+});
+```
 
-Ready to start coding? Head to the Exercise tab! 🚀
+## Basic Routing
+
+Handle different URLs differently:
+
+```javascript
+const server = http.createServer((req, res) => {
+    const { method, url } = req;
+    
+    if (method === 'GET' && url === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<h1>Home Page</h1>');
+    } else if (method === 'GET' && url === '/about') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<h1>About Page</h1>');
+    } else {
+        res.writeHead(404, { 'Content-Type': 'text/html' });
+        res.end('<h1>Page Not Found</h1>');
+    }
+});
+```
+
+## Serving JSON Data
+
+APIs typically send JSON responses:
+
+```javascript
+const server = http.createServer((req, res) => {
+    if (req.url === '/api/users') {
+        const users = [
+            { id: 1, name: 'John' },
+            { id: 2, name: 'Jane' }
+        ];
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(users));
+    }
+});
+```
+
+## Serving Static Files
+
+Serve HTML, CSS, JS files from disk:
+
+```javascript
+const fs = require('fs');
+const path = require('path');
+
+const server = http.createServer((req, res) => {
+    if (req.url === '/') {
+        fs.readFile('index.html', (err, data) => {
+            if (err) {
+                res.writeHead(500);
+                res.end('Server Error');
+                return;
+            }
+            
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
+        });
+    }
+});
+```
+
+## Starting Your Server
+
+```javascript
+const PORT = 3000;
+
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+```
+
+Visit `http://localhost:3000` in your browser to see your server!
+
+## Key Takeaways
+
+- HTTP is request-response communication
+- Node.js `http` module creates web servers
+- Request object contains client data
+- Response object sends data back
+- Status codes indicate success/failure
+- JSON is the standard format for APIs
+- Routing handles different URLs differently
 

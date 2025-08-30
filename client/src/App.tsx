@@ -19,6 +19,7 @@ export default function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState<TestSuiteResult | null>(null);
+  const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
 
   // Default module ID - could be made configurable later
   const currentModuleId = 'module-1';
@@ -34,6 +35,9 @@ export default function App() {
       const content = await ModuleService.getModuleContent(currentModuleId);
       setModuleContent(content);
       setCode(content.exerciseContent.editorFiles.server);
+      
+      // Set exercise type based on module ID
+      setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load module content');
     } finally {
@@ -47,22 +51,26 @@ export default function App() {
     const codeContent = codeToRun || code;
     
     setIsRunning(true);
-    setOutput("Running server...\n");
+    setOutput("Running code...\n");
     
     try {
       // Send code to server for execution
       const result: RunResult = await ModuleService.runCode(currentModuleId, codeContent);
       
       if (result.success) {
-        setOutput(`✓ Server started successfully!\n\n--- Server Output ---\n${result.serverOutput || 'Server is running on port 3000'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour server is running correctly!`);
+        if (exerciseType === 'function') {
+          setOutput(`✓ Code executed successfully!\n\n--- Output ---\n${result.output || 'Code executed without output'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour code is working correctly!`);
+        } else {
+          setOutput(`✓ Code executed successfully!\n\n--- Output ---\n${result.output || 'Code is running'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour code is working correctly!`);
+        }
       } else {
-        setOutput(`✗ Server failed to start.\n\n--- Server Output ---\n${result.serverOutput || 'No server output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
+        setOutput(`✗ Code execution failed.\n\n--- Output ---\n${result.output || 'No output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
       }
       
       // Clear test results when just running code
       setTestResults(null);
     } catch (err) {
-      setOutput(`✗ Server execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setOutput(`✗ Code execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsRunning(false);
     }
@@ -72,7 +80,7 @@ export default function App() {
     if (!moduleContent) return;
     
     setIsSubmitting(true);
-    setOutput("Testing server...\n");
+    setOutput("Running tests...\n");
     
     try {
       const results = await ModuleService.runTests(currentModuleId, code);
@@ -232,7 +240,7 @@ export default function App() {
           {/* Output Panel */}
           <div className="border-t border-tactical-border-primary bg-tactical-surface p-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-tactical-text-primary">Output</h3>
+              <h3 className="text-sm font-semibold text-tactical-text-primary">Console</h3>
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleRunCode()}

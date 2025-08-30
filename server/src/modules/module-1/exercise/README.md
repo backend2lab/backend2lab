@@ -1,83 +1,118 @@
-# Exercise: Build a Hello World Server
+# Module 1 Exercise: Simple Greeting Function
 
-Your task is to create a simple Node.js HTTP server that returns 'Hello, World!' when accessed. This exercise will test your understanding of basic HTTP server creation.
+## Objective
+Create a simple Node.js program that demonstrates basic function creation and module usage with a greeting function.
 
-## 1. Task Requirements
+## What You'll Build
+A greeting program that:
+- Takes a name as a parameter
+- Returns a personalized greeting message
+- Uses Node.js modules
 
-Create an HTTP server that:
+## Setup Instructions
 
-1. **Listens on port 3000**
-2. **Handles GET requests to the root path `/`**
-3. **Returns JSON response**: `{ "message": "Hello, World!" }`
-4. **Sets proper Content-Type header**: `application/json`
-5. **Returns 404 for all other routes**
+1. **Create project folder**:
+   ```bash
+   mkdir greeting-app
+   cd greeting-app
+   ```
 
-## 2. Test Cases
+2. **Create these files**:
+   ```
+   greeting-app/
+   ├── main.js
+   └── index.js
+   ```
 
-Your server should pass these test cases:
+## Step-by-Step Implementation
 
-### Test Case 1: Basic GET Request
-- **Request**: `GET http://localhost:3000/`
-- **Expected Response**: 
-  ```json
-  {
-    "message": "Hello, World!"
-  }
-  ```
-- **Status Code**: 200 OK
-- **Headers**: `Content-Type: application/json`
+### Step 1: Create the Greetings Module
 
-### Test Case 2: Invalid Route
-- **Request**: `GET http://localhost:3000/hello`
-- **Expected Response**: 
-  ```json
-  {
-    "error": "Not Found"
-  }
-  ```
-- **Status Code**: 404 Not Found
-
-### Test Case 3: Wrong HTTP Method
-- **Request**: `POST http://localhost:3000/`
-- **Expected Response**: 
-  ```json
-  {
-    "error": "Not Found"
-  }
-  ```
-- **Status Code**: 404 Not Found
-
-## 3. Hints
-
-1. **Use Node.js built-in `http` module**
-2. **Check `req.method` and `req.url`**
-3. **Set headers with `res.writeHead()`**
-4. **Send JSON with `JSON.stringify()`**
-5. **Don't forget to call `res.end()`**
-
-## 4. Getting Started
-
-1. Open the `server.js` file in the editor
-2. Implement your server logic
-3. Use the test cases to verify your solution
-4. Run your server and test with the provided test cases
-
-## 5. Code Structure
-
-Your `server.js` should follow this basic structure:
+Create `main.js`:
 
 ```javascript
-const http = require('http');
+// TODO: Write your greeting function here
+// The function should:
+// - Take a 'name' parameter
+// - Return a greeting message like "Hello, [name]! Welcome to Node.js!"
 
-// TODO: Implement your server here
-// 1. Create HTTP server
-// 2. Handle GET requests to "/"
-// 3. Return JSON response
-// 4. Handle 404 for other routes
-// 5. Listen on port 3000
+function greetUser(name) {
+    // Your code here
+}
 
-console.log('Server starting...');
+// Export the function so it can be used in other files
+module.exports = {
+    greetUser
+};
 ```
 
-Good luck! 🎉
+### Step 2: Create the Main File
 
+Create `index.js`:
+
+```javascript
+// Import the greetings module
+const greetings = require('./main');
+
+// Test your function with different names
+console.log(greetings.greetUser('Alice'));
+console.log(greetings.greetUser('Bob'));
+console.log(greetings.greetUser('Charlie'));
+```
+
+## Your Task
+
+Complete the `greetUser` function in `main.js`:
+
+1. The function should accept one parameter called `name`
+2. Return a greeting message that includes the name
+3. The message should be: `"Hello, [name]! Welcome to Node.js!"`
+
+## Testing Your Solution
+
+Run your program with:
+```bash
+node index.js
+```
+
+## Expected Output
+
+```
+Hello, Alice! Welcome to Node.js!
+Hello, Bob! Welcome to Node.js!
+Hello, Charlie! Welcome to Node.js!
+```
+
+## Solution
+
+<details>
+<summary>Click to see the solution (try it yourself first!)</summary>
+
+```javascript
+function greetUser(name) {
+    return `Hello, ${name}! Welcome to Node.js!`;
+}
+
+module.exports = {
+    greetUser
+};
+```
+
+</details>
+
+## Challenge Extensions
+
+Once you complete the basic version, try these:
+
+1. **Add time-based greetings**: "Good morning, Alice!" or "Good evening, Bob!"
+2. **Multiple greeting styles**: Add a second parameter for greeting type
+3. **Validation**: Handle empty names or invalid inputs
+4. **Personal touches**: Add random compliments to the greeting
+
+## What You Learned
+
+- ✅ Creating functions in Node.js
+- ✅ Using function parameters
+- ✅ Exporting and importing modules
+- ✅ Running Node.js programs
+- ✅ Template literals for string formatting

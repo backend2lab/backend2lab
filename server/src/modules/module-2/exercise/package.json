@@ -1,0 +1,27 @@
+{
+  "name": "module-2-hello-world-server-exercise",
+  "version": "1.0.0",
+  "description": "Module 2 Exercise: Hello World Server",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "mocha test.js",
+    "dev": "node main.js"
+  },
+  "keywords": [
+    "nodejs",
+    "http",
+    "server",
+    "api",
+    "exercise"
+  ],
+  "author": "Backend2Lab",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  }
+}

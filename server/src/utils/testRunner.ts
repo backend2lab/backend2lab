@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { spawn } from 'child_process';
 import { promisify } from 'util';
@@ -18,6 +18,7 @@ export interface TestSuiteResult {
   failedTests: number;
   results: TestResult[];
   executionTime: number;
+  exerciseType: 'function' | 'server';
 }
 
 export interface RunResult {
@@ -25,38 +26,188 @@ export interface RunResult {
   success: boolean;
   message: string;
   executionTime: number;
-  serverOutput?: string;
+  output?: string;
   error?: string;
+  exerciseType: 'function' | 'server';
 }
 
 export class TestRunner {
   static async runCode(moduleId: string, inputCode: string): Promise<RunResult> {
     const startTime = Date.now();
-    let serverProcess: any = null;
-    let serverOutput = '';
 
+    if (moduleId === 'module-1') {
+      return this.runModule1Code(moduleId, inputCode, startTime);
+    } else {
+      return this.runServerCode(moduleId, inputCode, startTime);
+    }
+  }
+
+  static async runTests(moduleId: string, inputCode: string): Promise<TestSuiteResult> {
+    const startTime = Date.now();
+
+    if (moduleId === 'module-1') {
+      return this.runModule1Tests(moduleId, inputCode, startTime);
+    } else {
+      return this.runServerTests(moduleId, inputCode, startTime);
+    }
+  }
+
+  private static async runModule1Code(moduleId: string, inputCode: string, startTime: number): Promise<RunResult> {
     try {
-      // Get the module path
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const serverFilePath = join(modulePath, 'exercise/server.js');
+      const mainFilePath = join(modulePath, 'exercise/main.js');
 
-      // Check if module exists
       if (!existsSync(modulePath)) {
         return {
           moduleId,
           success: false,
           message: `Module ${moduleId} not found`,
-          executionTime: Date.now() - startTime
+          executionTime: Date.now() - startTime,
+          exerciseType: 'function'
+        };
+      }
+
+      // Write input code to main.js
+      writeFileSync(mainFilePath, inputCode);
+
+      // Execute the code directly
+      const { exec } = await import('child_process');
+      const execAsync = promisify(exec);
+      
+      const executionCommand = `cd ${modulePath}/exercise && node main.js`;
+      const { stdout, stderr } = await execAsync(executionCommand, { timeout: 5000 });
+      
+      return {
+        moduleId,
+        success: true,
+        message: 'Code executed successfully',
+        executionTime: Date.now() - startTime,
+        output: stdout.trim(),
+        exerciseType: 'function'
+      };
+
+    } catch (error: any) {
+      return {
+        moduleId,
+        success: false,
+        message: 'Code execution failed',
+        executionTime: Date.now() - startTime,
+        error: error.message,
+        exerciseType: 'function'
+      };
+    }
+  }
+
+  private static async runModule1Tests(moduleId: string, inputCode: string, startTime: number): Promise<TestSuiteResult> {
+    const results: TestResult[] = [];
+
+    try {
+      const modulePath = join(process.cwd(), 'src/modules', moduleId);
+      const mainFilePath = join(modulePath, 'exercise/main.js');
+
+      if (!existsSync(modulePath)) {
+        return {
+          moduleId,
+          totalTests: 0,
+          passedTests: 0,
+          failedTests: 0,
+          results: [{
+            testName: 'Module Setup',
+            passed: false,
+            error: `Module ${moduleId} not found`
+          }],
+          executionTime: Date.now() - startTime,
+          exerciseType: 'function'
+        };
+      }
+
+      // Write input code to main.js
+      writeFileSync(mainFilePath, inputCode);
+
+      // Run the test file using mocha
+      const testCommand = `cd ${process.cwd()} && npx mocha ${modulePath}/exercise/test.js --reporter json`;
+      
+      const { exec } = await import('child_process');
+      const execAsync = promisify(exec);
+      
+      try {
+        const { stdout, stderr } = await execAsync(testCommand, { timeout: 10000 });
+        
+        // Parse mocha JSON output
+        const testOutput = JSON.parse(stdout);
+        
+        // Convert mocha results to our format
+        results.push(...this.parseMochaResults(testOutput));
+        
+      } catch (execError: any) {
+        // Handle test execution errors
+        if (execError.stdout) {
+          try {
+            const testOutput = JSON.parse(execError.stdout);
+            results.push(...this.parseMochaResults(testOutput));
+          } catch (parseError) {
+            results.push({
+              testName: 'Test Execution',
+              passed: false,
+              error: `Failed to parse test results: ${execError.message}`
+            });
+          }
+        } else {
+          results.push({
+            testName: 'Test Execution',
+            passed: false,
+            error: `Test execution failed: ${execError.message}`
+          });
+        }
+      }
+
+    } catch (error: any) {
+      results.push({
+        testName: 'Function Setup',
+        passed: false,
+        error: `Function setup failed: ${error.message}`
+      });
+    }
+
+    const passedTests = results.filter(r => r.passed).length;
+    const failedTests = results.filter(r => !r.passed).length;
+
+    return {
+      moduleId,
+      totalTests: results.length,
+      passedTests,
+      failedTests,
+      results,
+      executionTime: Date.now() - startTime,
+      exerciseType: 'function'
+    };
+  }
+
+  private static async runServerCode(moduleId: string, inputCode: string, startTime: number): Promise<RunResult> {
+    let serverProcess: any = null;
+    let serverOutput = '';
+
+    try {
+      const modulePath = join(process.cwd(), 'src/modules', moduleId);
+      const mainFilePath = join(modulePath, 'exercise/main.js');
+
+      if (!existsSync(modulePath)) {
+        return {
+          moduleId,
+          success: false,
+          message: `Module ${moduleId} not found`,
+          executionTime: Date.now() - startTime,
+          exerciseType: 'server'
         };
       }
 
       // Kill any existing processes on port 3000
       await this.killProcessOnPort(3000);
 
-      // Write input code to server.js
-      writeFileSync(serverFilePath, inputCode);
+      // Write input code to main.js
+      writeFileSync(mainFilePath, inputCode);
       
-      serverProcess = spawn('node', [serverFilePath]);
+      serverProcess = spawn('node', [mainFilePath]);
 
       // Wait for server to start
       await new Promise<void>((resolve, reject) => {
@@ -96,7 +247,8 @@ export class TestRunner {
         success: true,
         message: 'Server started successfully',
         executionTime: Date.now() - startTime,
-        serverOutput: serverOutput.trim()
+        output: serverOutput.trim(),
+        exerciseType: 'server'
       };
 
     } catch (error: any) {
@@ -106,7 +258,8 @@ export class TestRunner {
         message: 'Server failed to start',
         executionTime: Date.now() - startTime,
         error: error.message,
-        serverOutput: serverOutput.trim()
+        output: serverOutput.trim(),
+        exerciseType: 'server'
       };
     } finally {
       // Clean up: kill the server process
@@ -116,17 +269,14 @@ export class TestRunner {
     }
   }
 
-  static async runTests(moduleId: string, inputCode: string): Promise<TestSuiteResult> {
-    const startTime = Date.now();
+  private static async runServerTests(moduleId: string, inputCode: string, startTime: number): Promise<TestSuiteResult> {
     const results: TestResult[] = [];
     let serverProcess: any = null;
 
     try {
-      // Get the module path
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const serverFilePath = join(modulePath, 'exercise/server.js');
+      const mainFilePath = join(modulePath, 'exercise/main.js');
 
-      // Check if module exists
       if (!existsSync(modulePath)) {
         return {
           moduleId,
@@ -138,17 +288,18 @@ export class TestRunner {
             passed: false,
             error: `Module ${moduleId} not found`
           }],
-          executionTime: Date.now() - startTime
+          executionTime: Date.now() - startTime,
+          exerciseType: 'server'
         };
       }
 
       // Kill any existing processes on port 3000
       await this.killProcessOnPort(3000);
 
-      // Write input code to server.js (no modifications needed)
-      writeFileSync(serverFilePath, inputCode);
+      // Write input code to main.js
+      writeFileSync(mainFilePath, inputCode);
       
-      serverProcess = spawn('node', [serverFilePath]);
+      serverProcess = spawn('node', [mainFilePath]);
 
       // Wait for server to start
       await new Promise<void>((resolve, reject) => {
@@ -237,7 +388,8 @@ export class TestRunner {
       passedTests,
       failedTests,
       results,
-      executionTime: Date.now() - startTime
+      executionTime: Date.now() - startTime,
+      exerciseType: 'server'
     };
   }
 

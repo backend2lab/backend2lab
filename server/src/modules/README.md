@@ -12,14 +12,28 @@ modules/
 │   │   └── README.md               # Lab content (rendered in Lab UI)
 │   └── exercise/
 │       ├── README.md               # Exercise instructions
-│       ├── server.js               # Template file for Monaco editor
+│       ├── main.js                 # Template file for Monaco editor
 │       ├── test.js                 # Mocha test cases
-│       ├── solution.js      # Complete working solution
+│       ├── solution.js             # Complete working solution
 │       └── package.json            # Exercise dependencies
 ├── module-2/
 │   └── ...
 └── index.ts                        # Module management utilities
 ```
+
+## Current Modules
+
+### Module 1: Environment Setup & Node.js Basics
+- **Difficulty**: Beginner
+- **Estimated Time**: 45 minutes
+- **Focus**: Node.js fundamentals, modules, package management
+- **Exercise**: Simple greeting function with module exports
+
+### Module 2: API Basics & Node.js Server Setup
+- **Difficulty**: Beginner
+- **Estimated Time**: 30 minutes
+- **Focus**: HTTP server creation, request/response handling
+- **Exercise**: Hello World HTTP server
 
 ## Module Configuration
 
@@ -28,26 +42,26 @@ Each module has a `module.json` file that defines:
 ```json
 {
   "id": "module-1",
-  "title": "API Basics & Node.js Server Setup",
-  "description": "Learn the fundamentals of APIs, HTTP, and how to build your first Node.js server",
+  "title": "Environment Setup & Node.js Basics",
+  "description": "Learn the fundamentals of Node.js, including runtime environment, modules, package management, and file system operations",
   "difficulty": "Beginner",
-  "estimatedTime": "30 minutes",
-  "tags": ["nodejs", "http", "api", "server", "basics"],
+  "estimatedTime": "45 minutes",
+  "tags": ["nodejs", "basics", "modules", "npm", "filesystem"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
     },
     "exercise": {
       "readme": "exercise/README.md",
-      "server": "exercise/server.js",
+      "server": "exercise/main.js",
       "test": "exercise/test.js",
       "solution": "exercise/solution.js",
       "package": "exercise/package.json"
     }
   },
   "learningObjectives": [
-    "Understand HTTP server basics",
-    "Learn request/response handling"
+    "Understand Node.js runtime environment",
+    "Learn module system and exports"
   ],
   "prerequisites": [
     "Basic JavaScript knowledge"
@@ -63,14 +77,14 @@ Each module has a `module.json` file that defines:
 
 ### Exercise Files
 - **README.md**: Exercise instructions and requirements
-- **server.js**: Template file shown in Monaco editor
+- **main.js**: Template file shown in Monaco editor (primary entry point)
 - **test.js**: Mocha test cases for validation
 - **solution.js**: Complete working implementation
 - **package.json**: Dependencies and scripts for the exercise
 
 ## Adding New Modules
 
-1. **Create module directory**: `module-X/`
+1. **Create module directory**: `module-X/` (where X is the next number)
 2. **Create subdirectories**: `lab/` and `exercise/`
 3. **Add module.json**: Configure module metadata
 4. **Create lab content**: `lab/README.md`
@@ -97,17 +111,28 @@ The `index.ts` file provides utilities to:
 
 ### Exercise Content
 - **README.md**: Clear requirements and test cases
-- **server.js**: Minimal template with TODOs
-- **test.js**: Comprehensive test coverage
+- **main.js**: Minimal template with TODOs (primary file)
+- **test.js**: Comprehensive test coverage using Mocha + Chai
 - **solution.js**: Clean, well-commented code
 - **package.json**: Only necessary dependencies
 
 ## Technical Notes
 
 - All files are read synchronously for simplicity
-- Module discovery is automatic based on directory naming
+- Module discovery is automatic based on directory naming (`module-X`)
 - Error handling for missing or malformed modules
 - TypeScript interfaces for type safety
 - Support for different difficulty levels and tags
+- Standardized file naming: `main.js` for primary exercise files
+- Testing framework: Mocha + Chai for consistent test structure
+
+## File Naming Convention
+
+- **Primary files**: Use `main.js` as the standard entry point
+- **Module directories**: `module-1`, `module-2`, etc.
+- **Configuration**: `module.json` for each module
+- **Documentation**: `README.md` for lab and exercise content
+- **Testing**: `test.js` with Mocha + Chai framework
+- **Solutions**: `solution.js` for complete implementations
 
 

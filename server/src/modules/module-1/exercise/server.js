@@ -1,10 +1,7 @@
-const http = require('http');
+function greetUser(name) {
+    return `Hello, ${name}! Welcome to Node.js!`;
+}
 
-// TODO: Implement your server here
-// 1. Create HTTP server
-// 2. Handle GET requests to "/"
-// 3. Return JSON response
-// 4. Handle 404 for other routes
-// 5. Listen on port 3000
-
-console.log('Server starting...');
+module.exports = {
+    greetUser
+};

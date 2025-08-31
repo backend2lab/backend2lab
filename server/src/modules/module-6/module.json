@@ -1,0 +1,34 @@
+{
+  "id": "module-6",
+  "title": "Middleware",
+  "description": "Learn how to create and use middleware functions in Express.js to process requests, handle authentication, logging, and more",
+  "difficulty": "Intermediate",
+  "estimatedTime": "60 minutes",
+  "tags": ["express", "middleware", "authentication", "logging", "api", "security"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand what middleware is and how it works",
+    "Create custom middleware functions",
+    "Implement authentication middleware",
+    "Use middleware for request logging",
+    "Apply middleware to specific routes",
+    "Handle middleware execution order",
+    "Create error handling middleware"
+  ],
+  "prerequisites": [
+    "Basic Express.js knowledge",
+    "Understanding of HTTP requests and responses",
+    "JavaScript fundamentals"
+  ]
+}

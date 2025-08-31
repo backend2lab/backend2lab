@@ -1,6 +1,6 @@
 # Backend Playground
 
-![B2Lab Logo](client/public/b2lab.png)
+![B2Lab Video](client/public/b2lab.mp4)
 
 Backend Playground is an **interactive learning platform** for backend development.
 It combines **labs**, **exercises**, and a **code playground** for beginners to practice backend concepts in a real Node.js environment, directly from the browser.

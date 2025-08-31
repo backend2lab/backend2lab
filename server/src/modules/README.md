@@ -12,7 +12,7 @@ modules/
 │   │   └── README.md               # Lab content (rendered in Lab UI)
 │   └── exercise/
 │       ├── README.md               # Exercise instructions
-│       ├── main.js                 # Template file for Monaco editor
+│       ├── server.js                 # Template file for Monaco editor
 │       ├── test.js                 # Mocha test cases
 │       ├── solution.js             # Complete working solution
 │       └── package.json            # Exercise dependencies
@@ -53,7 +53,7 @@ Each module has a `module.json` file that defines:
     },
     "exercise": {
       "readme": "exercise/README.md",
-      "server": "exercise/main.js",
+      "server": "exercise/server.js",
       "test": "exercise/test.js",
       "solution": "exercise/solution.js",
       "package": "exercise/package.json"
@@ -77,7 +77,7 @@ Each module has a `module.json` file that defines:
 
 ### Exercise Files
 - **README.md**: Exercise instructions and requirements
-- **main.js**: Template file shown in Monaco editor (primary entry point)
+- **server.js**: Template file shown in Monaco editor (primary entry point)
 - **test.js**: Mocha test cases for validation
 - **solution.js**: Complete working implementation
 - **package.json**: Dependencies and scripts for the exercise
@@ -111,7 +111,7 @@ The `index.ts` file provides utilities to:
 
 ### Exercise Content
 - **README.md**: Clear requirements and test cases
-- **main.js**: Minimal template with TODOs (primary file)
+- **server.js**: Minimal template with TODOs (primary file)
 - **test.js**: Comprehensive test coverage using Mocha + Chai
 - **solution.js**: Clean, well-commented code
 - **package.json**: Only necessary dependencies
@@ -123,12 +123,12 @@ The `index.ts` file provides utilities to:
 - Error handling for missing or malformed modules
 - TypeScript interfaces for type safety
 - Support for different difficulty levels and tags
-- Standardized file naming: `main.js` for primary exercise files
+- Standardized file naming: `server.js` for primary exercise files
 - Testing framework: Mocha + Chai for consistent test structure
 
 ## File Naming Convention
 
-- **Primary files**: Use `main.js` as the standard entry point
+- **Primary files**: Use `server.js` as the standard entry point
 - **Module directories**: `module-1`, `module-2`, etc.
 - **Configuration**: `module.json` for each module
 - **Documentation**: `README.md` for lab and exercise content

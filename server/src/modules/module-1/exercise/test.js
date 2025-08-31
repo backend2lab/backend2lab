@@ -5,7 +5,7 @@ describe('Greeting Function', () => {
 
   before(() => {
     try {
-      greetings = require('./main');
+      greetings = require('./tmp-server'); // file is created by testRunner
     } catch (error) {
       throw new Error('Could not load main module. Make sure main.js exists and exports greetUser function.');
     }

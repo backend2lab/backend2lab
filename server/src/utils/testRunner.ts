@@ -55,7 +55,7 @@ export class TestRunner {
   private static async runModule1Code(moduleId: string, inputCode: string, startTime: number): Promise<RunResult> {
     try {
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const mainFilePath = join(modulePath, 'exercise/main.js');
+      const mainFilePath = join(modulePath, 'exercise/tmp-server.js');
 
       if (!existsSync(modulePath)) {
         return {
@@ -74,7 +74,7 @@ export class TestRunner {
       const { exec } = await import('child_process');
       const execAsync = promisify(exec);
       
-      const executionCommand = `cd ${modulePath}/exercise && node main.js`;
+      const executionCommand = `cd ${modulePath}/exercise && node tmp-server.js`;
       const { stdout, stderr } = await execAsync(executionCommand, { timeout: 5000 });
       
       return {
@@ -103,7 +103,7 @@ export class TestRunner {
 
     try {
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const mainFilePath = join(modulePath, 'exercise/main.js');
+      const mainFilePath = join(modulePath, 'exercise/tmp-server.js');
 
       if (!existsSync(modulePath)) {
         return {
@@ -121,7 +121,7 @@ export class TestRunner {
         };
       }
 
-      // Write input code to main.js
+      // Write input code to tmp-server.js
       writeFileSync(mainFilePath, inputCode);
 
       // Run the test file using mocha
@@ -189,7 +189,7 @@ export class TestRunner {
 
     try {
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const mainFilePath = join(modulePath, 'exercise/main.js');
+      const mainFilePath = join(modulePath, 'exercise/tmp-server.js');
 
       if (!existsSync(modulePath)) {
         return {
@@ -204,7 +204,7 @@ export class TestRunner {
       // Kill any existing processes on port 3000
       await this.killProcessOnPort(3000);
 
-      // Write input code to main.js
+      // Write input code to tmp-server.js
       writeFileSync(mainFilePath, inputCode);
       
       serverProcess = spawn('node', [mainFilePath]);
@@ -275,7 +275,7 @@ export class TestRunner {
 
     try {
       const modulePath = join(process.cwd(), 'src/modules', moduleId);
-      const mainFilePath = join(modulePath, 'exercise/main.js');
+      const mainFilePath = join(modulePath, 'exercise/tmp-server.js');
 
       if (!existsSync(modulePath)) {
         return {
@@ -296,7 +296,7 @@ export class TestRunner {
       // Kill any existing processes on port 3000
       await this.killProcessOnPort(3000);
 
-      // Write input code to main.js
+      // Write input code to tmp-server.js
       writeFileSync(mainFilePath, inputCode);
       
       serverProcess = spawn('node', [mainFilePath]);

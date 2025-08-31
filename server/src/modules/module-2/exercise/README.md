@@ -86,26 +86,6 @@ Hello from my first server!
 ```
 (displayed as a large heading)
 
-## Solution
-
-<details>
-<summary>Click to see the solution (try it yourself first!)</summary>
-
-```javascript
-const http = require('http');
-
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end('<h1>Hello from my first server!</h1>');
-});
-
-server.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
-});
-```
-
-</details>
-
 ## Challenge Extensions
 
 Once you complete the basic version, try these:

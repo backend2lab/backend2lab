@@ -1,0 +1,24 @@
+{
+  "name": "module-5-request-validation-exercise",
+  "version": "1.0.0",
+  "description": "User registration validator exercise for request handling and validation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha test.js"
+  },
+  "keywords": ["express", "validation", "request-handling", "api", "exercise"],
+  "author": "Backend Playground",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.0"
+  }
+}

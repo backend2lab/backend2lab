@@ -63,12 +63,7 @@ Tests all Express server endpoints with mocked dependencies:
 - **POST /api/run/:moduleId** - Run user code without tests
 - **CORS Headers** - Verify proper CORS configuration
 
-**Key Test Scenarios:**
-- ✅ Successful API responses
-- ❌ Error handling (404, 500, 400)
-- 🔒 Input validation
-- 🌐 CORS configuration
-- 📝 Request/response structure validation
+
 
 ### 2. `testRunner.spec.ts` - TestRunner Unit Tests
 Comprehensive unit tests for the TestRunner class:
@@ -78,13 +73,6 @@ Comprehensive unit tests for the TestRunner class:
 - **parseMochaResults()** - Test Mocha output parsing
 - **killProcessOnPort()** - Test process management
 
-**Key Test Scenarios:**
-- ✅ Successful code execution
-- ❌ Module not found errors
-- ⏱️ Timeout handling
-- 🔌 Port conflicts
-- 🧪 Test result parsing
-- 🛑 Process cleanup
 
 ### 3. `modules/index.spec.ts` - Module Management Tests
 Unit tests for module loading and management:
@@ -94,12 +82,6 @@ Unit tests for module loading and management:
 - **getModuleContent()** - Test content loading
 - **getAvailableModules()** - Test simplified module list
 
-**Key Test Scenarios:**
-- ✅ Module loading from filesystem
-- ❌ File system errors
-- 🔍 Module filtering
-- 📁 Directory structure handling
-- 📄 File reading operations
 
 ### 4. `integration.spec.ts` - End-to-End Tests
 Integration tests with real Express server instances:
@@ -109,12 +91,6 @@ Integration tests with real Express server instances:
 - **Performance** - Large payload handling
 - **CORS** - Cross-origin request handling
 
-**Key Test Scenarios:**
-- 🔄 Complete API workflows
-- 📊 Response structure validation
-- 🚨 Real error conditions
-- 📦 Large request handling
-- 🌐 CORS preflight requests
 
 ## Test Utilities
 

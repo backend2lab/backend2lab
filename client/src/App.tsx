@@ -22,6 +22,7 @@ export default function App() {
   const [testResults, setTestResults] = useState<TestSuiteResult | null>(null);
   const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   // Default module ID - could be made configurable later
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
@@ -126,6 +127,7 @@ export default function App() {
     if (!moduleContent) return;
     
     setIsSubmitting(true);
+ 
     setOutput("Running tests...\n");
     
     try {
@@ -140,6 +142,7 @@ export default function App() {
     } catch (err) {
       setOutput(`✗ Test execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
+      setHasAttemptedSubmit(true);
       setIsSubmitting(false);
     }
   };
@@ -325,6 +328,7 @@ export default function App() {
               testCases={moduleContent.exerciseContent.editorFiles.test}
               solution={moduleContent.exerciseContent.solution}
               runCode={handleRunCode}
+              hasAttemptedSubmit={hasAttemptedSubmit}
             />
           </div>
           

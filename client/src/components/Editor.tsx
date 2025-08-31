@@ -22,9 +22,10 @@ interface Props {
   solution?: string;
   runCode?: (code: string) => void;
   readOnly?: boolean;
+  hasAttemptedSubmit?: boolean;
 }
 
-export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly }: Props) {
+export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
   const [files, setFiles] = useState<FileTab[]>([
     {
       id: 'server.js',
@@ -392,7 +393,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {!readOnly && runCode && (
         <div className="flex justify-between items-center p-4 bg-tactical-surface border-t border-tactical-border-primary">
           <div className="flex items-center space-x-2">
-            {solution && activeFile.id === 'server.js' && (
+            {solution && activeFile.id === 'server.js' && hasAttemptedSubmit && (
               <button 
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${

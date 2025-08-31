@@ -83,23 +83,6 @@ Hello, Bob! Welcome to Node.js!
 Hello, Charlie! Welcome to Node.js!
 ```
 
-## Solution
-
-<details>
-<summary>Click to see the solution (try it yourself first!)</summary>
-
-```javascript
-function greetUser(name) {
-    return `Hello, ${name}! Welcome to Node.js!`;
-}
-
-module.exports = {
-    greetUser
-};
-```
-
-</details>
-
 ## Challenge Extensions
 
 Once you complete the basic version, try these:

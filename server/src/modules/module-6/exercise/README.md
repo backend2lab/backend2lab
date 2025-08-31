@@ -123,49 +123,6 @@ app.listen(PORT, () => {
 { "message": "Your profile data", "user": "John Doe" }
 ```
 
-## Solution
-
-<details>
-<summary>Click to see the solution (try it yourself first!)</summary>
-
-```javascript
-const express = require('express');
-const app = express();
-
-function checkAuth(req, res, next) {
-    if (req.headers.authorization) {
-        next();
-    } else {
-        res.status(401).json({ error: 'Authorization required' });
-    }
-}
-
-// Public routes
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome! This is a public page.' });
-});
-
-app.get('/about', (req, res) => {
-    res.json({ message: 'About page - open to everyone' });
-});
-
-// Protected routes
-app.get('/profile', checkAuth, (req, res) => {
-    res.json({ message: 'Your profile data', user: 'John Doe' });
-});
-
-app.get('/settings', checkAuth, (req, res) => {
-    res.json({ message: 'Your settings', theme: 'dark' });
-});
-
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-```
-
-</details>
-
 ## Challenge Extensions
 
 Once you complete the basic version, try these:

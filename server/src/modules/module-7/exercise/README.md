@@ -142,35 +142,6 @@ Once you complete the functions, your API will support these endpoints:
 - Proper error handling for missing files
 - Validation for required fields (name, email)
 
-## Solution
-
-<details>
-<summary>Click to see the solution (try it yourself first!)</summary>
-
-```javascript
-function saveUsers(users) {
-    try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2));
-        return true;
-    } catch (error) {
-        console.error('Error saving users:', error.message);
-        return false;
-    }
-}
-
-function loadUsers() {
-    try {
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.log('No users file found, returning empty array');
-        return [];
-    }
-}
-```
-
-</details>
-
 ## Challenge Extensions
 
 Once you complete the basic version, try these:

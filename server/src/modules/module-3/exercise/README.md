@@ -104,38 +104,6 @@ Server running on http://localhost:3000
 - `http://localhost:3000/about` → "My name is [Your Name]"
 - `http://localhost:3000/api/user` → `{"id":1,"name":"John Doe","email":"john@example.com"}`
 
-## Solution
-
-<details>
-<summary>Click to see the solution (try it yourself first!)</summary>
-
-```javascript
-const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-    res.send('Welcome to Express!');
-});
-
-app.get('/about', (req, res) => {
-    res.send('My name is John Smith');
-});
-
-app.get('/api/user', (req, res) => {
-    res.json({ 
-        id: 1, 
-        name: "John Doe", 
-        email: "john@example.com" 
-    });
-});
-
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
-});
-```
-
-</details>
-
 ## Challenge Extensions
 
 Once you complete the basic version, try these:

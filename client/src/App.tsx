@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService.js";
+import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -231,7 +232,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Module Selector */}
+            {/* Top Right: Module Selector + GitHub Link */}
             <div className="flex items-center space-x-3">
               <div className="relative module-dropdown">
                 <button 
@@ -276,6 +277,16 @@ export default function App() {
                   </div>
                 )}
               </div>
+              {/* GitHub Link Icon */}
+              <a
+                href="https://github.com/backend2lab/backend2lab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-tactical-text-secondary hover:text-tactical-primary transition-colors"
+                title="View on GitHub"
+              >
+                <FontAwesomeIcon icon={faGithub} size="2x" />
+              </a>
             </div>
           </div>
         </div>

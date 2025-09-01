@@ -1,7 +1,7 @@
 # Backend Playground
 
 
-https://github.com/user-attachments/assets/4c8426c8-97aa-4afd-bd5b-2a71b8eeb2aa
+https://github.com/user-attachments/assets/9ae710c8-8c8c-4c84-9eb1-1a622ed28488
 
 
 Backend Playground is an **interactive learning platform** for backend development.

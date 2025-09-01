@@ -4,6 +4,6 @@ echo "Starting Backend2Lab Server..."
 cd /app/server && node dist/main.js &
 
 echo "Starting Backend2Lab Client..."
-cd /app/client && npx vite preview --host 0.0.0.0 --port 4200 &
-
+cd /app/client || exit 1
+npx http-server ./dist -a 0.0.0.0 -p 4200 --cache -1 &
 wait

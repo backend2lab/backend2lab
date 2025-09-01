@@ -232,7 +232,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Top Right: Module Selector + GitHub Link */}
+            {/* Top Right:- Module Selector + GitHub Link */}
             <div className="flex items-center space-x-3">
               <div className="relative module-dropdown">
                 <button 

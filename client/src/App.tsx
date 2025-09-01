@@ -5,7 +5,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService";
+import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService.js";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';

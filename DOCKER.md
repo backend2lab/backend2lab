@@ -13,17 +13,17 @@ This document explains how to run the Backend2Lab project using Docker.
 
 1. **Build and run the production version:**
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
 2. **Run in detached mode:**
    ```bash
-   docker-compose up -d --build
+   docker compose up -d --build
    ```
 
 3. **Stop the services:**
    ```bash
-   docker-compose down
+   docker compose down
    ```
 
 ### Option 2: Using Docker directly
@@ -48,7 +48,7 @@ This document explains how to run the Backend2Lab project using Docker.
 To run the project in development mode with hot reloading:
 
 ```bash
-docker-compose --profile dev up --build
+docker compose --profile dev up --build
 ```
 
 This will:
@@ -85,8 +85,8 @@ docker run -e NODE_ENV=production -e PORT=3000 -p 3000:3000 -p 4200:4200 backend
 
 ### Check container logs:
 ```bash
-# Using docker-compose
-docker-compose logs
+# Using docker compose
+docker compose logs
 
 # Using docker
 docker logs backend2lab-container
@@ -94,8 +94,8 @@ docker logs backend2lab-container
 
 ### Access container shell:
 ```bash
-# Using docker-compose
-docker-compose exec backend2lab sh
+# Using docker compose
+docker compose exec backend2lab sh
 
 # Using docker
 docker exec -it backend2lab-container sh
@@ -103,16 +103,16 @@ docker exec -it backend2lab-container sh
 
 ### Rebuild without cache:
 ```bash
-docker-compose build --no-cache
+docker compose build --no-cache
 ```
 
 ### Clean up:
 ```bash
 # Remove containers and networks
-docker-compose down
+docker compose down
 
 # Remove containers, networks, and volumes
-docker-compose down -v
+docker compose down -v
 
 # Remove all unused containers, networks, and images
 docker system prune -a

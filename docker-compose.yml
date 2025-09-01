@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
       target: production
     ports:
-      - "4000:4000"  # Server API
-      - "4200:4200"  # Client
+      - "4000:4000"
+      - "4200:4200"
     environment:
       - NODE_ENV=production
       - HOST=0.0.0.0
@@ -19,15 +19,14 @@ services:
       retries: 3
       start_period: 40s
 
-  # Development service (optional)
   backend2lab-dev:
     build:
       context: .
       dockerfile: Dockerfile
       target: base
     ports:
-      - "4001:4000"  # Server API
-      - "4201:4200"  # Client
+      - "4001:4000"
+      - "4201:4200"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0

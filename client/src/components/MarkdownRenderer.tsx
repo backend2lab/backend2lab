@@ -3,6 +3,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { StepCard } from './StepCard';
 import { CodeDisplay } from './CodeDisplay';
+import { sanitizeMarkdown, validateMarkdown } from '../utils/markdownSanitizer';
 
 interface MarkdownRendererProps {
   content: string;
@@ -25,6 +26,15 @@ interface ContentBlock {
 }
 
 export default function MarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {
+  // Sanitize the markdown content to prevent XSS and code injection
+  const sanitizedContent = sanitizeMarkdown(content);
+  
+  // Validate the content and log warnings if any
+  const validation = validateMarkdown(content);
+  if (!validation.isValid) {
+    console.warn('Markdown validation warnings:', validation.warnings);
+  }
+  
   // Parse the markdown content to extract sections with ordered content blocks
   const parseSections = (markdown: string): Section[] => {
     const sections: Section[] = [];
@@ -148,7 +158,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
     return sections;
   };
 
-  const sections = parseSections(content);
+  const sections = parseSections(sanitizedContent);
 
   // If we have sections, render them as StepCards
   if (sections.length > 0 && sections.some(section => section.title)) {
@@ -169,6 +179,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeHighlight]}
+                          skipHtml={true}
                           components={{
                             h1: ({ children }) => (
                               <h1 className="text-2xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0">{children}</h1>
@@ -338,6 +349,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
+        skipHtml={true}
       components={{
           h1: ({ children }) => (
             <h1 className="text-3xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0">{children}</h1>
@@ -442,10 +454,371 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             {children}
           </blockquote>
         ),
-      }}
+              }}
     >
-              {content}
+              {sanitizedContent}
       </ReactMarkdown>
     </div>
-  );
+    );
 }
+
+
+                                    return String(child.props?.children || '');
+
+                                  }
+
+                                  return String(child || '');
+
+                                }).join('');
+
+                              } else                               if (children && typeof children === 'object' && 'props' in children) {
+
+                                const childrenProps = children.props as { children?: any };
+
+                                console.log('Extracting from props.children:', childrenProps.children);
+
+                                if (Array.isArray(childrenProps.children)) {
+
+                                  codeContent = childrenProps.children.map((child: any) => {
+
+                                    console.log('props child:', child, 'type:', typeof child);
+
+                                    if (typeof child === 'string') return child;
+
+                                    if (child && typeof child === 'object' && 'props' in child) {
+
+                                      return String(child.props?.children || '');
+
+                                    }
+
+                                    return String(child || '');
+
+                                  }).join('');
+
+                                } else {
+
+                                  codeContent = String(childrenProps.children || '');
+
+                                }
+
+                              } else if (typeof children === 'string') {
+
+                                codeContent = children;
+
+                              } else {
+
+                                codeContent = String(children || '');
+
+                              }
+
+                              
+
+                              console.log('final codeContent:', codeContent);
+
+                              
+
+                              return (
+
+                                <CodeDisplay
+
+                                  code={codeContent}
+
+                                  language={language}
+
+                                  showLineNumbers={true}
+
+                                />
+
+                              );
+
+                            },
+
+                            blockquote: ({ children }) => (
+
+                              <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-2 rounded-r">
+
+                                {children}
+
+                              </blockquote>
+
+                            ),
+
+                          }}
+
+                        >
+
+                          {block.content}
+
+                        </ReactMarkdown>
+
+                      </div>
+
+                    ) : (
+
+                      <CodeDisplay
+
+                        code={block.content}
+
+                        language={block.language || 'javascript'}
+
+                        showLineNumbers={block.showLineNumbers}
+
+                      />
+
+                    )}
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            }
+
+          />
+
+        ))}
+
+      </div>
+
+    );
+
+  }
+
+
+
+  // If no sections found, render as regular markdown
+
+  return (
+
+    <div className={`prose prose-invert max-w-none ${className}`}>
+
+      <ReactMarkdown
+
+        remarkPlugins={[remarkGfm]}
+
+        rehypePlugins={[rehypeHighlight]}
+
+      components={{
+
+          h1: ({ children }) => (
+
+            <h1 className="text-3xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0">{children}</h1>
+
+          ),
+
+          h2: ({ children }) => (
+
+            <h2 className="text-2xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0">{children}</h2>
+
+          ),
+
+          h3: ({ children }) => {
+
+            const text = String(children);
+
+            // Check if this is a test case heading
+
+            if (text.includes('Test Case')) {
+
+              return (
+
+                <h3 className="text-xl font-semibold text-tactical-accent mb-4 mt-6 first:mt-0 border-l-4 border-tactical-accent pl-4 bg-tactical-surface/30 py-2 rounded-r">
+
+                  {children}
+
+                </h3>
+
+              );
+
+            }
+
+            return (
+
+              <h3 className="text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0">{children}</h3>
+
+            );
+
+          },
+
+        p: ({ children }) => (
+
+            <p className="text-tactical-text-secondary mb-4 leading-relaxed">{children}</p>
+
+          ),
+
+          ul: ({ children }) => (
+
+            <ul className="list-disc list-inside space-y-3 text-tactical-text-secondary mb-5">{children}</ul>
+
+          ),
+
+          ol: ({ children }) => (
+
+            <ol className="list-decimal list-inside space-y-3 text-tactical-text-secondary mb-5">{children}</ol>
+
+          ),
+
+          li: ({ children }) => (
+
+            <li className="text-tactical-text-secondary mb-5">{children}</li>
+
+        ),
+
+        strong: ({ children }) => (
+
+            <strong className="font-semibold text-tactical-text-primary">{children}</strong>
+
+        ),
+
+        em: ({ children }) => (
+
+            <em className="italic text-tactical-text-secondary">{children}</em>
+
+        ),
+
+                  code: ({ children }) => {
+
+            // const language = className?.replace('language-', '') || 'text';
+
+            const text = String(children);
+
+            
+
+            // Special styling for test case details
+
+            if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
+
+              return (
+
+                <code className="bg-tactical-accent/20 px-2 py-1 rounded text-sm font-mono text-tactical-accent border border-tactical-accent/30 font-semibold">
+
+                  {children}
+
+                </code>
+
+              );
+
+            }
+
+            
+
+            return (
+
+              <code className="bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-highlight border border-tactical-border-primary">
+
+                {children}
+
+              </code>
+
+            );
+
+          },
+
+          pre: ({ children, className }) => {
+
+            const language = className?.replace('language-', '') || 'javascript';
+
+            
+
+            // Debug: log what we're receiving
+
+            console.log('fallback pre children:', children);
+
+            console.log('fallback pre children type:', typeof children);
+
+            console.log('fallback pre children isArray:', Array.isArray(children));
+
+            
+
+            // Extract code content safely
+
+            let codeContent = '';
+
+            
+
+            // Handle different types of children
+
+            if (Array.isArray(children)) {
+
+              codeContent = children.map(child => {
+
+                console.log('fallback child:', child, 'type:', typeof child);
+
+                if (typeof child === 'string') return child;
+
+                if (child && typeof child === 'object' && 'props' in child) {
+
+                  console.log('fallback child props:', child.props);
+
+                  return String(child.props?.children || '');
+
+                }
+
+                return String(child || '');
+
+              }).join('');
+
+            } else if (children && typeof children === 'object' && 'props' in children) {
+
+              const childrenProps = children.props as { children?: any };
+
+              codeContent = String(childrenProps?.children || '');
+
+            } else if (typeof children === 'string') {
+
+              codeContent = children;
+
+            } else {
+
+              codeContent = String(children || '');
+
+            }
+
+            
+
+            console.log('fallback final codeContent:', codeContent);
+
+            
+
+            return (
+
+              <CodeDisplay
+
+                code={codeContent}
+
+                language={language}
+
+                showLineNumbers={true}
+
+              />
+
+            );
+
+          },
+
+        blockquote: ({ children }) => (
+
+            <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4">
+
+            {children}
+
+          </blockquote>
+
+        ),
+
+      }}
+
+    >
+
+              {content}
+
+      </ReactMarkdown>
+
+    </div>
+
+  );
+
+}
+
+

@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { sanitizeFileContent } from '../utils/markdownSanitizer';
 
 export interface ModuleFile {
   readme?: string;
@@ -79,7 +80,7 @@ export function getModuleContent(moduleId: string): ModuleContent | null {
     
     // Read lab content
     const labReadmePath = join(modulePath, module.files.lab.readme || '');
-    const labContent = readFileSync(labReadmePath, 'utf-8');
+    const labContent = sanitizeFileContent(labReadmePath, readFileSync(labReadmePath, 'utf-8'));
 
     // Read exercise content
     const exerciseReadmePath = join(modulePath, module.files.exercise.readme || '');
@@ -89,7 +90,7 @@ export function getModuleContent(moduleId: string): ModuleContent | null {
     const exercisePackagePath = join(modulePath, module.files.exercise.package || '');
 
     const exerciseContent = {
-      readme: readFileSync(exerciseReadmePath, 'utf-8'),
+      readme: sanitizeFileContent(exerciseReadmePath, readFileSync(exerciseReadmePath, 'utf-8')),
       editorFiles: {
         server: readFileSync(exerciseServerPath, 'utf-8'),
         test: readFileSync(exerciseTestPath, 'utf-8'),

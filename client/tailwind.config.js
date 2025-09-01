@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
@@ -21,6 +22,15 @@ export default {
           success: '#10b981', // emerald-500 - Success states
           warning: '#f59e0b', // amber-500 - Warning states
           error: '#ef4444', // red-500 - Error states
+          
+          // Light theme colors
+          'light-background': '#ffffff', // white - Light background
+          'light-surface': '#f8fafc', // slate-50 - Light card backgrounds
+          'light-text-primary': '#0f172a', // slate-900 - Light primary text
+          'light-text-secondary': '#64748b', // slate-500 - Light secondary text
+          'light-border-primary': '#94a3b8', // slate-400 - Light card borders (darker for visibility)
+          'light-border-secondary': '#cbd5e1', // slate-300 - Light subtle separators (darker for visibility)
+          'light-surface-hover': '#f1f5f9', // slate-100 - Light hover state
         },
         // Legacy colors for backward compatibility
         dark: {
@@ -71,6 +81,8 @@ export default {
       boxShadow: {
         'tactical': '0 4px 6px rgba(0, 0, 0, 0.5)',
         'tactical-lg': '0 8px 25px rgba(0, 0, 0, 0.6)',
+        'tactical-light': '0 4px 6px rgba(0, 0, 0, 0.1)',
+        'tactical-light-lg': '0 8px 25px rgba(0, 0, 0, 0.15)',
         'soft': '0 2px 4px rgba(0, 0, 0, 0.05)',
         'medium': '0 4px 6px rgba(0, 0, 0, 0.05)',
         'large': '0 4px 12px rgba(0, 0, 0, 0.1)',

@@ -305,8 +305,16 @@
     @apply bg-neutral-900;
   }
 
+  .light ::-webkit-scrollbar-track {
+    @apply bg-slate-200;
+  }
+
   ::-webkit-scrollbar-thumb {
     @apply bg-tactical-border-primary rounded-full;
+  }
+
+  .light ::-webkit-scrollbar-thumb {
+    @apply bg-tactical-light-border-primary rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -498,4 +506,66 @@
   .prose td {
     @apply border border-tactical-border-primary px-4 py-2 text-tactical-text-secondary;
   }
+
+  /* Theme-aware background classes */
+  .bg-theme-background {
+    @apply bg-tactical-background;
+  }
+  
+  .dark .bg-theme-background {
+    @apply bg-tactical-background;
+  }
+  
+  .light .bg-theme-background {
+    @apply bg-tactical-light-background;
+  }
+
+  .bg-theme-surface {
+    @apply bg-tactical-surface;
+  }
+  
+  .dark .bg-theme-surface {
+    @apply bg-tactical-surface;
+  }
+  
+  .light .bg-theme-surface {
+    @apply bg-tactical-light-surface;
+  }
+
+  .text-theme-primary {
+    @apply text-tactical-text-primary;
+  }
+  
+  .dark .text-theme-primary {
+    @apply text-tactical-text-primary;
+  }
+  
+  .light .text-theme-primary {
+    @apply text-tactical-light-text-primary;
+  }
+
+  .text-theme-secondary {
+    @apply text-tactical-text-secondary;
+  }
+  
+  .dark .text-theme-secondary {
+    @apply text-tactical-text-secondary;
+  }
+  
+  .light .text-theme-secondary {
+    @apply text-tactical-light-text-secondary;
+  }
+
+  .border-theme-primary {
+    @apply border-tactical-border-primary;
+  }
+  
+  .dark .border-theme-primary {
+    @apply border-tactical-border-primary;
+  }
+  
+  .light .border-theme-primary {
+    @apply border-tactical-light-border-primary;
+  }
 }
+

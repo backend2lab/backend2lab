@@ -1,4 +1,5 @@
 import { CodeDisplay } from "./CodeDisplay";
+import { useTheme } from '../contexts/ThemeContext';
 
 interface StepCardProps {
   stepNumber: number;
@@ -25,24 +26,26 @@ export function StepCard({
   additionalContent, 
   links 
 }: StepCardProps) {
+  const { theme } = useTheme();
+  
   return (
-    <div className="tactical-card p-6">
+    <div className={`${theme === 'dark' ? 'tactical-card' : 'bg-theme-surface border border-theme-primary rounded-lg'} p-6`}>
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-tactical-primary text-white font-semibold text-sm">
           {stepNumber}
         </div>
         <div className="flex-1 space-y-6">
           <div>
-            <h3 className="text-xl font-semibold text-tactical-text-primary mb-3 font-tactical">
+            <h3 className="text-xl font-semibold text-theme-primary mb-3 font-tactical">
               {title}
             </h3>
-            <p className="text-tactical-text-secondary leading-relaxed font-tactical">
+            <p className="text-theme-secondary leading-relaxed font-tactical">
               {description}
             </p>
           </div>
 
           {additionalContent && (
-            <div className="text-tactical-text-secondary mt-6 space-y-4">{additionalContent}</div>
+            <div className="text-theme-secondary mt-6 space-y-4">{additionalContent}</div>
           )}
 
           {codeBlock && (
@@ -61,7 +64,7 @@ export function StepCard({
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="btn-tactical-secondary text-sm px-3 py-2 flex items-center gap-1"
+                  className="btn-tactical-secondary bg-theme-surface border border-theme-primary text-theme-primary hover:bg-tactical-light-surface-hover' text-sm px-3 py-2 flex items-center gap-1 rounded transition-colors"
                 >
                   {link.text}
                   {link.external && (

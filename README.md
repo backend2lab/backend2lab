@@ -1,10 +1,10 @@
-# Backend Playground
+# Backend2lab
 
 
 https://github.com/user-attachments/assets/4c8426c8-97aa-4afd-bd5b-2a71b8eeb2aa
 
 
-Backend Playground is an **interactive learning platform** for backend development.
+Backend2lab is an **interactive learning platform** for backend development.
 It combines **labs**, **exercises**, and a **code playground** for beginners to practice backend concepts in a real Node.js environment, directly from the browser.
 
 ## Quick Start

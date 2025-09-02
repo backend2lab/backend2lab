@@ -1,6 +1,6 @@
-# Docker Setup for Backend2Lab
+# Docker Development Setup for Backend2Lab
 
-This document explains how to run the Backend2Lab project using Docker.
+This document explains how to run the Backend2Lab project in development mode using Docker.
 
 ## Prerequisites
 
@@ -11,7 +11,7 @@ This document explains how to run the Backend2Lab project using Docker.
 
 ### Option 1: Using Docker Compose (Recommended)
 
-1. **Build and run the production version:**
+1. **Build and run the development environment:**
    ```bash
    docker compose up --build
    ```
@@ -26,35 +26,27 @@ This document explains how to run the Backend2Lab project using Docker.
    docker compose down
    ```
 
-### Option 2: Using Docker directly
+### Option 2: Using the Development Script
 
-1. **Build the Docker image:**
-   ```bash
-   docker build -t backend2lab .
-   ```
-
-2. **Run the container:**
-   ```bash
-   docker run -p 4000:4000 -p 4200:4200 backend2lab
-   ```
-
-3. **Run in detached mode:**
-   ```bash
-   docker run -d -p 4000:4000 -p 4200:4200 --name backend2lab-container backend2lab
-   ```
-
-## Development Mode
-
-To run the project in development mode with hot reloading:
+Use the provided development script for easy startup:
 
 ```bash
-docker compose --profile dev up --build
+./dev.sh
 ```
 
-This will:
-- Mount your local source code into the container
-- Enable hot reloading for both client and server
-- Run on ports 4001 (server) and 4201 (client)
+This script will:
+- Check if Docker is running
+- Build and start the development containers
+- Show you the URLs to access your services
+
+## Development Features
+
+The Docker setup provides:
+
+- **Hot Reloading**: Both client and server automatically reload when you make changes
+- **Volume Mounting**: Your local code is mounted into the containers
+- **Live Updates**: Changes are reflected immediately without rebuilding
+- **Development Tools**: Full access to development features and debugging
 
 ## Accessing the Application
 
@@ -70,40 +62,69 @@ Once the containers are running:
 
 ## Environment Variables
 
-You can customize the following environment variables:
+The development environment uses these default settings:
 
-- `NODE_ENV`: Set to `production` or `development`
-- `HOST`: Server host (default: `0.0.0.0`)
-- `PORT`: Server port (default: `4000`)
+- `NODE_ENV`: `development` (enables hot reloading and debugging)
+- `HOST`: `0.0.0.0` (allows external connections)
+- `PORT`: `4000` (server) and `4200` (client)
+- `VITE_API_URL`: `http://localhost:4000` (client connects to server)
 
-Example with custom environment:
-```bash
-docker run -e NODE_ENV=production -e PORT=3000 -p 3000:3000 -p 4200:4200 backend2lab
+You can override these in the `docker-compose.yml` file if needed.
+
+## Project Structure
+
+The Docker development setup includes:
+
 ```
+├── docker-compose.yml          # Main development orchestration
+├── server/
+│   ├── Dockerfile.dev         # Server development container
+│   └── package.json           # Server dependencies
+├── client/
+│   ├── Dockerfile.dev         # Client development container
+│   └── package.json           # Client dependencies
+└── dev.sh                     # Development startup script
+```
+
+### Container Details:
+
+- **Server Container**: Node.js 18 + npm, runs `npm run dev` with tsx
+- **Client Container**: Node.js 20 + pnpm, runs `pnpm run dev` with Vite
+- **Ports**: Server (4000), Client (4200)
+- **Volumes**: Local code mounted for hot reloading
 
 ## Troubleshooting
 
 ### Check container logs:
 ```bash
-# Using docker compose
+# View all logs
 docker compose logs
 
-# Using docker
-docker logs backend2lab-container
+# View specific service logs
+docker compose logs server
+docker compose logs client
+
+# Follow logs in real-time
+docker compose logs -f
 ```
 
 ### Access container shell:
 ```bash
-# Using docker compose
-docker compose exec backend2lab sh
+# Access server container
+docker compose exec server sh
 
-# Using docker
-docker exec -it backend2lab-container sh
+# Access client container
+docker compose exec client sh
 ```
 
 ### Rebuild without cache:
 ```bash
+# Rebuild all services
 docker compose build --no-cache
+
+# Rebuild specific service
+docker compose build --no-cache server
+docker compose build --no-cache client
 ```
 
 ### Clean up:
@@ -118,31 +139,35 @@ docker compose down -v
 docker system prune -a
 ```
 
-## Production Deployment
+## Development Workflow
 
-For production deployment, consider:
+### Daily Development:
+1. **Start the environment**: `./dev.sh` or `docker compose up --build`
+2. **Make changes** to your code - they'll automatically reload
+3. **View logs** if needed: `docker compose logs -f`
+4. **Stop when done**: `docker compose down`
 
-1. **Using a reverse proxy** (nginx, traefik) in front of the application
-2. **Setting up SSL/TLS certificates**
-3. **Configuring proper logging and monitoring**
-4. **Using Docker secrets for sensitive data**
+### Common Commands:
+```bash
+# Start development environment
+docker compose up --build
 
-Example nginx configuration:
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+# View logs
+docker compose logs -f
 
-    location / {
-        proxy_pass http://localhost:4200;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
+# Rebuild after dependency changes
+docker compose build --no-cache
 
-    location /api {
-        proxy_pass http://localhost:4000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
+# Stop services
+docker compose down
+
+# Restart a specific service
+docker compose restart server
+docker compose restart client
 ```
+
+### Tips:
+- The client will automatically reload when you save React/TypeScript files
+- The server will restart when you save Node.js/TypeScript files
+- Check the logs if something isn't working as expected
+- Use `docker compose down` to clean up when you're done developing

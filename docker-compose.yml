@@ -1,41 +1,37 @@
 services:
-  backend2lab:
+  server:
     build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: backend2lab-server-dev
     ports:
       - "4000:4000"
-      - "4200:4200"
-    environment:
-      - NODE_ENV=production
-      - HOST=0.0.0.0
-      - PORT=4000
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/modules"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  backend2lab-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: base
-    ports:
-      - "4001:4000"
-      - "4201:4200"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
       - PORT=4000
+    working_dir: /app
+    command: npm run dev
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: backend2lab-client-dev
+    ports:
+      - "4200:4200"
     volumes:
-      - .:/app
+      - ./client:/app
       - /app/node_modules
-      - /app/client/node_modules
-      - /app/server/node_modules
-    command: sh -c "pnpm run dev"
-    profiles:
-      - dev
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:4000
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0
+    restart: unless-stopped
+    depends_on:
+      - server

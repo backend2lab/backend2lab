@@ -16,18 +16,22 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Check localStorage first, then system preference, default to dark
-    const savedTheme = localStorage.getItem('backend2lab-theme') as Theme;
-    if (savedTheme) {
-      return savedTheme;
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = window.localStorage.getItem('backend2lab-theme');
+        if (saved === 'light' || saved === 'dark') {
+          return saved;
+        }
+        if (window.matchMedia) {
+          return window.matchMedia('(prefers-color-scheme: light)').matches
+            ? 'light'
+            : 'dark';
+        }
+      }
+    } catch {
+      // ignore errors (e.g. in private mode or SSR)
     }
-    
-    // Check system preference
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    }
-    
-    return 'dark'; // Default to dark theme
+    return 'dark';
   });
 
   const setTheme = (newTheme: Theme) => {

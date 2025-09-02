@@ -92,6 +92,7 @@ function AppContent() {
     setOutput("");
     setTestResults(null);
     setActiveTab('Lab'); // Reset to Lab tab when switching modules
+    setHasAttemptedSubmit(false);
   };
 
   const handleRunCode = async (codeToRun?: string) => {
@@ -327,6 +328,7 @@ function AppContent() {
         <div className="w-full lg:w-1/2 bg-theme-background flex flex-col min-h-0">
           <div className="flex-1 min-h-0">
             <CodeEditor 
+              key={currentModuleId} // force complete component re-render
               code={code} 
               onCodeChange={setCode}
               testCases={moduleContent.exerciseContent.editorFiles.test}

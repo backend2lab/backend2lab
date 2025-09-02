@@ -258,9 +258,17 @@
     font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   }
 
-  body {
-    @apply bg-tactical-background text-tactical-text-primary font-tactical;
-  }
+ body {
+   @apply bg-tactical-background text-tactical-text-primary font-tactical;
+ }
+
+.light body {
+  @apply bg-tactical-light-background text-tactical-light-text-primary;
+}
+
+.dark body {
+  @apply bg-tactical-background text-tactical-text-primary;
+}
 
   /* Code syntax highlighting */
   .monaco-editor {
@@ -268,22 +276,31 @@
   }
 
   /* Monaco Editor customizations */
-  .monaco-editor .margin {
-    background-color: #000000 !important;
-  }
-
-  .monaco-editor .monaco-editor-background {
-    background-color: #000000 !important;
-  }
-
   .monaco-editor .line-numbers {
     color: #737373 !important;
   }
 
-  .monaco-editor .current-line {
-    background-color: #262626 !important;
-  }
+.dark .monaco-editor .margin {
+  background-color: #000000 !important;
+}
+.light .monaco-editor .margin {
+  background-color: #ffffff !important;
+}
 
+.dark .monaco-editor .monaco-editor-background {
+  background-color: #000000 !important;
+}
+.light .monaco-editor .monaco-editor-background {
+  background-color: #ffffff !important;
+}
+
+.dark .monaco-editor .current-line {
+  background-color: #262626 !important;
+}
+.light .monaco-editor .current-line {
+  background-color: #e5e7eb !important; /* slate-200-ish */
+}
+  
   .monaco-editor .selection {
     background-color: #f97316 !important;
     opacity: 0.3;
@@ -568,4 +585,3 @@
     @apply border-tactical-light-border-primary;
   }
 }
-

@@ -165,7 +165,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                 {section.contentBlocks && section.contentBlocks.map((block, index) => (
                   <div key={index} className="first:mt-0">
                     {block.type === 'text' ? (
-                      <div className="prose prose-invert max-w-none">
+                      <div className="prose dark:prose-invert max-w-none">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           rehypePlugins={[rehypeHighlight]}
@@ -334,7 +334,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
 
   // If no sections found, render as regular markdown
   return (
-    <div className={`prose prose-invert max-w-none ${className}`}>
+    <div className={`prose dark:prose-invert max-w-none ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}

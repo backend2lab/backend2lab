@@ -1,15 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import CodeEditor from "./components/Editor";
-import MarkdownRenderer from "./components/MarkdownRenderer";
+// ⬇️ Code-split heavy components so they don't load during the landing screen
+const CodeEditor = lazy(() => import("./components/Editor"));
+const MarkdownRenderer = lazy(() => import("./components/MarkdownRenderer"));
+
 import { ModuleService } from "./services/moduleService.js";
 import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService.js";
+
+// Landing
+import Landing from "./components/landing/Landing";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
 
 export default function App() {
+  // Landing toggle
+  const [showLanding, setShowLanding] = useState(true);
+
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
   const [moduleContent, setModuleContent] = useState<ModuleContent | null>(null);
   const [availableModules, setAvailableModules] = useState<Module[]>([]);
@@ -24,35 +32,10 @@ export default function App() {
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
-  // Default module ID - could be made configurable later
+  // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
 
-  useEffect(() => {
-    loadAvailableModules();
-  }, []);
-
-  useEffect(() => {
-    loadModuleContent();
-  }, [currentModuleId]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.module-dropdown')) {
-        setShowModuleDropdown(false);
-      }
-    };
-
-    if (showModuleDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showModuleDropdown]);
-
+  // ---------------- functions (BEFORE effects) ----------------
   const loadAvailableModules = async () => {
     try {
       const modules = await ModuleService.getAllModules();
@@ -69,8 +52,6 @@ export default function App() {
       const content = await ModuleService.getModuleContent(currentModuleId);
       setModuleContent(content);
       setCode(content.exerciseContent.editorFiles.server);
-      
-      // Set exercise type based on module ID
       setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load module content');
@@ -79,31 +60,56 @@ export default function App() {
     }
   };
 
+  // ---------------- effects ----------------
+  // Don’t fetch while on landing
+  useEffect(() => {
+    if (showLanding) return;
+    loadAvailableModules();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLanding]);
+
+  useEffect(() => {
+    if (showLanding) return;
+    loadModuleContent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLanding, currentModuleId]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.module-dropdown')) {
+        setShowModuleDropdown(false);
+      }
+    };
+    if (showModuleDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showModuleDropdown]);
+
+  // ---------------- handlers ----------------
   const handleModuleChange = (moduleId: string) => {
     if (moduleId === currentModuleId) {
       setShowModuleDropdown(false);
       return;
     }
-    
     setShowModuleDropdown(false);
     setCurrentModuleId(moduleId);
     setOutput("");
     setTestResults(null);
-    setActiveTab('Lab'); // Reset to Lab tab when switching modules
+    setActiveTab('Lab');
   };
 
   const handleRunCode = async (codeToRun?: string) => {
     if (!moduleContent) return;
-    
     const codeContent = codeToRun || code;
-    
     setIsRunning(true);
     setOutput("Running code...\n");
-    
     try {
-      // Send code to server for execution
       const result: RunResult = await ModuleService.runCode(currentModuleId, codeContent);
-      
       if (result.success) {
         if (exerciseType === 'function') {
           setOutput(`✓ Code executed successfully!\n\n--- Output ---\n${result.output || 'Code executed without output'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour code is working correctly!`);
@@ -113,8 +119,6 @@ export default function App() {
       } else {
         setOutput(`✗ Code execution failed.\n\n--- Output ---\n${result.output || 'No output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
       }
-      
-      // Clear test results when just running code
       setTestResults(null);
     } catch (err) {
       setOutput(`✗ Code execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -125,15 +129,11 @@ export default function App() {
 
   const handleSubmit = async () => {
     if (!moduleContent) return;
-    
     setIsSubmitting(true);
- 
     setOutput("Running tests...\n");
-    
     try {
       const results = await ModuleService.runTests(currentModuleId, code);
       setTestResults(results);
-      
       if (results.passedTests === results.totalTests) {
         setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
       } else {
@@ -156,14 +156,16 @@ export default function App() {
     }
   };
 
-  const tabs: Tab[] = ['Lab', 'Exercise'];
+  // ---------------- early returns ----------------
+  if (showLanding) {
+    return <Landing onStart={() => setShowLanding(false)} />;
+  }
 
   if (loading && !moduleContent) {
     return (
       <div className="min-h-screen bg-tactical-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-tactical-primary mx-auto mb-4"></div>
-          <p className="text-tactical-text-secondary">Loading module content...</p>
         </div>
       </div>
     );
@@ -180,7 +182,7 @@ export default function App() {
           </div>
           <p className="text-tactical-text-primary mb-2">Failed to load module</p>
           <p className="text-tactical-text-secondary mb-4">{error}</p>
-          <button 
+          <button
             onClick={loadModuleContent}
             className="px-4 py-2 bg-tactical-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
@@ -191,6 +193,7 @@ export default function App() {
     );
   }
 
+  // ---------------- main UI ----------------
   return (
     <div className="min-h-screen bg-tactical-background">
       {/* Header Bar */}
@@ -212,14 +215,7 @@ export default function App() {
             <div className="flex-1 flex justify-center max-w-2xl">
               <div className="text-center flex items-center">
                 <h1 className="text-lg font-semibold text-tactical-text-primary font-tactical">
-                  {loading && moduleContent ? (
-                    <div className="flex items-center space-x-2">
-                      <span>{moduleContent.module.title}</span>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-tactical-primary"></div>
-                    </div>
-                  ) : (
-                    moduleContent?.module.title || 'Loading...'
-                  )}
+                  {moduleContent?.module.title || 'Loading...'}
                 </h1>
                 {moduleContent && (
                   <div className="flex items-center justify-center space-x-3 ml-2">
@@ -234,27 +230,20 @@ export default function App() {
             {/* Module Selector */}
             <div className="flex items-center space-x-3">
               <div className="relative module-dropdown">
-                <button 
+                <button
                   onClick={() => setShowModuleDropdown(!showModuleDropdown)}
                   disabled={loading}
                   className="flex items-center space-x-2 px-4 py-2 bg-tactical-surface border border-tactical-border-primary rounded-lg text-tactical-text-primary hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-sm font-medium font-tactical">
-                    {loading ? (
-                      <div className="flex items-center space-x-2">
-                        <span>{availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}</span>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-tactical-primary"></div>
-                      </div>
-                    ) : (
-                      availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'
-                    )}
+                    {availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}
                   </span>
-                  <FontAwesomeIcon 
-                    icon={faChevronDown} 
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
                     className={`text-xs transition-transform ${showModuleDropdown ? 'rotate-180' : ''}`}
                   />
                 </button>
-                
+
                 {showModuleDropdown && (
                   <div className="absolute right-0 mt-2 bg-tactical-surface border border-tactical-border-primary rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto module-dropdown">
                     {availableModules.map((module) => (
@@ -262,8 +251,8 @@ export default function App() {
                         key={module.id}
                         onClick={() => handleModuleChange(module.id)}
                         className={`w-full text-left px-4 py-2 hover:bg-neutral-800 transition-colors border-b border-tactical-border-primary last:border-b-0 ${
-                          module.id === currentModuleId 
-                            ? 'bg-tactical-primary text-white' 
+                          module.id === currentModuleId
+                            ? 'bg-tactical-primary text-white'
                             : 'text-tactical-text-primary'
                         }`}
                       >
@@ -288,13 +277,13 @@ export default function App() {
           {/* Tab Navigation */}
           <div className="border-b border-tactical-border-primary bg-tactical-surface flex-shrink-0 h-12">
             <div className="flex h-full">
-              {tabs.map((tab) => (
+              {(['Lab', 'Exercise'] as Tab[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 px-6 text-sm font-medium transition-all duration-200 border-b-2 flex items-center justify-center ${
-                    activeTab === tab 
-                      ? 'text-tactical-primary border-tactical-primary bg-tactical-background' 
+                    activeTab === tab
+                      ? 'text-tactical-primary border-tactical-primary bg-tactical-background'
                       : 'text-tactical-text-secondary border-transparent hover:text-tactical-text-primary hover:bg-neutral-800'
                   }`}
                 >
@@ -306,32 +295,36 @@ export default function App() {
 
           {/* Tab Content */}
           <div className="flex-1 overflow-y-auto bg-tactical-background min-h-0">
-            {activeTab === 'Lab' && (
-              <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.labContent} />
-              </div>
-            )}
-            {activeTab === 'Exercise' && (
-              <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.exerciseContent.readme} />
-              </div>
-            )}
+            <Suspense fallback={<div className="p-6 text-tactical-text-secondary">Loading…</div>}>
+              {activeTab === 'Lab' && (
+                <div className="max-w-4xl mx-auto p-6 space-y-8">
+                  <MarkdownRenderer content={moduleContent!.labContent} />
+                </div>
+              )}
+              {activeTab === 'Exercise' && (
+                <div className="max-w-4xl mx-auto p-6 space-y-8">
+                  <MarkdownRenderer content={moduleContent!.exerciseContent.readme} />
+                </div>
+              )}
+            </Suspense>
           </div>
         </div>
 
         {/* Right Panel - Code Editor */}
         <div className="w-full lg:w-1/2 bg-tactical-background flex flex-col min-h-0">
           <div className="flex-1 min-h-0">
-            <CodeEditor 
-              code={code} 
-              onCodeChange={setCode}
-              testCases={moduleContent.exerciseContent.editorFiles.test}
-              solution={moduleContent.exerciseContent.solution}
-              runCode={handleRunCode}
-              hasAttemptedSubmit={hasAttemptedSubmit}
-            />
+            <Suspense fallback={<div className="p-4 text-tactical-text-secondary">Loading editor…</div>}>
+              <CodeEditor
+                code={code}
+                onCodeChange={setCode}
+                testCases={moduleContent!.exerciseContent.editorFiles.test}
+                solution={moduleContent!.exerciseContent.solution}
+                runCode={handleRunCode}
+                hasAttemptedSubmit={hasAttemptedSubmit}
+              />
+            </Suspense>
           </div>
-          
+
           {/* Output Panel */}
           <div className="border-t border-tactical-border-primary bg-tactical-surface p-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
@@ -353,14 +346,13 @@ export default function App() {
                 </button>
               </div>
             </div>
-            
+
             <div className="bg-tactical-background rounded border border-tactical-border-primary p-3 h-32 overflow-y-auto">
               <pre className="text-sm text-tactical-text-primary whitespace-pre-wrap font-mono">
                 {output || 'Ready to run your code...'}
               </pre>
             </div>
 
-            {/* Test Results */}
             {testResults && (
               <div className="mt-4">
                 <h4 className="text-sm font-semibold text-tactical-text-primary mb-2">Test Results</h4>

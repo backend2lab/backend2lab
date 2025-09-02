@@ -2,7 +2,8 @@ import js from '@eslint/js';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-config-prettier';
-
+import tsParser from '@typescript-eslint/parser';
+import globals from 'globals';
 export default [
   js.configs.recommended,
   {
@@ -12,6 +13,7 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
+       'no-undef': 'off',
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
@@ -22,6 +24,7 @@ export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
+      parser: tsParser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',

@@ -64,7 +64,7 @@ export function StepCard({
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="btn-tactical-secondary bg-theme-surface border border-theme-primary text-theme-primary hover:bg-tactical-light-surface-hover' text-sm px-3 py-2 flex items-center gap-1 rounded transition-colors"
+                  className="btn-tactical-secondary bg-theme-surface border border-theme-primary text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 text-sm px-3 py-2 flex items-center gap-1 rounded transition-colors"
                 >
                   {link.text}
                   {link.external && (

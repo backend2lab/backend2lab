@@ -1,0 +1,21 @@
+{
+  "name": "module-8-authentication-exercise",
+  "version": "1.0.0",
+  "description": "Module 8 Exercise: Simple JWT Authentication",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js",
+    "solution": "node solution.js"
+  },
+  "keywords": ["authentication", "jwt", "security", "nodejs", "express"],
+  "author": "Backend Playground",
+  "license": "MIT",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

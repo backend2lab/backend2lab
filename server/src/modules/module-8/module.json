@@ -1,0 +1,35 @@
+{
+  "id": "module-8",
+  "title": "Authentication & Security",
+  "description": "Learn how to implement secure authentication using JWT tokens, password hashing, and protected routes",
+  "difficulty": "Intermediate",
+  "estimatedTime": "90 minutes",
+  "tags": ["authentication", "security", "jwt", "bcrypt", "middleware", "passwords", "tokens"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand authentication vs authorization concepts",
+    "Implement secure password hashing with bcrypt",
+    "Create and verify JWT tokens for user sessions",
+    "Build authentication middleware for route protection",
+    "Implement secure login and registration flows",
+    "Use environment variables for sensitive configuration",
+    "Apply security best practices in web applications"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of HTTP and REST APIs",
+    "Familiarity with Node.js and Express.js",
+    "Basic understanding of JSON and async/await"
+  ]
+}

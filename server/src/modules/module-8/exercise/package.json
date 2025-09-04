@@ -1,21 +1,33 @@
 {
-  "name": "module-8-authentication-exercise",
+  "name": "module-8-authentication",
   "version": "1.0.0",
-  "description": "Module 8 Exercise: Simple JWT Authentication",
+  "description": "Authentication & Authorization Exercise",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test.js",
-    "solution": "node solution.js"
+    "dev": "nodemon server.js",
+    "test": "mocha test.js --timeout 10000"
   },
-  "keywords": ["authentication", "jwt", "security", "nodejs", "express"],
-  "author": "Backend Playground",
-  "license": "MIT",
   "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2"
   },
-  "devDependencies": {},
-  "engines": {
-    "node": ">=14.0.0"
-  }
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "authentication",
+    "authorization",
+    "jwt",
+    "bcrypt",
+    "express",
+    "api",
+    "security"
+  ],
+  "author": "Backend Playground",
+  "license": "MIT"
 }

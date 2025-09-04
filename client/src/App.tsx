@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -92,6 +93,7 @@ function AppContent() {
     setOutput("");
     setTestResults(null);
     setActiveTab('Lab'); // Reset to Lab tab when switching modules
+    setHasAttemptedSubmit(false);
   };
 
   const handleRunCode = async (codeToRun?: string) => {
@@ -233,8 +235,8 @@ function AppContent() {
               </div>
             </div>
 
-            {/* Theme Toggle and Module Selector */}
-            <div className="flex items-center space-x-3">              
+            {/* Top Right:- Module Selector + GitHub Link */}
+            <div className="flex items-center space-x-3">
               <div className="relative module-dropdown">
                 <button 
                   onClick={() => setShowModuleDropdown(!showModuleDropdown)}
@@ -278,8 +280,17 @@ function AppContent() {
                   </div>
                 )}
               </div>
-                            <ThemeToggle />
-
+              <ThemeToggle />
+              {/* GitHub Link Icon */}
+              <a
+                href="https://github.com/backend2lab/backend2lab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-tactical-text-secondary hover:text-tactical-primary transition-colors"
+                title="View on GitHub"
+              >
+                <FontAwesomeIcon icon={faGithub} size="2x" />
+              </a>
             </div>
           </div>
         </div>
@@ -327,6 +338,7 @@ function AppContent() {
         <div className="w-full lg:w-1/2 bg-theme-background flex flex-col min-h-0">
           <div className="flex-1 min-h-0">
             <CodeEditor 
+              key={currentModuleId} // force complete component re-render
               code={code} 
               onCodeChange={setCode}
               testCases={moduleContent.exerciseContent.editorFiles.test}

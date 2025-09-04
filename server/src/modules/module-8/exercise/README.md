@@ -1,263 +1,277 @@
-# Module 8 Exercise: Simple JWT Authentication
+# Module 8 Exercise: Authentication & Authorization API Server
 
 ## Objective
-Create a simple authentication system that generates and verifies JWT tokens for user login.
+Build a complete Express.js API server with user registration, login, and protected routes to demonstrate authentication and authorization flow.
 
 ## What You'll Build
-A basic authentication system that:
-- Creates JWT tokens for valid users
-- Verifies tokens to protect routes
-- Uses a simple in-memory user store
+A full authentication API that includes:
+- User registration endpoint
+- User login endpoint  
+- Protected routes that require authentication
+- JWT token-based authentication
+- Password hashing with bcrypt
 
 ## Setup Instructions
 
-1. **Create project folder**:
+1. **Install dependencies**:
    ```bash
-   mkdir simple-auth
-   cd simple-auth
-   npm init -y
+   npm install
    ```
 
-2. **Install required packages**:
+2. **Start the server**:
    ```bash
-   npm install jsonwebtoken
+   npm start
    ```
 
-3. **Create this file**:
-   ```
-   simple-auth/
-   └── auth.js
-   ```
+## Step-by-Step Implementation
 
-## Your Task
+### Step 1: Complete the Authentication Middleware
 
-Create `auth.js` and complete the authentication functions:
+In the `authenticateToken` function, you need to:
 
-```javascript
-const jwt = require('jsonwebtoken');
+1. Extract the token from the Authorization header (format: "Bearer TOKEN")
+2. Check if the token exists
+3. Verify the token using `jwt.verify()`
+4. Add decoded user info to `req.user`
+5. Call `next()` to continue to the route handler
+6. Send appropriate error responses for missing/invalid tokens
 
-// Simple user database (in real apps, use a real database)
-const users = [
-    { id: 1, username: 'john', password: 'password123' },
-    { id: 2, username: 'jane', password: 'secret456' }
-];
+**Hint**: Use `req.headers['authorization']` to get the header and split it to extract the token.
 
-const JWT_SECRET = 'my-secret-key'; // In real apps, use environment variables
+### Step 2: Complete the Registration Endpoint
 
-// TODO: Complete this function to create a JWT token
-function createToken(user) {
-    // The token should include:
-    // - userId: user.id
-    // - username: user.username
-    // - Expiration time: 1 hour
-    
-    // Your code here
-}
+In the `/api/register` endpoint, implement:
 
-// TODO: Complete this function to verify a JWT token
-function verifyToken(token) {
-    // Should return the decoded token data or null if invalid
-    
-    // Your code here
-}
+1. Extract email and password from `req.body`
+2. Validate that both email and password are provided
+3. Check if user already exists
+4. Hash the password using bcrypt
+5. Create new user object with id, email, and hashed password
+6. Save user to users array and write to file
+7. Send success response (don't send the hashed password back)
 
-// TODO: Complete this function to login a user
-function login(username, password) {
-    // Steps:
-    // 1. Find user by username
-    // 2. Check if password matches
-    // 3. If valid, create and return token
-    // 4. If invalid, return null
-    
-    // Your code here
-}
+**Hint**: Use `bcrypt.hash(password, 10)` to hash passwords with 10 salt rounds.
 
-// Test your functions
-console.log('=== Testing Authentication System ===');
+### Step 3: Complete the Login Endpoint
 
-// Test 1: Valid login
-const token = login('john', 'password123');
-console.log('Login token:', token);
+In the `/api/login` endpoint, implement:
 
-// Test 2: Verify the token
-if (token) {
-    const decoded = verifyToken(token);
-    console.log('Decoded token:', decoded);
-}
+1. Extract email and password from `req.body`
+2. Find user by email
+3. Check if user exists
+4. Compare password with hashed password using bcrypt
+5. If valid, create JWT token with user info
+6. Send token back to client
+7. Send appropriate error messages for invalid credentials
 
-// Test 3: Invalid login
-const invalidToken = login('john', 'wrongpassword');
-console.log('Invalid login token:', invalidToken);
+**Hint**: Use `bcrypt.compare(password, user.password)` to verify passwords.
 
-// Test 4: Invalid token verification
-const fakeDecoded = verifyToken('fake-token');
-console.log('Fake token decoded:', fakeDecoded);
-```
+### Step 4: Complete the Protected Routes
 
-## Step-by-Step Guide
+For both `/api/profile` and `/api/dashboard` routes:
 
-### Step 1: Complete `createToken(user)`
-```javascript
-function createToken(user) {
-    const payload = {
-        userId: user.id,
-        username: user.username
-    };
-    
-    // Use jwt.sign() with payload, secret, and options
-    // Set expiresIn to '1h'
-}
-```
+1. Add the `authenticateToken` middleware
+2. Return user-specific data
+3. Get user info from `req.user` (set by middleware)
 
-### Step 2: Complete `verifyToken(token)`
-```javascript
-function verifyToken(token) {
-    try {
-        // Use jwt.verify() with token and secret
-        // Return the decoded data
-    } catch (error) {
-        // Return null if verification fails
-    }
-}
-```
+**Hint**: The middleware should be added as the second parameter: `app.get('/api/profile', authenticateToken, (req, res) => { ... })`
 
-### Step 3: Complete `login(username, password)`
-```javascript
-function login(username, password) {
-    // Use users.find() to search for user
-    // Check if user exists and password matches
-    // If valid, call createToken() and return the token
-    // If invalid, return null
-}
-```
+## API Endpoints
 
-## Testing Your Solution
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST | `/api/register` | Register a new user | No |
+| POST | `/api/login` | Login user | No |
+| GET | `/api/public` | Public endpoint | No |
+| GET | `/api/profile` | User profile | Yes |
+| GET | `/api/dashboard` | User dashboard | Yes |
 
-Run your program with:
+## Testing Your API
+
+### 1. Start the server:
 ```bash
-node auth.js
+npm start
 ```
 
-## Expected Output
+### 2. Test with curl commands:
 
-```
-=== Testing Authentication System ===
-Login token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsImlhdCI6MTYzOTU4NjQwMCwiZXhwIjoxNjM5NTkwMDAwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-Decoded token: { userId: 1, username: 'john', iat: 1639586400, exp: 1639590000 }
-Invalid login token: null
-Fake token decoded: null
+**Register a new user:**
+```bash
+curl -X POST http://localhost:3000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"password123"}'
 ```
 
-## Solution
+**Login:**
+```bash
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"password123"}'
+```
+
+**Access protected route (replace TOKEN with actual token):**
+```bash
+curl -X GET http://localhost:3000/api/profile \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+**Test public route:**
+```bash
+curl -X GET http://localhost:3000/api/public
+```
+
+## Expected API Responses
+
+**Successful Registration:**
+```json
+{
+  "message": "User registered successfully",
+  "user": {
+    "id": 1703123456789,
+    "email": "john@example.com"
+  }
+}
+```
+
+**Successful Login:**
+```json
+{
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1703123456789,
+    "email": "john@example.com"
+  }
+}
+```
+
+**Protected Profile Route:**
+```json
+{
+  "message": "User profile data",
+  "user": {
+    "userId": 1703123456789,
+    "email": "john@example.com"
+  },
+  "profileData": {
+    "memberSince": "2024-01-15",
+    "lastLogin": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+## Running Tests
+
+```bash
+npm test
+```
+
+The tests will verify:
+- User registration with password hashing
+- User login and JWT token generation
+- Protected route access with valid tokens
+- Error handling for invalid/missing tokens
+- Data persistence across requests
+
+## Solution Hints
 
 <details>
-<summary>Click to see the solution (try it yourself first!)</summary>
+<summary>Hint for Authentication Middleware</summary>
 
 ```javascript
-const jwt = require('jsonwebtoken');
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-const users = [
-    { id: 1, username: 'john', password: 'password123' },
-    { id: 2, username: 'jane', password: 'secret456' }
-];
+    if (!token) {
+        return res.status(401).json({ error: 'Access token required' });
+    }
 
-const JWT_SECRET = 'my-secret-key';
-
-function createToken(user) {
-    const payload = {
-        userId: user.id,
-        username: user.username
-    };
-    
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-    return token;
-}
-
-function verifyToken(token) {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        return decoded;
+        req.user = decoded;
+        next();
     } catch (error) {
-        return null;
+        return res.status(403).json({ error: 'Invalid token' });
     }
 }
-
-function login(username, password) {
-    const user = users.find(u => u.username === username);
-    
-    if (!user || user.password !== password) {
-        return null;
-    }
-    
-    return createToken(user);
-}
-
-// Test code remains the same...
 ```
-
 </details>
 
-## Challenge Extensions
-
-Once you complete the basic version, try these:
-
-1. **Add password hashing**: Use bcrypt to hash passwords
-2. **Create middleware**: Write an Express middleware function to protect routes
-3. **Add token expiration check**: Show when tokens expire
-4. **User registration**: Add a function to register new users
-
-## Example Extensions
+<details>
+<summary>Hint for Registration Endpoint</summary>
 
 ```javascript
-// Extension 1: Check token expiration
-function isTokenExpired(decoded) {
-    const now = Math.floor(Date.now() / 1000);
-    return decoded.exp < now;
-}
-
-// Extension 2: Simple middleware simulation
-function authenticateUser(token) {
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        return { error: 'Invalid token' };
+app.post('/api/register', async (req, res) => {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password required' });
     }
     
-    if (isTokenExpired(decoded)) {
-        return { error: 'Token expired' };
+    const users = readUsers();
+    
+    if (users.find(u => u.email === email)) {
+        return res.status(400).json({ error: 'User already exists' });
     }
     
-    return { user: decoded };
-}
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Continue with user creation...
+});
 ```
+</details>
 
-## What You Learned
+<details>
+<summary>Hint for Login Endpoint</summary>
 
-- ✅ Creating JWT tokens with user data
-- ✅ Verifying and decoding JWT tokens
-- ✅ Basic user authentication flow
+```javascript
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password required' });
+    }
+    
+    const users = readUsers();
+    const user = users.find(u => u.email === email);
+    
+    if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Create JWT token and send response...
+});
+```
+</details>
+
+## What You'll Learn
+
+- ✅ Building complete authentication flow
+- ✅ User registration with password hashing
+- ✅ JWT token creation and verification
+- ✅ Protecting routes with middleware
 - ✅ Handling authentication errors
-- ✅ Working with token expiration
-- ✅ Simple user validation
+- ✅ API security best practices
+- ✅ File-based data persistence
+- ✅ Testing APIs with automated tests
+
+## Authentication Flow Summary
+
+1. **Registration**: User signs up → Password gets hashed → User saved to database
+2. **Login**: User credentials verified → JWT token generated → Token sent to client  
+3. **Protected Access**: Client sends token in header → Middleware verifies token → Route handler executes
+4. **Authorization**: Different routes can have different access levels based on user data
+
+This exercise demonstrates the complete authentication and authorization cycle that real applications use!
 
 ## Troubleshooting
 
-**"jsonwebtoken not found" error?**
-- Make sure you ran `npm install jsonwebtoken`
-- Check that you're in the correct project directory
-
-**Token always null?**
-- Check that your JWT_SECRET matches in both functions
-- Verify the token format and spelling
-
-**Can't find user?**
-- Check username and password spelling
-- Make sure the users array has the correct data
-
-## Security Note
-
-This is a simplified example for learning. In production applications:
-- Never store passwords in plain text
-- Use environment variables for secrets
-- Use HTTPS for all authentication
-- Implement proper error handling
-- Use a real database for user storage
+- **Port already in use**: Change the PORT constant in server.js
+- **Module not found**: Run `npm install` to install dependencies
+- **Tests failing**: Make sure the server is running on port 3000
+- **JWT errors**: Check that the JWT_SECRET is consistent between server and tests

@@ -255,3 +255,23 @@ app.use((req, res, next) => {
 - Middleware functions protect routes
 - Environment variables store sensitive data
 - Always validate and sanitize user input
+
+## Common HTTP Status Codes for Authentication
+
+- **200 OK** - Request successful
+- **201 Created** - Resource created successfully (registration)
+- **400 Bad Request** - Invalid input data
+- **401 Unauthorized** - Authentication required or failed
+- **403 Forbidden** - Valid token but insufficient permissions
+- **404 Not Found** - Resource doesn't exist
+- **500 Internal Server Error** - Server error
+
+## Best Practices
+
+1. **Use strong passwords** - Enforce minimum length and complexity
+2. **Rate limiting** - Prevent brute force attacks
+3. **Logging** - Track authentication attempts
+4. **Token expiration** - Set reasonable timeouts
+5. **Secure storage** - Use environment variables for secrets
+6. **Input validation** - Sanitize all user inputs
+7. **HTTPS only** - Encrypt all communications in production

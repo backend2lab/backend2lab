@@ -82,7 +82,6 @@ For both `/api/profile` and `/api/dashboard` routes:
 |--------|----------|-------------|----------------|
 | POST | `/api/register` | Register a new user | No |
 | POST | `/api/login` | Login user | No |
-| GET | `/api/public` | Public endpoint | No |
 | GET | `/api/profile` | User profile | Yes |
 | GET | `/api/dashboard` | User dashboard | Yes |
 
@@ -113,11 +112,6 @@ curl -X POST http://localhost:3000/api/login \
 ```bash
 curl -X GET http://localhost:3000/api/profile \
   -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-**Test public route:**
-```bash
-curl -X GET http://localhost:3000/api/public
 ```
 
 ## Expected API Responses
@@ -172,82 +166,6 @@ The tests will verify:
 - Protected route access with valid tokens
 - Error handling for invalid/missing tokens
 - Data persistence across requests
-
-## Solution Hints
-
-<details>
-<summary>Hint for Authentication Middleware</summary>
-
-```javascript
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({ error: 'Invalid token' });
-    }
-}
-```
-</details>
-
-<details>
-<summary>Hint for Registration Endpoint</summary>
-
-```javascript
-app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password required' });
-    }
-    
-    const users = readUsers();
-    
-    if (users.find(u => u.email === email)) {
-        return res.status(400).json({ error: 'User already exists' });
-    }
-    
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Continue with user creation...
-});
-```
-</details>
-
-<details>
-<summary>Hint for Login Endpoint</summary>
-
-```javascript
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password required' });
-    }
-    
-    const users = readUsers();
-    const user = users.find(u => u.email === email);
-    
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    
-    // Create JWT token and send response...
-});
-```
-</details>
 
 ## What You'll Learn
 

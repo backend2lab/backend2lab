@@ -1,10 +1,10 @@
 {
   "id": "module-8",
   "title": "Authentication & Security",
-  "description": "Learn how to implement secure authentication using JWT tokens, password hashing, and protected routes",
-  "difficulty": "Intermediate",
+  "description": "Learn how to implement secure authentication and authorization using JWT tokens, password hashing with bcrypt, and protected routes",
+  "difficulty": "Advanced",
   "estimatedTime": "90 minutes",
-  "tags": ["authentication", "security", "jwt", "bcrypt", "middleware", "passwords", "tokens"],
+  "tags": ["authentication", "authorization", "jwt", "bcrypt", "security", "middleware", "tokens", "passwords"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -20,16 +20,21 @@
   "learningObjectives": [
     "Understand authentication vs authorization concepts",
     "Implement secure password hashing with bcrypt",
-    "Create and verify JWT tokens for user sessions",
+    "Create and verify JWT tokens for authentication",
     "Build authentication middleware for route protection",
-    "Implement secure login and registration flows",
-    "Use environment variables for sensitive configuration",
-    "Apply security best practices in web applications"
+    "Implement user registration and login endpoints",
+    "Create protected routes that require authentication",
+    "Handle authentication errors and security best practices",
+    "Test authentication flows with automated tests",
+    "Understand JWT token structure and security",
+    "Implement file-based user data persistence"
   ],
   "prerequisites": [
     "Basic JavaScript knowledge",
-    "Understanding of HTTP and REST APIs",
-    "Familiarity with Node.js and Express.js",
-    "Basic understanding of JSON and async/await"
+    "Understanding of Express.js framework",
+    "Familiarity with HTTP status codes",
+    "Basic understanding of JSON format",
+    "Knowledge of async/await and promises",
+    "Understanding of middleware concepts"
   ]
 }

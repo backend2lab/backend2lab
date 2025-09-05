@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,58 +25,79 @@ interface Props {
   hasAttemptedSubmit?: boolean;
 }
 
-export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
+export default function CodeEditor({
+  code,
+  onCodeChange,
+  testCases,
+  solution,
+  runCode,
+  readOnly,
+  hasAttemptedSubmit
+}: Props) {
   const [files, setFiles] = useState<FileTab[]>([
     {
-      id: 'server.js',
-      name: 'server.js',
-      language: 'javascript',
+      id: "server.js",
+      name: "server.js",
+      language: "javascript",
       content: code,
-      isActive: true
+      isActive: true,
     },
     {
-      id: 'test-cases.js',
-      name: 'test-cases.js',
-      language: 'javascript',
+      id: "test-cases.js",
+      name: "test-cases.js",
+      language: "javascript",
       content: testCases,
-      isActive: false
-    }
+      isActive: false,
+    },
   ]);
 
   const [showSolution, setShowSolution] = useState(false);
-  const [splitPosition, setSplitPosition] = useState(50); // percentage
-  const [serverSolutionState, setServerSolutionState] = useState(false); // track solution state for server tab
+  const [splitPosition, setSplitPosition] = useState(50);
+  const [serverSolutionState, setServerSolutionState] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 });
-  const [selectionInfo, setSelectionInfo] = useState('');
+  const [selectionInfo, setSelectionInfo] = useState("");
+
+  // Keep a ref to the Monaco editor to force option updates
+  const editorRef = useRef<any>(null);
 
   // Update files when props change
   useEffect(() => {
-    setFiles(prevFiles => 
-      prevFiles.map(file => 
-        file.id === 'server.js' 
+    setFiles((prev) =>
+      prev.map((file) =>
+        file.id === "server.js"
           ? { ...file, content: code }
-          : file.id === 'test-cases.js'
+          : file.id === "test-cases.js"
           ? { ...file, content: testCases }
           : file
       )
     );
   }, [code, testCases]);
 
-  const activeFile = files.find(file => file.isActive) || files[0];
+  const activeFile = files.find((f) => f.isActive) || files[0];
+  const isTestCasesTab = activeFile.id === "test-cases.js";
+  const isServerTab = activeFile.id === "server.js";
+
+  // Ensure readOnly flips reliably when switching tabs
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.updateOptions({
+        readOnly: isTestCasesTab ? true : !!readOnly,
+        domReadOnly: isTestCasesTab ? true : !!readOnly,
+      });
+    }
+  }, [isTestCasesTab, readOnly]);
 
   const handleTabClick = (fileId: string) => {
-    // Save current solution state if we're on server tab
-    if (activeFile.id === 'server.js') {
-      setServerSolutionState(showSolution);
-    }
-    
-    setFiles(files.map(file => ({
-      ...file,
-      isActive: file.id === fileId
-    })));
-    
-    // Update solution visibility based on the new tab
-    if (fileId === 'server.js') {
+    if (activeFile.id === "server.js") setServerSolutionState(showSolution);
+
+    setFiles((prev) =>
+      prev.map((file) => ({
+        ...file,
+        isActive: file.id === fileId,
+      }))
+    );
+
+    if (fileId === "server.js") {
       setShowSolution(serverSolutionState);
     } else {
       setShowSolution(false);
@@ -84,19 +105,17 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   };
 
   const handleCodeChange = (value: string | undefined) => {
-    const newValue = value || "";
-    
-    // Update the files state
-    setFiles(files.map(file => 
-      file.isActive 
-        ? { ...file, content: newValue }
-        : file
-    ));
+    // Hard block edits in test-cases tab at the React layer
+    if (isTestCasesTab) return;
 
-    // If the active file is server.js, call onCodeChange
-    if (activeFile.id === 'server.js') {
-      onCodeChange(newValue);
-    }
+    const newValue = value || "";
+    setFiles((prev) =>
+      prev.map((file) =>
+        file.isActive ? { ...file, content: newValue } : file
+      )
+    );
+
+    if (isServerTab) onCodeChange(newValue);
   };
 
   const handleShowSolution = () => {
@@ -116,23 +135,23 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const getFileIcon = (language: string) => {
     switch (language) {
-      case 'javascript':
+      case "javascript":
         return <FontAwesomeIcon icon={faJs} className="text-yellow-400" />;
-      case 'python':
+      case "python":
         return <FontAwesomeIcon icon={faPython} className="text-blue-500" />;
-      case 'java':
+      case "java":
         return <FontAwesomeIcon icon={faJava} className="text-red-500" />;
-      case 'json':
+      case "json":
         return <FontAwesomeIcon icon={faFileCode} className="text-green-400" />;
       default:
         return <FontAwesomeIcon icon={faFile} className="text-gray-400" />;
@@ -148,13 +167,17 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
             key={file.id}
             onClick={() => handleTabClick(file.id)}
             className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-tactical-border-primary flex-1 transition-colors ${
-              file.isActive 
-                ? 'bg-tactical-background text-tactical-text-primary' 
-                : 'bg-tactical-surface text-tactical-text-secondary hover:bg-neutral-800 hover:text-tactical-text-primary'
+              file.isActive
+                ? "bg-tactical-background text-tactical-text-primary"
+                : "bg-tactical-surface text-tactical-text-secondary hover:bg-neutral-800 hover:text-tactical-text-primary"
             }`}
           >
-            <span className="text-sm font-tactical">{getFileIcon(file.language)}</span>
-            <span className="text-sm font-medium truncate font-tactical">{file.name}</span>
+            <span className="text-sm font-tactical">
+              {getFileIcon(file.language)}
+            </span>
+            <span className="text-sm font-medium truncate font-tactical">
+              {file.name}
+            </span>
           </div>
         ))}
       </div>
@@ -162,7 +185,9 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {/* Editor Header */}
       <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary flex-shrink-0">
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-tactical-text-secondary font-tactical">{activeFile.name}</span>
+          <span className="text-sm font-medium text-tactical-text-secondary font-tactical">
+            {activeFile.name}
+          </span>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
             <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
@@ -170,36 +195,44 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-tactical-text-secondary capitalize font-tactical">{activeFile.language}</span>
+          <span className="text-xs text-tactical-text-secondary capitalize font-tactical">
+            {activeFile.language}
+          </span>
         </div>
       </div>
 
       {/* Split Editor Container */}
       <div className="flex-1 relative min-h-0 flex">
         {/* Main Editor */}
-        <div 
+        <div
           className="relative min-h-0"
-          style={{ width: (showSolution && activeFile.id === 'server.js') ? `${splitPosition}%` : '100%' }}
+          style={{
+            width:
+              showSolution && isServerTab ? `${splitPosition}%` : "100%",
+          }}
         >
           <Editor
+            key={activeFile.id} // force remount per tab to apply readOnly reliably
             height="100%"
             defaultLanguage={activeFile.language}
             value={activeFile.content}
             onChange={handleCodeChange}
-            options={{ 
-              readOnly: readOnly || false,
+            options={{
+              readOnly: isTestCasesTab ? true : !!readOnly,
+              domReadOnly: isTestCasesTab ? true : !!readOnly,
               minimap: { enabled: false },
               fontSize: 14,
               lineHeight: 24,
-              fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+              fontFamily:
+                "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
               lineNumbers: "on",
               roundedSelection: false,
               scrollBeyondLastLine: false,
               automaticLayout: true,
               theme: "vs-dark",
               scrollbar: {
-                vertical: 'visible',
-                horizontal: 'visible',
+                vertical: "visible",
+                horizontal: "visible",
                 verticalScrollbarSize: 12,
                 horizontalScrollbarSize: 12,
                 useShadows: false,
@@ -210,84 +243,76 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               overviewRulerLanes: 0,
               lineDecorationsWidth: 20,
               glyphMargin: false,
-              folding: false, // Disable folding for better performance
+              folding: false,
               lineNumbersMinChars: 3,
-              renderLineHighlight: 'line', // Changed from 'all' to 'line' for better performance
+              renderLineHighlight: "line",
               selectOnLineNumbers: true,
-              wordWrap: 'on',
-              wrappingStrategy: 'advanced',
+              wordWrap: "on",
+              wrappingStrategy: "advanced",
               suggestOnTriggerCharacters: true,
-              acceptSuggestionOnEnter: 'on',
-              tabCompletion: 'on',
-              wordBasedSuggestions: 'off', // Disable word-based suggestions for better performance
-              parameterHints: {
-                enabled: false, // Disable parameter hints for better performance
-              },
-              autoIndent: 'full',
-              formatOnPaste: false, // Disable format on paste for better performance
-              formatOnType: false, // Disable format on type for better performance
-              dragAndDrop: false, // Disable drag and drop for better performance
-              links: false, // Disable links for better performance
-              colorDecorators: false, // Disable color decorators for better performance
-              bracketPairColorization: {
-                enabled: true,
-              },
-              guides: {
-                bracketPairs: true,
-                indentation: false, // Disable indentation guides for better performance
-              },
-              renderWhitespace: 'none', // Changed from 'selection' to 'none' for better performance
-              cursorBlinking: 'blink', // Changed from 'smooth' to 'blink' for better performance
-              smoothScrolling: false, // Disable smooth scrolling for better performance
+              acceptSuggestionOnEnter: "on",
+              tabCompletion: "on",
+              wordBasedSuggestions: "off",
+              parameterHints: { enabled: false },
+              autoIndent: "full",
+              formatOnPaste: false,
+              formatOnType: false,
+              dragAndDrop: false,
+              links: false,
+              colorDecorators: false,
+              bracketPairColorization: { enabled: true },
+              guides: { bracketPairs: true, indentation: false },
+              renderWhitespace: "none",
+              cursorBlinking: "blink",
+              smoothScrolling: false,
               mouseWheelScrollSensitivity: 1,
               fastScrollSensitivity: 5,
-              padding: {
-                top: 8,
-                bottom: 8,
-              },
-              // Additional performance optimizations
+              padding: { top: 8, bottom: 8 },
               contextmenu: true,
-              quickSuggestions: {
-                other: true,
-                comments: false,
-                strings: false,
-              },
-              hover: {
-                enabled: false, // Disable hover for better performance
-              },
+              quickSuggestions: { other: true, comments: false, strings: false },
+              hover: { enabled: false },
             }}
             theme="vs-dark"
             className="rounded-none"
             onMount={(editor) => {
-              editor.focus();
-              
-              // Track cursor position changes
+              editorRef.current = editor;
+
+              // For safety: swallow any attempts if read-only
+              editor.onDidAttemptReadOnlyEdit(() => {});
+
               editor.onDidChangeCursorPosition((e: any) => {
                 setCursorPosition({
                   line: e.position.lineNumber,
-                  column: e.position.column
+                  column: e.position.column,
                 });
               });
-              
-              // Track selection changes
+
               editor.onDidChangeCursorSelection((e: any) => {
-                const selection = e.selection;
-                if (selection.startLineNumber === selection.endLineNumber && 
-                    selection.startColumn === selection.endColumn) {
-                  setSelectionInfo('');
+                const s = e.selection;
+                if (
+                  s.startLineNumber === s.endLineNumber &&
+                  s.startColumn === s.endColumn
+                ) {
+                  setSelectionInfo("");
                 } else {
-                  const lines = selection.endLineNumber - selection.startLineNumber + 1;
-                  const chars = selection.endColumn - selection.startColumn;
+                  const lines = s.endLineNumber - s.startLineNumber + 1;
+                  const chars = s.endColumn - s.startColumn;
                   setSelectionInfo(` ${lines} lines, ${chars} chars`);
                 }
+              });
+
+              // Ensure correct mode on first mount of each tab
+              editor.updateOptions({
+                readOnly: isTestCasesTab ? true : !!readOnly,
+                domReadOnly: isTestCasesTab ? true : !!readOnly,
               });
             }}
           />
         </div>
 
         {/* Split Resizer */}
-        {showSolution && activeFile.id === 'server.js' && (
-          <div 
+        {showSolution && isServerTab && (
+          <div
             className="w-1 bg-tactical-border-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
             onMouseDown={handleSplitDrag}
           >
@@ -298,8 +323,8 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         )}
 
         {/* Solution Editor */}
-        {showSolution && solution && activeFile.id === 'server.js' && (
-          <div 
+        {showSolution && solution && isServerTab && (
+          <div
             className="relative min-h-0 border-l border-tactical-border-primary"
             style={{ width: `${100 - splitPosition}%` }}
           >
@@ -307,20 +332,22 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               height="100%"
               defaultLanguage="javascript"
               value={solution}
-              options={{ 
+              options={{
                 readOnly: true,
+                domReadOnly: true,
                 minimap: { enabled: false },
                 fontSize: 14,
                 lineHeight: 24,
-                fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+                fontFamily:
+                  "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
                 lineNumbers: "on",
                 roundedSelection: false,
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
                 theme: "vs-dark",
                 scrollbar: {
-                  vertical: 'visible',
-                  horizontal: 'visible',
+                  vertical: "visible",
+                  horizontal: "visible",
                   verticalScrollbarSize: 12,
                   horizontalScrollbarSize: 12,
                   useShadows: false,
@@ -332,43 +359,32 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 lineDecorationsWidth: 20,
                 glyphMargin: false,
                 folding: true,
-                foldingStrategy: 'indentation',
+                foldingStrategy: "indentation",
                 lineNumbersMinChars: 3,
-                renderLineHighlight: 'all',
+                renderLineHighlight: "all",
                 selectOnLineNumbers: true,
-                wordWrap: 'on',
-                wrappingStrategy: 'advanced',
+                wordWrap: "on",
+                wrappingStrategy: "advanced",
                 suggestOnTriggerCharacters: true,
-                acceptSuggestionOnEnter: 'on',
-                tabCompletion: 'on',
-                wordBasedSuggestions: 'allDocuments',
-                parameterHints: {
-                  enabled: true,
-                  cycle: true,
-                },
-                autoIndent: 'full',
+                acceptSuggestionOnEnter: "on",
+                tabCompletion: "on",
+                wordBasedSuggestions: "allDocuments",
+                parameterHints: { enabled: true, cycle: true },
+                autoIndent: "full",
                 formatOnPaste: true,
                 formatOnType: true,
                 dragAndDrop: true,
                 links: true,
                 colorDecorators: true,
-                bracketPairColorization: {
-                  enabled: true,
-                },
-                guides: {
-                  bracketPairs: true,
-                  indentation: true,
-                },
-                renderWhitespace: 'selection',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: 'on',
+                bracketPairColorization: { enabled: true },
+                guides: { bracketPairs: true, indentation: true },
+                renderWhitespace: "selection",
+                cursorBlinking: "smooth",
+                cursorSmoothCaretAnimation: "on",
                 smoothScrolling: true,
                 mouseWheelScrollSensitivity: 1,
                 fastScrollSensitivity: 5,
-                padding: {
-                  top: 8,
-                  bottom: 8,
-                },
+                padding: { top: 8, bottom: 8 },
               }}
               theme="vs-dark"
               className="rounded-none"
@@ -380,7 +396,10 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {/* Editor Footer */}
       <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical flex-shrink-0">
         <div className="flex items-center space-x-4">
-          <span>Ln {cursorPosition.line}, Col {cursorPosition.column}{selectionInfo}</span>
+          <span>
+            Ln {cursorPosition.line}, Col {cursorPosition.column}
+            {selectionInfo}
+          </span>
           <span>Spaces: 2</span>
           <span>UTF-8</span>
         </div>
@@ -393,16 +412,16 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       {!readOnly && runCode && (
         <div className="flex justify-between items-center p-4 bg-tactical-surface border-t border-tactical-border-primary">
           <div className="flex items-center space-x-2">
-            {solution && activeFile.id === 'server.js' && hasAttemptedSubmit && (
-              <button 
+            {solution && isServerTab && hasAttemptedSubmit && (
+              <button
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
-                  showSolution 
-                    ? 'bg-tactical-error text-white hover:bg-red-600' 
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  showSolution
+                    ? "bg-tactical-error text-white hover:bg-red-600"
+                    : "bg-gray-800 text-gray-400 hover:bg-gray-700"
                 }`}
               >
-                {showSolution ? 'Hide Solution' : 'Show Solution'}
+                {showSolution ? "Hide Solution" : "Show Solution"}
               </button>
             )}
           </div>

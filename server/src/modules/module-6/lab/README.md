@@ -1,299 +1,317 @@
-# Module 6: Middleware
+# Module 6: Pagination and Filtering
 
-## What is Middleware?
+## What is Pagination?
 
-Middleware are functions that run between receiving a request and sending a response. Think of them as layers that process requests before they reach your route handlers.
+Pagination is the process of dividing large datasets into smaller, manageable chunks (pages). Instead of returning 10,000 users at once, you return 20 users per page.
 
-```
-Request → Middleware 1 → Middleware 2 → Route Handler → Response
-```
+## What is Filtering?
 
-## How Middleware Works
+Filtering allows users to search and narrow down results based on specific criteria. It's essential for helping users find exactly what they're looking for in large datasets.
 
-Every middleware function has access to:
-- `req` (request object)
-- `res` (response object) 
-- `next` (function to call next middleware)
+## Why Use Pagination and Filtering?
+
+- **Performance**: Faster response times and reduced memory usage
+- **User Experience**: Easier to navigate and find specific data
+- **Bandwidth**: Smaller data transfers
+- **Scalability**: Handle large datasets efficiently
+- **Searchability**: Allow users to find specific information quickly
+
+## Pagination Concepts
+
+### Key Terms
+
+- **Page**: Current page number (usually starts at 1)
+- **Limit/Size**: Number of items per page
+- **Offset/Skip**: Number of items to skip
+- **Total**: Total number of items in database
+
+### Basic Formula
 
 ```javascript
-function myMiddleware(req, res, next) {
-    // Do something with request
-    console.log('Processing request...');
+const offset = (page - 1) * limit;
+
+// Example: Page 3 with 10 items per page
+// offset = (3 - 1) * 10 = 20 (skip first 20 items)
+```
+
+## Query Parameters for Pagination and Filtering
+
+Standard pagination and filtering use these query parameters:
+
+```
+GET /api/users?page=2&limit=10
+GET /api/users?search=john&role=admin&status=active
+GET /api/users?page=1&limit=5&search=alice&role=user
+GET /api/products?page=1&size=20&category=electronics&minPrice=100
+```
+
+## Basic Pagination Implementation
+
+```javascript
+app.get('/api/users', (req, res) => {
+    // Get pagination parameters from query string
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     
-    // Call next() to continue to next middleware
-    next();
+    // Calculate offset
+    const offset = (page - 1) * limit;
+    
+    // Simulate database query
+    const allUsers = getUsersFromDatabase();
+    const users = allUsers.slice(offset, offset + limit);
+    
+    // Calculate pagination info
+    const totalUsers = allUsers.length;
+    const totalPages = Math.ceil(totalUsers / limit);
+    
+    res.json({
+        data: users,
+        pagination: {
+            page: page,
+            limit: limit,
+            total: totalUsers,
+            totalPages: totalPages,
+            hasNext: page < totalPages,
+            hasPrev: page > 1
+        }
+    });
+});
+```
+
+## What is Filtering?
+
+Filtering allows users to search and narrow down results based on specific criteria.
+
+## Common Filter Types
+
+### Text Search
+```javascript
+// Search by name
+GET /api/users?search=john
+
+// Search in specific field
+GET /api/users?name=john
+```
+
+### Exact Match
+```javascript
+// Filter by status
+GET /api/orders?status=completed
+
+// Filter by category
+GET /api/products?category=electronics
+```
+
+### Range Filters
+```javascript
+// Price range
+GET /api/products?minPrice=10&maxPrice=100
+
+// Date range
+GET /api/orders?startDate=2024-01-01&endDate=2024-12-31
+```
+
+## Basic Filtering Implementation
+
+```javascript
+app.get('/api/products', (req, res) => {
+    let products = getAllProducts();
+    
+    // Filter by category
+    if (req.query.category) {
+        products = products.filter(p => 
+            p.category.toLowerCase() === req.query.category.toLowerCase()
+        );
+    }
+    
+    // Filter by price range
+    if (req.query.minPrice) {
+        products = products.filter(p => p.price >= parseFloat(req.query.minPrice));
+    }
+    
+    if (req.query.maxPrice) {
+        products = products.filter(p => p.price <= parseFloat(req.query.maxPrice));
+    }
+    
+    // Text search in name or description
+    if (req.query.search) {
+        const searchTerm = req.query.search.toLowerCase();
+        products = products.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) ||
+            p.description.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    res.json({ data: products, total: products.length });
+});
+```
+
+## Combining Pagination and Filtering
+
+```javascript
+app.get('/api/products', (req, res) => {
+    let products = getAllProducts();
+    
+    // Apply filters first
+    if (req.query.category) {
+        products = products.filter(p => 
+            p.category.toLowerCase() === req.query.category.toLowerCase()
+        );
+    }
+    
+    if (req.query.search) {
+        const searchTerm = req.query.search.toLowerCase();
+        products = products.filter(p => 
+            p.name.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Get total after filtering
+    const totalFiltered = products.length;
+    
+    // Apply pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+    
+    const paginatedProducts = products.slice(offset, offset + limit);
+    
+    res.json({
+        data: paginatedProducts,
+        pagination: {
+            page: page,
+            limit: limit,
+            total: totalFiltered,
+            totalPages: Math.ceil(totalFiltered / limit),
+            hasNext: page < Math.ceil(totalFiltered / limit),
+            hasPrev: page > 1
+        },
+        filters: {
+            category: req.query.category || null,
+            search: req.query.search || null
+        }
+    });
+});
+```
+
+## Sorting Data
+
+Often combined with pagination and filtering:
+
+```javascript
+app.get('/api/products', (req, res) => {
+    let products = getAllProducts();
+    
+    // Apply filters...
+    
+    // Apply sorting
+    const sortBy = req.query.sortBy || 'name';
+    const sortOrder = req.query.sortOrder === 'desc' ? 'desc' : 'asc';
+    
+    products.sort((a, b) => {
+        let aVal = a[sortBy];
+        let bVal = b[sortBy];
+        
+        // Handle strings
+        if (typeof aVal === 'string') {
+            aVal = aVal.toLowerCase();
+            bVal = bVal.toLowerCase();
+        }
+        
+        if (sortOrder === 'desc') {
+            return bVal > aVal ? 1 : -1;
+        } else {
+            return aVal > bVal ? 1 : -1;
+        }
+    });
+    
+    // Apply pagination...
+    
+    res.json({
+        data: paginatedProducts,
+        pagination: { /* ... */ },
+        sorting: {
+            sortBy: sortBy,
+            sortOrder: sortOrder
+        }
+    });
+});
+```
+
+## Input Validation
+
+Always validate and sanitize query parameters:
+
+```javascript
+function validatePaginationParams(req) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    // Limit the maximum page size
+    const maxLimit = 100;
+    const validLimit = limit > maxLimit ? maxLimit : limit;
+    
+    // Ensure positive numbers
+    const validPage = page < 1 ? 1 : page;
+    
+    return { page: validPage, limit: validLimit };
 }
 ```
 
-## Types of Middleware
+## Database Considerations
 
-### 1. Application-Level Middleware
-Runs for every request to the app:
+For real databases, use database-specific pagination:
 
 ```javascript
-const express = require('express');
-const app = express();
+// MongoDB example
+const users = await User.find(filters)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ createdAt: -1 });
 
-// This runs for ALL requests
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
+// SQL example
+const users = await User.findAll({
+    where: filters,
+    offset: (page - 1) * limit,
+    limit: limit,
+    order: [['createdAt', 'DESC']]
 });
 ```
 
-### 2. Router-Level Middleware
-Runs only for specific routes:
+## API Response Format
 
-```javascript
-// Only runs for /api routes
-app.use('/api', (req, res, next) => {
-    console.log('API request received');
-    next();
-});
-```
+Standard response structure:
 
-### 3. Route-Specific Middleware
-Runs only for one specific route - placed between the route and handler:
-
-```javascript
-// Custom middleware function
-const checkAuth = (req, res, next) => {
-    if (req.headers.authorization) {
-        next(); // User is authenticated
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
+```json
+{
+    "data": [...],
+    "pagination": {
+        "page": 2,
+        "limit": 10,
+        "total": 156,
+        "totalPages": 16,
+        "hasNext": true,
+        "hasPrev": true
+    },
+    "filters": {
+        "category": "electronics",
+        "search": "phone"
+    },
+    "sorting": {
+        "sortBy": "price",
+        "sortOrder": "asc"
     }
-};
-
-// Middleware sits BETWEEN route and handler
-app.get('/protected', checkAuth, (req, res) => {
-    res.json({ message: 'Secret data' });
-});
-
-// Multiple middleware for one route
-app.post('/admin', checkAuth, checkAdmin, (req, res) => {
-    res.json({ message: 'Admin only area' });
-});
-```
-
-### 4. Parameter Middleware
-Runs when specific route parameters are present:
-
-```javascript
-// Runs whenever :userId parameter is in the route
-app.param('userId', (req, res, next, userId) => {
-    // Validate user exists
-    if (userId < 1) {
-        return res.status(400).json({ error: 'Invalid user ID' });
-    }
-    req.userId = userId;
-    next();
-});
-
-app.get('/users/:userId', (req, res) => {
-    res.json({ userId: req.userId });
-});
-```
-
-## Built-in Middleware
-
-Express comes with some built-in middleware:
-
-### express.json()
-Parses JSON request bodies:
-
-```javascript
-// Without this, req.body is undefined
-app.use(express.json());
-
-app.post('/users', (req, res) => {
-    console.log(req.body); // Now we can access JSON data
-    res.json({ received: req.body });
-});
-```
-
-### express.urlencoded()
-Parses form data:
-
-```javascript
-app.use(express.urlencoded({ extended: true }));
-```
-
-### express.static()
-Serves static files (HTML, CSS, images):
-
-```javascript
-// Serve files from 'public' folder
-app.use(express.static('public'));
-
-// Now files in 'public' are accessible:
-// public/style.css → http://localhost:3000/style.css
-```
-
-## Third-Party Middleware
-
-Popular middleware packages you can install:
-
-### cors - Handle Cross-Origin Requests
-```bash
-npm install cors
-```
-
-```javascript
-const cors = require('cors');
-
-app.use(cors()); // Allow all origins
-// OR
-app.use(cors({ origin: 'http://localhost:3000' })); // Specific origin
-```
-
-### morgan - HTTP Request Logger
-```bash
-npm install morgan
-```
-
-```javascript
-const morgan = require('morgan');
-
-app.use(morgan('combined')); // Logs all requests
-```
-
-### helmet - Security Headers
-```bash
-npm install helmet
-```
-
-```javascript
-const helmet = require('helmet');
-
-app.use(helmet()); // Adds security headers
-```
-
-## Custom Middleware Examples
-
-### 1. Request Logger
-```javascript
-const requestLogger = (req, res, next) => {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${req.method} ${req.url}`);
-    next();
-};
-
-app.use(requestLogger);
-```
-
-### 2. Authentication Check
-```javascript
-const requireAuth = (req, res, next) => {
-    const token = req.headers.authorization;
-    
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' });
-    }
-    
-    // In real app, verify token here
-    req.user = { id: 1, name: 'John' }; // Fake user data
-    next();
-};
-```
-
-### 3. Request Timing
-```javascript
-const requestTimer = (req, res, next) => {
-    req.startTime = Date.now();
-    
-    res.on('finish', () => {
-        const duration = Date.now() - req.startTime;
-        console.log(`Request took ${duration}ms`);
-    });
-    
-    next();
-};
-```
-
-## Middleware Order Matters
-
-Middleware runs in the order you define it:
-
-```javascript
-// ✅ Correct order
-app.use(express.json());        // Parse JSON first
-app.use(requestLogger);         // Then log request
-app.use('/api', requireAuth);   // Then check auth for /api routes
-
-// ❌ Wrong order
-app.use('/api', requireAuth);   // This runs first
-app.use(express.json());        // JSON parsing happens after auth check!
-```
-
-## Error Handling Middleware
-
-Special middleware with 4 parameters handles errors:
-
-```javascript
-const errorHandler = (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ 
-        error: 'Something went wrong!' 
-    });
-};
-
-// Error middleware goes LAST
-app.use(errorHandler);
-```
-
-## Common Patterns
-
-### Multiple Middleware for One Route
-```javascript
-// Chain multiple middleware functions
-app.get('/admin', 
-    requestLogger,      // First: log the request
-    requireAuth,        // Second: check authentication  
-    requireAdmin,       // Third: check admin permissions
-    (req, res) => {     // Finally: route handler
-        res.json({ users: [] });
-    }
-);
-```
-
-### Route Groups with Middleware
-```javascript
-// Apply middleware to all routes in a group
-const authRouter = express.Router();
-
-// This middleware applies to ALL routes in this router
-authRouter.use(requireAuth);
-
-authRouter.get('/profile', (req, res) => {
-    res.json({ user: req.user });
-});
-
-authRouter.get('/settings', (req, res) => {
-    res.json({ settings: {} });
-});
-
-// Mount the router with middleware applied
-app.use('/api', authRouter);
-```
-
-### Conditional Middleware
-```javascript
-const conditionalAuth = (req, res, next) => {
-    if (req.url.startsWith('/public')) {
-        next(); // Skip auth for public routes
-    } else {
-        requireAuth(req, res, next); // Apply auth for other routes
-    }
-};
+}
 ```
 
 ## Key Takeaways
 
-- Middleware functions run between request and response
-- Always call `next()` to continue to next middleware
-- Order matters - middleware runs sequentially
-- Built-in middleware handles common tasks
-- Third-party middleware adds functionality
-- Custom middleware solves specific needs
-- Error middleware has 4 parameters and goes last
+- **Pagination** improves performance and user experience by breaking large datasets into manageable chunks
+- **Filtering** helps users find specific data quickly and efficiently
+- **Always apply filters before pagination** to ensure accurate results
+- **Validate and limit query parameters** to prevent abuse and ensure data integrity
+- **Use database-level pagination** for better performance with large datasets
+- **Provide clear metadata** in responses (pagination info, applied filters)
+- **Consider sorting** alongside pagination and filtering for better user experience
+- **Test edge cases** like empty results, invalid parameters, and boundary conditions
+- **Design consistent API responses** that include data, pagination, and filter information

@@ -1,98 +1,209 @@
 const express = require('express');
-const app = express();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-// Enable JSON parsing
+const app = express();
 app.use(express.json());
 
-// Sample users data
-const users = [
-    { id: 1, name: "Alice Johnson", email: "alice@example.com", role: "admin", status: "active" },
-    { id: 2, name: "Bob Smith", email: "bob@example.com", role: "user", status: "active" },
-    { id: 3, name: "Charlie Brown", email: "charlie@example.com", role: "user", status: "inactive" },
-    { id: 4, name: "Diana Prince", email: "diana@example.com", role: "moderator", status: "active" },
-    { id: 5, name: "Edward Norton", email: "edward@example.com", role: "user", status: "active" },
-    { id: 6, name: "Fiona Green", email: "fiona@example.com", role: "admin", status: "inactive" },
-    { id: 7, name: "George Wilson", email: "george@example.com", role: "user", status: "active" },
-    { id: 8, name: "Hannah Davis", email: "hannah@example.com", role: "moderator", status: "active" },
-    { id: 9, name: "Ian Thompson", email: "ian@example.com", role: "user", status: "inactive" },
-    { id: 10, name: "Julia Roberts", email: "julia@example.com", role: "admin", status: "active" },
-    { id: 11, name: "Kevin Lee", email: "kevin@example.com", role: "user", status: "active" },
-    { id: 12, name: "Lisa Wang", email: "lisa@example.com", role: "moderator", status: "inactive" },
-    { id: 13, name: "Mike Johnson", email: "mike@example.com", role: "user", status: "active" },
-    { id: 14, name: "Nancy Brown", email: "nancy@example.com", role: "admin", status: "active" },
-    { id: 15, name: "Oliver Smith", email: "oliver@example.com", role: "user", status: "inactive" }
-];
+// JWT secret (in production, use environment variable)
+const JWT_SECRET = 'your-super-secret-jwt-key-change-in-production';
 
-// TODO: Create GET /api/users endpoint with pagination and filtering
-// The endpoint should:
-// - Accept 'page' and 'limit' query parameters for pagination
-// - Accept 'search', 'role', and 'status' query parameters for filtering
-// - Default to page=1 and limit=5 if not provided
-// - Apply filters first, then pagination
-// - Return response with data, pagination info, and applied filters
+// In-memory user storage (in production, use a database)
+const users = [];
 
-app.get('/api/users', (req, res) => {
-    // TODO: Get filtering parameters
-    const search = undefined; // Your code here
-    const role = undefined; // Your code here
-    const status = undefined; // Your code here
+// TODO: Create a function to hash passwords
+// The function should:
+// - Take a plain text password as parameter
+// - Use bcrypt.hash() with saltRounds of 10
+// - Return the hashed password
+// - Handle errors appropriately
+
+async function hashPassword(password) {
+    // Your code here
     
-    // TODO: Apply filters first
-    let filteredUsers = users;
+}
+
+// TODO: Create a function to verify passwords
+// The function should:
+// - Take plain password and hashed password as parameters
+// - Use bcrypt.compare() to verify
+// - Return true if match, false otherwise
+// - Handle errors appropriately
+
+async function verifyPassword(plainPassword, hashedPassword) {
+    // Your code here
     
-    // TODO: Apply search filter (search in name and email)
-    if (search) {
-        // Your code here
+}
+
+// TODO: Create a function to generate JWT tokens
+// The function should:
+// - Take user object as parameter
+// - Sign with JWT_SECRET
+// - Set expiration to 24 hours
+// - Return the token
+
+function generateToken(user) {
+    // Your code here
+    
+}
+
+// TODO: Create authentication middleware
+// The middleware should:
+// - Extract token from Authorization header
+// - Verify the token with jwt.verify()
+// - Add user info to req.user
+// - Call next() if valid, return 401 if invalid
+
+function authenticateToken(req, res, next) {
+    // Your code here
+    
+}
+
+// Password validation function
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    if (password.length < minLength) {
+        return { valid: false, error: 'Password must be at least 8 characters' };
     }
     
-    // TODO: Apply role filter
-    if (role) {
-        // Your code here
+    if (!hasUpperCase) {
+        return { valid: false, error: 'Password must contain uppercase letter' };
     }
     
-    // TODO: Apply status filter
-    if (status) {
-        // Your code here
+    if (!hasLowerCase) {
+        return { valid: false, error: 'Password must contain lowercase letter' };
     }
     
-    // TODO: Get pagination parameters with validation
-    let page = undefined; // Your code here
-    let limit = undefined; // Your code here
+    if (!hasNumbers) {
+        return { valid: false, error: 'Password must contain number' };
+    }
     
-    // TODO: Validate and sanitize pagination parameters
-    // Check for NaN, negative values, and set defaults
-    // Set maximum limit (e.g., 100)
-    // Ensure integers with Math.floor()
+    if (!hasSpecialChar) {
+        return { valid: false, error: 'Password must contain special character' };
+    }
     
-    // TODO: Calculate pagination after filtering
-    const totalFiltered = undefined; // Your code here
-    const totalPages = undefined; // Your code here
+    return { valid: true };
+}
+
+// Public routes
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to the Authentication API!' });
+});
+
+// Register endpoint
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password, email } = req.body;
+        
+        // Validate input
+        if (!username || !password || !email) {
+            return res.status(400).json({ error: 'Username, password, and email are required' });
+        }
+        
+        // Check if user already exists
+        const existingUser = users.find(u => u.username === username || u.email === email);
+        if (existingUser) {
+            return res.status(409).json({ error: 'User already exists' });
+        }
+        
+        // Validate password
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.valid) {
+            return res.status(400).json({ error: passwordValidation.error });
+        }
+        
+        // Hash password
+        const hashedPassword = await hashPassword(password);
+        
+        // Create user
+        const user = {
+            id: users.length + 1,
+            username,
+            email,
+            password: hashedPassword,
+            createdAt: new Date().toISOString()
+        };
+        
+        users.push(user);
+        
+        res.status(201).json({ 
+            message: 'User registered successfully',
+            user: { id: user.id, username: user.username, email: user.email }
+        });
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Login endpoint
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
+        
+        // Find user
+        const user = users.find(u => u.username === username);
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Verify password
+        const isValidPassword = await verifyPassword(password, user.password);
+        if (!isValidPassword) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Generate token
+        const token = generateToken({ id: user.id, username: user.username });
+        
+        res.json({
+            message: 'Login successful',
+            token,
+            user: { id: user.id, username: user.username, email: user.email }
+        });
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Protected routes
+app.get('/profile', authenticateToken, (req, res) => {
+    const user = users.find(u => u.id === req.user.id);
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
     
-    // TODO: Check if page exists (return 404 if page > totalPages)
-    
-    // TODO: Calculate start and end indices for slicing
-    const startIndex = undefined; // Your code here
-    const endIndex = undefined; // Your code here
-    const pageUsers = undefined; // Your code here
-    
-    // TODO: Return response with data, pagination, and filters
     res.json({
-        data: pageUsers,
-        pagination: {
-            page: page,
-            limit: limit,
-            total: totalFiltered,
-            totalPages: totalPages
-        },
-        filters: {
-            search: search !== undefined ? search : null,
-            role: role || null,
-            status: status || null
+        message: 'Profile data',
+        user: { id: user.id, username: user.username, email: user.email, createdAt: user.createdAt }
+    });
+});
+
+app.get('/dashboard', authenticateToken, (req, res) => {
+    res.json({
+        message: 'Welcome to your dashboard!',
+        user: req.user,
+        stats: {
+            totalUsers: users.length,
+            lastLogin: new Date().toISOString()
         }
     });
 });
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Authentication server running on http://localhost:${PORT}`);
 });

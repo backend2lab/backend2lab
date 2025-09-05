@@ -1,308 +1,299 @@
-# Module 7: Data Persistence
+# Module 7: Middleware
 
-## What is Data Persistence?
+## What is Middleware?
 
-Data persistence means storing data so it survives after your application stops running. Without persistence, all data is lost when the server restarts.
+Middleware are functions that run between receiving a request and sending a response. Think of them as layers that process requests before they reach your route handlers.
 
-## Types of Data Storage
-
-### 1. In-Memory (Temporary)
-Data stored in variables - lost when app restarts:
-
-```javascript
-let users = [
-    { id: 1, name: 'John' },
-    { id: 2, name: 'Jane' }
-];
-// Lost when server restarts!
+```
+Request → Middleware 1 → Middleware 2 → Route Handler → Response
 ```
 
-### 2. File-Based (Simple Persistence)
-Data stored in files - survives restarts:
+## How Middleware Works
+
+Every middleware function has access to:
+- `req` (request object)
+- `res` (response object) 
+- `next` (function to call next middleware)
 
 ```javascript
-const fs = require('fs');
-
-// Save to file
-fs.writeFileSync('users.json', JSON.stringify(users));
-
-// Load from file
-const users = JSON.parse(fs.readFileSync('users.json', 'utf8'));
-```
-
-### 3. Database (Professional Persistence)
-Data stored in specialized database systems like MongoDB or PostgreSQL.
-
-## Working with JSON Files
-
-### Writing Data
-
-```javascript
-const fs = require('fs');
-
-function saveUsers(users) {
-    try {
-        fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
-        console.log('Users saved successfully');
-    } catch (error) {
-        console.error('Error saving users:', error);
-    }
+function myMiddleware(req, res, next) {
+    // Do something with request
+    console.log('Processing request...');
+    
+    // Call next() to continue to next middleware
+    next();
 }
 ```
 
-### Reading Data
+## Types of Middleware
+
+### 1. Application-Level Middleware
+Runs for every request to the app:
 
 ```javascript
-function loadUsers() {
-    try {
-        const data = fs.readFileSync('users.json', 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        // If file doesn't exist, return empty array
-        console.log('No users file found, starting fresh');
-        return [];
-    }
-}
-```
+const express = require('express');
+const app = express();
 
-### Complete CRUD with JSON
-
-```javascript
-const fs = require('fs');
-const path = require('path');
-
-const DATA_FILE = path.join(__dirname, 'data.json');
-
-class DataStore {
-    // Load data from file
-    load() {
-        try {
-            const data = fs.readFileSync(DATA_FILE, 'utf8');
-            return JSON.parse(data);
-        } catch (error) {
-            return [];
-        }
-    }
-    
-    // Save data to file
-    save(data) {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    }
-    
-    // Create new item
-    create(item) {
-        const data = this.load();
-        const newItem = { id: Date.now(), ...item };
-        data.push(newItem);
-        this.save(data);
-        return newItem;
-    }
-    
-    // Read all items
-    findAll() {
-        return this.load();
-    }
-    
-    // Read one item
-    findById(id) {
-        const data = this.load();
-        return data.find(item => item.id === parseInt(id));
-    }
-    
-    // Update item
-    update(id, updates) {
-        const data = this.load();
-        const index = data.findIndex(item => item.id === parseInt(id));
-        
-        if (index !== -1) {
-            data[index] = { ...data[index], ...updates };
-            this.save(data);
-            return data[index];
-        }
-        
-        return null;
-    }
-    
-    // Delete item
-    delete(id) {
-        const data = this.load();
-        const filtered = data.filter(item => item.id !== parseInt(id));
-        this.save(filtered);
-        return data.length !== filtered.length;
-    }
-}
-```
-
-## Introduction to Databases
-
-### Why Use Databases?
-
-JSON files work for learning, but real applications need databases because:
-- **Performance**: Fast queries on large datasets
-- **Concurrent Access**: Multiple users can access simultaneously
-- **Data Integrity**: Built-in validation and constraints
-- **Relationships**: Link data between tables/collections
-- **Backup & Recovery**: Professional data protection
-
-### Database Types
-
-#### SQL Databases (PostgreSQL, MySQL)
-- Structured data in tables with rows and columns
-- Use SQL language for queries
-- Strong relationships between data
-
-```sql
--- SQL Example
-SELECT * FROM users WHERE age > 18;
-```
-
-#### NoSQL Databases (MongoDB)
-- Flexible document-based storage
-- JSON-like documents
-- No fixed schema
-
-```javascript
-// MongoDB Example
-db.users.find({ age: { $gt: 18 } });
-```
-
-## Database Connections
-
-### MongoDB with Mongoose
-
-```javascript
-const mongoose = require('mongoose');
-
-// Connect to database
-mongoose.connect('mongodb://localhost:27017/myapp');
-
-// Define a schema
-const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    age: Number
-});
-
-// Create a model
-const User = mongoose.model('User', userSchema);
-
-// Use the model
-const newUser = new User({
-    name: 'John',
-    email: 'john@example.com',
-    age: 25
-});
-
-newUser.save();
-```
-
-### PostgreSQL with Sequelize
-
-```javascript
-const { Sequelize, DataTypes } = require('sequelize');
-
-// Connect to database
-const sequelize = new Sequelize('database', 'username', 'password', {
-    host: 'localhost',
-    dialect: 'postgres'
-});
-
-// Define a model
-const User = sequelize.define('User', {
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    age: DataTypes.INTEGER
-});
-
-// Use the model
-User.create({
-    name: 'John',
-    email: 'john@example.com',
-    age: 25
+// This runs for ALL requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
 });
 ```
 
-## Models and Data Abstraction
-
-Models represent your data structure and business logic:
+### 2. Router-Level Middleware
+Runs only for specific routes:
 
 ```javascript
-// User model example
-class UserModel {
-    constructor(dataStore) {
-        this.dataStore = dataStore;
+// Only runs for /api routes
+app.use('/api', (req, res, next) => {
+    console.log('API request received');
+    next();
+});
+```
+
+### 3. Route-Specific Middleware
+Runs only for one specific route - placed between the route and handler:
+
+```javascript
+// Custom middleware function
+const checkAuth = (req, res, next) => {
+    if (req.headers.authorization) {
+        next(); // User is authenticated
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+};
+
+// Middleware sits BETWEEN route and handler
+app.get('/protected', checkAuth, (req, res) => {
+    res.json({ message: 'Secret data' });
+});
+
+// Multiple middleware for one route
+app.post('/admin', checkAuth, checkAdmin, (req, res) => {
+    res.json({ message: 'Admin only area' });
+});
+```
+
+### 4. Parameter Middleware
+Runs when specific route parameters are present:
+
+```javascript
+// Runs whenever :userId parameter is in the route
+app.param('userId', (req, res, next, userId) => {
+    // Validate user exists
+    if (userId < 1) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+    }
+    req.userId = userId;
+    next();
+});
+
+app.get('/users/:userId', (req, res) => {
+    res.json({ userId: req.userId });
+});
+```
+
+## Built-in Middleware
+
+Express comes with some built-in middleware:
+
+### express.json()
+Parses JSON request bodies:
+
+```javascript
+// Without this, req.body is undefined
+app.use(express.json());
+
+app.post('/users', (req, res) => {
+    console.log(req.body); // Now we can access JSON data
+    res.json({ received: req.body });
+});
+```
+
+### express.urlencoded()
+Parses form data:
+
+```javascript
+app.use(express.urlencoded({ extended: true }));
+```
+
+### express.static()
+Serves static files (HTML, CSS, images):
+
+```javascript
+// Serve files from 'public' folder
+app.use(express.static('public'));
+
+// Now files in 'public' are accessible:
+// public/style.css → http://localhost:3000/style.css
+```
+
+## Third-Party Middleware
+
+Popular middleware packages you can install:
+
+### cors - Handle Cross-Origin Requests
+```bash
+npm install cors
+```
+
+```javascript
+const cors = require('cors');
+
+app.use(cors()); // Allow all origins
+// OR
+app.use(cors({ origin: 'http://localhost:3000' })); // Specific origin
+```
+
+### morgan - HTTP Request Logger
+```bash
+npm install morgan
+```
+
+```javascript
+const morgan = require('morgan');
+
+app.use(morgan('combined')); // Logs all requests
+```
+
+### helmet - Security Headers
+```bash
+npm install helmet
+```
+
+```javascript
+const helmet = require('helmet');
+
+app.use(helmet()); // Adds security headers
+```
+
+## Custom Middleware Examples
+
+### 1. Request Logger
+```javascript
+const requestLogger = (req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${req.method} ${req.url}`);
+    next();
+};
+
+app.use(requestLogger);
+```
+
+### 2. Authentication Check
+```javascript
+const requireAuth = (req, res, next) => {
+    const token = req.headers.authorization;
+    
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
     }
     
-    async createUser(userData) {
-        // Validate data
-        if (!userData.email || !userData.name) {
-            throw new Error('Email and name are required');
-        }
-        
-        // Check if user exists
-        const existing = await this.findByEmail(userData.email);
-        if (existing) {
-            throw new Error('User already exists');
-        }
-        
-        // Create user
-        return this.dataStore.create(userData);
-    }
+    // In real app, verify token here
+    req.user = { id: 1, name: 'John' }; // Fake user data
+    next();
+};
+```
+
+### 3. Request Timing
+```javascript
+const requestTimer = (req, res, next) => {
+    req.startTime = Date.now();
     
-    async findByEmail(email) {
-        const users = await this.dataStore.findAll();
-        return users.find(user => user.email === email);
+    res.on('finish', () => {
+        const duration = Date.now() - req.startTime;
+        console.log(`Request took ${duration}ms`);
+    });
+    
+    next();
+};
+```
+
+## Middleware Order Matters
+
+Middleware runs in the order you define it:
+
+```javascript
+// ✅ Correct order
+app.use(express.json());        // Parse JSON first
+app.use(requestLogger);         // Then log request
+app.use('/api', requireAuth);   // Then check auth for /api routes
+
+// ❌ Wrong order
+app.use('/api', requireAuth);   // This runs first
+app.use(express.json());        // JSON parsing happens after auth check!
+```
+
+## Error Handling Middleware
+
+Special middleware with 4 parameters handles errors:
+
+```javascript
+const errorHandler = (err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        error: 'Something went wrong!' 
+    });
+};
+
+// Error middleware goes LAST
+app.use(errorHandler);
+```
+
+## Common Patterns
+
+### Multiple Middleware for One Route
+```javascript
+// Chain multiple middleware functions
+app.get('/admin', 
+    requestLogger,      // First: log the request
+    requireAuth,        // Second: check authentication  
+    requireAdmin,       // Third: check admin permissions
+    (req, res) => {     // Finally: route handler
+        res.json({ users: [] });
     }
-}
+);
 ```
 
-## Best Practices
-
-### 1. Separate Data Layer
-Keep database logic separate from API routes:
-
+### Route Groups with Middleware
 ```javascript
-// Good: Separate concerns
-app.get('/users', async (req, res) => {
-    const users = await userModel.getAllUsers();
-    res.json(users);
+// Apply middleware to all routes in a group
+const authRouter = express.Router();
+
+// This middleware applies to ALL routes in this router
+authRouter.use(requireAuth);
+
+authRouter.get('/profile', (req, res) => {
+    res.json({ user: req.user });
 });
 
-// Bad: Mixed concerns
-app.get('/users', (req, res) => {
-    const data = fs.readFileSync('users.json');
-    const users = JSON.parse(data);
-    res.json(users);
+authRouter.get('/settings', (req, res) => {
+    res.json({ settings: {} });
 });
+
+// Mount the router with middleware applied
+app.use('/api', authRouter);
 ```
 
-### 2. Error Handling
-Always handle database errors:
-
+### Conditional Middleware
 ```javascript
-app.post('/users', async (req, res) => {
-    try {
-        const user = await userModel.createUser(req.body);
-        res.status(201).json(user);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+const conditionalAuth = (req, res, next) => {
+    if (req.url.startsWith('/public')) {
+        next(); // Skip auth for public routes
+    } else {
+        requireAuth(req, res, next); // Apply auth for other routes
     }
-});
-```
-
-### 3. Environment Configuration
-Keep database credentials in environment variables:
-
-```javascript
-const dbUrl = process.env.DATABASE_URL || 'mongodb://localhost:27017/myapp';
-mongoose.connect(dbUrl);
+};
 ```
 
 ## Key Takeaways
 
-- Data persistence saves data beyond application lifecycle
-- JSON files are simple but limited
-- Databases provide professional data management
-- Models abstract data operations
-- Always handle database errors
-- Separate data logic from API routes
+- Middleware functions run between request and response
+- Always call `next()` to continue to next middleware
+- Order matters - middleware runs sequentially
+- Built-in middleware handles common tasks
+- Third-party middleware adds functionality
+- Custom middleware solves specific needs
+- Error middleware has 4 parameters and goes last

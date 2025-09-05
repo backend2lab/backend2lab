@@ -1,15 +1,14 @@
-# Module 8 Exercise: Authentication & Authorization API Server
+# Module 8 Exercise: User Data Storage API
 
 ## Objective
-Build a complete Express.js API server with user registration, login, and protected routes to demonstrate authentication and authorization flow.
+Create a REST API with data persistence using JSON files, demonstrating the transition from in-memory to persistent storage through HTTP endpoints.
 
 ## What You'll Build
-A full authentication API that includes:
-- User registration endpoint
-- User login endpoint  
-- Protected routes that require authentication
-- JWT token-based authentication
-- Password hashing with bcrypt
+A complete REST API that:
+- Saves user data to a JSON file
+- Loads user data from the JSON file
+- Handles missing files gracefully
+- Provides full CRUD operations via HTTP endpoints
 
 ## Setup Instructions
 
@@ -23,173 +22,161 @@ A full authentication API that includes:
    npm start
    ```
 
-## Step-by-Step Implementation
+3. **Run tests**:
+   ```bash
+   npm test
+   ```
 
-### Step 1: Complete the Authentication Middleware
+## Your Task
 
-In the `authenticateToken` function, you need to:
+Complete the data storage functions in `server.js`:
 
-1. Extract the token from the Authorization header (format: "Bearer TOKEN")
-2. Check if the token exists
-3. Verify the token using `jwt.verify()`
-4. Add decoded user info to `req.user`
-5. Call `next()` to continue to the route handler
-6. Send appropriate error responses for missing/invalid tokens
+```javascript
+// TODO: Create a function to save users to JSON file
+// The function should:
+// - Take users array as parameter
+// - Use fs.writeFileSync to save to DATA_FILE
+// - Convert array to JSON string with JSON.stringify
+// - Add error handling with try/catch
+// - Return true on success, false on error
 
-**Hint**: Use `req.headers['authorization']` to get the header and split it to extract the token.
+function saveUsers(users) {
+    // Your code here
+}
 
-### Step 2: Complete the Registration Endpoint
+// TODO: Create a function to load users from JSON file
+// The function should:
+// - Read the file with fs.readFileSync
+// - Parse JSON string back to array with JSON.parse  
+// - Return empty array if file doesn't exist
+// - Add error handling with try/catch
 
-In the `/api/register` endpoint, implement:
-
-1. Extract email and password from `req.body`
-2. Validate that both email and password are provided
-3. Check if user already exists
-4. Hash the password using bcrypt
-5. Create new user object with id, email, and hashed password
-6. Save user to users array and write to file
-7. Send success response (don't send the hashed password back)
-
-**Hint**: Use `bcrypt.hash(password, 10)` to hash passwords with 10 salt rounds.
-
-### Step 3: Complete the Login Endpoint
-
-In the `/api/login` endpoint, implement:
-
-1. Extract email and password from `req.body`
-2. Find user by email
-3. Check if user exists
-4. Compare password with hashed password using bcrypt
-5. If valid, create JWT token with user info
-6. Send token back to client
-7. Send appropriate error messages for invalid credentials
-
-**Hint**: Use `bcrypt.compare(password, user.password)` to verify passwords.
-
-### Step 4: Complete the Protected Routes
-
-For both `/api/profile` and `/api/dashboard` routes:
-
-1. Add the `authenticateToken` middleware
-2. Return user-specific data
-3. Get user info from `req.user` (set by middleware)
-
-**Hint**: The middleware should be added as the second parameter: `app.get('/api/profile', authenticateToken, (req, res) => { ... })`
+function loadUsers() {
+    // Your code here
+}
+```
 
 ## API Endpoints
 
-| Method | Endpoint | Description | Authentication |
-|--------|----------|-------------|----------------|
-| POST | `/api/register` | Register a new user | No |
-| POST | `/api/login` | Login user | No |
-| GET | `/api/profile` | User profile | Yes |
-| GET | `/api/dashboard` | User dashboard | Yes |
+Once you complete the functions, your API will support these endpoints:
+
+### GET /users
+- Returns all users
+- Response: Array of user objects
+
+### POST /users
+- Creates a new user
+- Body: `{ "name": "string", "email": "string", "age": number (optional) }`
+- Response: Created user object with ID
+
+### GET /users/:id
+- Returns a specific user by ID
+- Response: User object or 404 if not found
+
+### PUT /users/:id
+- Updates a specific user by ID
+- Body: `{ "name": "string", "email": "string", "age": number (optional) }`
+- Response: Updated user object or 404 if not found
+
+### DELETE /users/:id
+- Deletes a specific user by ID
+- Response: Success message or 404 if not found
+
+## Step-by-Step Guide
+
+### For `saveUsers` function:
+1. Use `try/catch` block for error handling
+2. Inside try: use `fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2))`
+3. Return `true` on success
+4. In catch: log the error and return `false`
+
+### For `loadUsers` function:
+1. Use `try/catch` block for error handling
+2. Inside try: read file with `fs.readFileSync(DATA_FILE, 'utf8')`
+3. Parse the data with `JSON.parse(data)` and return it
+4. In catch: return empty array `[]`
 
 ## Testing Your API
 
-### 1. Start the server:
-```bash
-npm start
-```
+1. **Start the server**:
+   ```bash
+   npm start
+   ```
 
-### 2. Test with curl commands:
+2. **Test with curl or Postman**:
 
-**Register a new user:**
-```bash
-curl -X POST http://localhost:3000/api/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"password123"}'
-```
+   ```bash
+   # Get all users (empty initially)
+   curl http://localhost:3000/users
 
-**Login:**
-```bash
-curl -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"password123"}'
-```
+   # Create a user
+   curl -X POST http://localhost:3000/users \
+     -H "Content-Type: application/json" \
+     -d '{"name": "John Doe", "email": "john@example.com", "age": 30}'
 
-**Access protected route (replace TOKEN with actual token):**
-```bash
-curl -X GET http://localhost:3000/api/profile \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
+   # Get all users (should show the created user)
+   curl http://localhost:3000/users
 
-## Expected API Responses
+   # Get specific user (replace USER_ID with actual ID)
+   curl http://localhost:3000/users/USER_ID
 
-**Successful Registration:**
-```json
-{
-  "message": "User registered successfully",
-  "user": {
-    "id": 1703123456789,
-    "email": "john@example.com"
-  }
-}
-```
+   # Update user
+   curl -X PUT http://localhost:3000/users/USER_ID \
+     -H "Content-Type: application/json" \
+     -d '{"name": "John Smith", "age": 31}'
 
-**Successful Login:**
-```json
-{
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1703123456789,
-    "email": "john@example.com"
-  }
-}
-```
+   # Delete user
+   curl -X DELETE http://localhost:3000/users/USER_ID
+   ```
 
-**Protected Profile Route:**
-```json
-{
-  "message": "User profile data",
-  "user": {
-    "userId": 1703123456789,
-    "email": "john@example.com"
-  },
-  "profileData": {
-    "memberSince": "2024-01-15",
-    "lastLogin": "2024-01-15T10:30:00Z"
-  }
-}
-```
+3. **Run automated tests**:
+   ```bash
+   npm test
+   ```
 
-## Running Tests
+## Expected Behavior
 
-```bash
-npm test
-```
+- Data persists between server restarts
+- File `users.json` is created automatically
+- All CRUD operations work correctly
+- Proper error handling for missing files
+- Validation for required fields (name, email)
 
-The tests will verify:
-- User registration with password hashing
-- User login and JWT token generation
-- Protected route access with valid tokens
-- Error handling for invalid/missing tokens
-- Data persistence across requests
+## Challenge Extensions
 
-## What You'll Learn
+Once you complete the basic version, try these:
 
-- ✅ Building complete authentication flow
-- ✅ User registration with password hashing
-- ✅ JWT token creation and verification
-- ✅ Protecting routes with middleware
-- ✅ Handling authentication errors
-- ✅ API security best practices
-- ✅ File-based data persistence
-- ✅ Testing APIs with automated tests
+1. **Add data validation**: Validate email format, age range, etc.
+2. **Add search functionality**: Create `GET /users?search=name` endpoint
+3. **Add pagination**: Implement `GET /users?page=1&limit=10`
+4. **Add sorting**: Implement `GET /users?sort=name&order=asc`
+5. **Async versions**: Use `fs.promises` instead of sync functions
 
-## Authentication Flow Summary
+## What You Learned
 
-1. **Registration**: User signs up → Password gets hashed → User saved to database
-2. **Login**: User credentials verified → JWT token generated → Token sent to client  
-3. **Protected Access**: Client sends token in header → Middleware verifies token → Route handler executes
-4. **Authorization**: Different routes can have different access levels based on user data
-
-This exercise demonstrates the complete authentication and authorization cycle that real applications use!
+- ✅ Converting in-memory data to file-based persistence
+- ✅ Writing data to JSON files with `fs.writeFileSync`
+- ✅ Reading data from JSON files with `fs.readFileSync`
+- ✅ JSON serialization and deserialization
+- ✅ Error handling for file operations
+- ✅ Creating REST API endpoints with Express
+- ✅ Implementing full CRUD operations
+- ✅ Separating data layer from API routes
 
 ## Troubleshooting
 
-- **Port already in use**: Change the PORT constant in server.js
-- **Module not found**: Run `npm install` to install dependencies
-- **Tests failing**: Make sure the server is running on port 3000
-- **JWT errors**: Check that the JWT_SECRET is consistent between server and tests
+**"ENOENT" error?**
+- The file doesn't exist - that's normal for first run
+- Your `loadUsers` function should handle this
+
+**JSON parse error?**
+- Check `users.json` for syntax errors
+- Make sure JSON is valid (use a JSON validator)
+
+**Permission denied?**
+- Make sure you have write permissions in the directory
+- Try running from a different folder
+
+**Port already in use?**
+- Change the PORT constant in server.js
+- Or kill the process using port 3000

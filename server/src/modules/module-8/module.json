@@ -1,10 +1,10 @@
 {
   "id": "module-8",
-  "title": "Authentication & Security",
-  "description": "Learn how to implement secure authentication and authorization using JWT tokens, password hashing with bcrypt, and protected routes",
-  "difficulty": "Advanced",
-  "estimatedTime": "90 minutes",
-  "tags": ["authentication", "authorization", "jwt", "bcrypt", "security", "middleware", "tokens", "passwords"],
+  "title": "Data Persistence",
+  "description": "Learn how to implement data persistence using file-based storage and understand the fundamentals of database connections",
+  "difficulty": "Intermediate",
+  "estimatedTime": "75 minutes",
+  "tags": ["data-persistence", "file-system", "json", "database", "storage", "crud"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -18,23 +18,18 @@
     }
   },
   "learningObjectives": [
-    "Understand authentication vs authorization concepts",
-    "Implement secure password hashing with bcrypt",
-    "Create and verify JWT tokens for authentication",
-    "Build authentication middleware for route protection",
-    "Implement user registration and login endpoints",
-    "Create protected routes that require authentication",
-    "Handle authentication errors and security best practices",
-    "Test authentication flows with automated tests",
-    "Understand JWT token structure and security",
-    "Implement file-based user data persistence"
+    "Understand different types of data storage",
+    "Implement file-based data persistence with JSON",
+    "Create CRUD operations for data storage",
+    "Handle file system errors gracefully",
+    "Understand database concepts and connections",
+    "Separate data layer from business logic",
+    "Implement proper error handling for data operations"
   ],
   "prerequisites": [
     "Basic JavaScript knowledge",
-    "Understanding of Express.js framework",
-    "Familiarity with HTTP status codes",
-    "Basic understanding of JSON format",
-    "Knowledge of async/await and promises",
-    "Understanding of middleware concepts"
+    "Understanding of JSON format",
+    "Familiarity with Node.js file system operations",
+    "Basic Express.js knowledge"
   ]
 }

@@ -1,400 +1,191 @@
-# Module 9 Exercise: Pagination and Filtering
+# Module 9 Exercise: Authentication & Security
 
 ## Objective
-Create an API endpoint that returns paginated and filtered results from a list of users.
+Create a secure authentication system with JWT tokens, password hashing, and protected routes.
 
 ## What You'll Build
-An API endpoint that:
-- Returns users in pages (e.g., 5 users per page)
-- Accepts `page` and `limit` query parameters for pagination
-- Accepts `search`, `role`, and `status` query parameters for filtering
-- Returns pagination information and applied filters
-- Combines filtering and pagination correctly
+A complete authentication system that:
+- Registers new users with hashed passwords
+- Logs in users and returns JWT tokens
+- Protects routes with authentication middleware
+- Validates JWT tokens and extracts user information
+- Implements proper security measures
 
 ## Setup Instructions
 
-1. **Create project folder**:
+1. **Install dependencies**:
    ```bash
-   mkdir pagination-api
-   cd pagination-api
-   npm init -y
-   npm install express
+   npm install
    ```
 
-2. **Create this file**:
+2. **Start the server**:
+   ```bash
+   npm start
    ```
-   pagination-api/
-   └── server.js
+
+3. **Run tests**:
+   ```bash
+   npm test
    ```
-
-## Sample Data
-
-Use this array of users in your server:
-
-```javascript
-const users = [
-    { id: 1, name: "Alice Johnson", email: "alice@example.com", role: "admin", status: "active" },
-    { id: 2, name: "Bob Smith", email: "bob@example.com", role: "user", status: "active" },
-    { id: 3, name: "Charlie Brown", email: "charlie@example.com", role: "user", status: "inactive" },
-    { id: 4, name: "Diana Prince", email: "diana@example.com", role: "moderator", status: "active" },
-    { id: 5, name: "Edward Norton", email: "edward@example.com", role: "user", status: "active" },
-    { id: 6, name: "Fiona Green", email: "fiona@example.com", role: "admin", status: "inactive" },
-    { id: 7, name: "George Wilson", email: "george@example.com", role: "user", status: "active" },
-    { id: 8, name: "Hannah Davis", email: "hannah@example.com", role: "moderator", status: "active" },
-    { id: 9, name: "Ian Thompson", email: "ian@example.com", role: "user", status: "inactive" },
-    { id: 10, name: "Julia Roberts", email: "julia@example.com", role: "admin", status: "active" },
-    { id: 11, name: "Kevin Lee", email: "kevin@example.com", role: "user", status: "active" },
-    { id: 12, name: "Lisa Wang", email: "lisa@example.com", role: "moderator", status: "inactive" },
-    { id: 13, name: "Mike Johnson", email: "mike@example.com", role: "user", status: "active" },
-    { id: 14, name: "Nancy Brown", email: "nancy@example.com", role: "admin", status: "active" },
-    { id: 15, name: "Oliver Smith", email: "oliver@example.com", role: "user", status: "inactive" }
-];
-```
 
 ## Your Task
 
-Create `server.js` and implement the pagination and filtering endpoint:
+Complete the authentication functions in `server.js`:
 
 ```javascript
-const express = require('express');
-const app = express();
+// TODO: Create a function to hash passwords
+// The function should:
+// - Take a plain text password as parameter
+// - Use bcrypt.hash() with saltRounds of 10
+// - Return the hashed password
+// - Handle errors appropriately
 
-// Enable JSON parsing
-app.use(express.json());
+async function hashPassword(password) {
+    // Your code here
+}
 
-const users = [
-    { id: 1, name: "Alice Johnson", email: "alice@example.com", role: "admin", status: "active" },
-    { id: 2, name: "Bob Smith", email: "bob@example.com", role: "user", status: "active" },
-    { id: 3, name: "Charlie Brown", email: "charlie@example.com", role: "user", status: "inactive" },
-    { id: 4, name: "Diana Prince", email: "diana@example.com", role: "moderator", status: "active" },
-    { id: 5, name: "Edward Norton", email: "edward@example.com", role: "user", status: "active" },
-    { id: 6, name: "Fiona Green", email: "fiona@example.com", role: "admin", status: "inactive" },
-    { id: 7, name: "George Wilson", email: "george@example.com", role: "user", status: "active" },
-    { id: 8, name: "Hannah Davis", email: "hannah@example.com", role: "moderator", status: "active" },
-    { id: 9, name: "Ian Thompson", email: "ian@example.com", role: "user", status: "inactive" },
-    { id: 10, name: "Julia Roberts", email: "julia@example.com", role: "admin", status: "active" },
-    { id: 11, name: "Kevin Lee", email: "kevin@example.com", role: "user", status: "active" },
-    { id: 12, name: "Lisa Wang", email: "lisa@example.com", role: "moderator", status: "inactive" },
-    { id: 13, name: "Mike Johnson", email: "mike@example.com", role: "user", status: "active" },
-    { id: 14, name: "Nancy Brown", email: "nancy@example.com", role: "admin", status: "active" },
-    { id: 15, name: "Oliver Smith", email: "oliver@example.com", role: "user", status: "inactive" }
-];
+// TODO: Create a function to verify passwords
+// The function should:
+// - Take plain password and hashed password as parameters
+// - Use bcrypt.compare() to verify
+// - Return true if match, false otherwise
+// - Handle errors appropriately
 
-// TODO: Create GET /api/users endpoint with pagination and filtering
-app.get('/api/users', (req, res) => {
-    // TODO: Get pagination parameters
-    const page = // Your code here
-    const limit = // Your code here
-    
-    // TODO: Get filtering parameters
-    const search = // Your code here
-    const role = // Your code here
-    const status = // Your code here
-    
-    // TODO: Apply filters first
-    let filteredUsers = users;
-    
-    // TODO: Apply search filter (search in name and email)
-    if (search) {
-        // Your code here
-    }
-    
-    // TODO: Apply role filter
-    if (role) {
-        // Your code here
-    }
-    
-    // TODO: Apply status filter
-    if (status) {
-        // Your code here
-    }
-    
-    // TODO: Calculate pagination after filtering
-    const totalFiltered = // Your code here
-    const offset = // Your code here
-    const pageUsers = // Your code here
-    const totalPages = // Your code here
-    
-    // TODO: Return response with data, pagination, and filters
-    res.json({
-        data: pageUsers,
-        pagination: {
-            page: page,
-            limit: limit,
-            total: totalFiltered,
-            totalPages: totalPages
-        },
-        filters: {
-            search: search !== undefined ? search : null,
-            role: role || null,
-            status: status || null
-        }
-    });
-});
+async function verifyPassword(plainPassword, hashedPassword) {
+    // Your code here
+}
 
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
-});
-```
+// TODO: Create a function to generate JWT tokens
+// The function should:
+// - Take user object as parameter
+// - Sign with JWT_SECRET
+// - Set expiration to 24 hours
+// - Return the token
 
-## Step-by-Step Guide
+function generateToken(user) {
+    // Your code here
+}
 
-1. **Get pagination parameters**:
-   ```javascript
-   const page = parseInt(req.query.page) || 1;
-   const limit = parseInt(req.query.limit) || 5;
-   ```
+// TODO: Create authentication middleware
+// The middleware should:
+// - Extract token from Authorization header
+// - Verify the token with jwt.verify()
+// - Add user info to req.user
+// - Call next() if valid, return 401 if invalid
 
-2. **Get filtering parameters**:
-   ```javascript
-   const search = req.query.search;
-   const role = req.query.role;
-   const status = req.query.status;
-   ```
-
-3. **Apply filters**:
-   ```javascript
-   let filteredUsers = users;
-   
-   // Search filter
-   if (search) {
-       filteredUsers = filteredUsers.filter(user => 
-           user.name.toLowerCase().includes(search.toLowerCase()) ||
-           user.email.toLowerCase().includes(search.toLowerCase())
-       );
-   }
-   
-   // Role filter
-   if (role) {
-       filteredUsers = filteredUsers.filter(user => user.role === role);
-   }
-   
-   // Status filter
-   if (status) {
-       filteredUsers = filteredUsers.filter(user => user.status === status);
-   }
-   ```
-
-4. **Apply pagination to filtered results with validation**:
-   ```javascript
-   // Get pagination parameters with validation
-   let page = parseInt(req.query.page, 10) || 1;
-   let limit = parseInt(req.query.limit, 10) || 5;
-   
-   // Validate and sanitize pagination parameters
-   if (isNaN(page) || page < 1) page = 1;
-   if (isNaN(limit) || limit < 1) limit = 5;
-   
-   const MAX_LIMIT = 100;
-   if (limit > MAX_LIMIT) limit = MAX_LIMIT;
-   
-   // Ensure integers
-   page = Math.floor(page);
-   limit = Math.floor(limit);
-   
-   // Calculate pagination after filtering
-   const totalFiltered = filteredUsers.length;
-   const totalPages = Math.ceil(totalFiltered / limit);
-   
-   // Check if page exists
-   if (totalPages > 0 && page > totalPages) {
-       return res.status(404).json({ error: 'Page not found' });
-   }
-   
-   const startIndex = (page - 1) * limit;
-   const endIndex = page * limit;
-   const pageUsers = filteredUsers.slice(startIndex, endIndex);
-   ```
-
-## Testing Your API
-
-1. **Start your server**:
-   ```bash
-   node server.js
-   ```
-
-2. **Test pagination**:
-   - Page 1: `http://localhost:3000/api/users?page=1&limit=5`
-   - Page 2: `http://localhost:3000/api/users?page=2&limit=5`
-   - Page 3: `http://localhost:3000/api/users?page=3&limit=5`
-
-3. **Test filtering**:
-   - Search: `http://localhost:3000/api/users?search=alice`
-   - Role filter: `http://localhost:3000/api/users?role=admin`
-   - Status filter: `http://localhost:3000/api/users?status=active`
-
-4. **Test combined filtering and pagination**:
-   - `http://localhost:3000/api/users?role=user&status=active&page=1&limit=3`
-   - `http://localhost:3000/api/users?search=john&page=1&limit=2`
-
-## Expected Responses
-
-**GET `/api/users?page=1&limit=5`**:
-```json
-{
-    "data": [
-        { "id": 1, "name": "Alice Johnson", "email": "alice@example.com", "role": "admin", "status": "active" },
-        { "id": 2, "name": "Bob Smith", "email": "bob@example.com", "role": "user", "status": "active" },
-        { "id": 3, "name": "Charlie Brown", "email": "charlie@example.com", "role": "user", "status": "inactive" },
-        { "id": 4, "name": "Diana Prince", "email": "diana@example.com", "role": "moderator", "status": "active" },
-        { "id": 5, "name": "Edward Norton", "email": "edward@example.com", "role": "user", "status": "active" }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 5,
-        "total": 15,
-        "totalPages": 3
-    },
-    "filters": {
-        "search": null,
-        "role": null,
-        "status": null
-    }
+function authenticateToken(req, res, next) {
+    // Your code here
 }
 ```
 
-**GET `/api/users?role=admin&page=1&limit=3`**:
-```json
-{
-    "data": [
-        { "id": 1, "name": "Alice Johnson", "email": "alice@example.com", "role": "admin", "status": "active" },
-        { "id": 6, "name": "Fiona Green", "email": "fiona@example.com", "role": "admin", "status": "inactive" },
-        { "id": 10, "name": "Julia Roberts", "email": "julia@example.com", "role": "admin", "status": "active" }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 3,
-        "total": 4,
-        "totalPages": 2
-    },
-    "filters": {
-        "search": null,
-        "role": "admin",
-        "status": null
-    }
-}
+## API Endpoints
+
+Once you complete the functions, your API will support these endpoints:
+
+### POST /register
+- Registers a new user
+- Body: `{ "username": "string", "password": "string", "email": "string" }`
+- Response: Success message or error
+
+### POST /login
+- Logs in a user
+- Body: `{ "username": "string", "password": "string" }`
+- Response: JWT token and user info
+
+### GET /profile
+- Protected route - requires valid JWT token
+- Headers: `Authorization: Bearer <token>`
+- Response: User profile information
+
+### GET /dashboard
+- Protected route - requires valid JWT token
+- Headers: `Authorization: Bearer <token>`
+- Response: Dashboard data
+
+## Example Usage
+
+### Register a new user:
+```bash
+curl -X POST http://localhost:3000/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"john_doe","password":"SecurePass123!","email":"john@example.com"}'
 ```
 
-**GET `/api/users?search=john&page=1&limit=2`**:
-```json
-{
-    "data": [
-        { "id": 1, "name": "Alice Johnson", "email": "alice@example.com", "role": "admin", "status": "active" },
-        { "id": 13, "name": "Mike Johnson", "email": "mike@example.com", "role": "user", "status": "active" }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 2,
-        "total": 2,
-        "totalPages": 1
-    },
-    "filters": {
-        "search": "john",
-        "role": null,
-        "status": null
-    }
-}
+### Login:
+```bash
+curl -X POST http://localhost:3000/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"john_doe","password":"SecurePass123!"}'
 ```
+
+### Access protected route:
+```bash
+curl -X GET http://localhost:3000/profile \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
+```
+
+## Security Features to Implement
+
+1. **Password Hashing**: Use bcrypt to hash passwords before storing
+2. **JWT Tokens**: Generate secure tokens for authenticated users
+3. **Token Validation**: Verify tokens on protected routes
+4. **Input Validation**: Validate username, password, and email formats
+5. **Error Handling**: Proper error messages without exposing sensitive info
+
+## Password Requirements
+
+Implement these password validation rules:
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+- At least one special character
 
 ## Challenge Extensions
 
 Once you complete the basic version, try these:
 
-1. **Add navigation info**:
-   ```javascript
-   hasNext: page < totalPages,
-   hasPrev: page > 1
-   ```
-
-2. **Add sorting**:
-   ```javascript
-   // Add sortBy and sortOrder parameters
-   const sortBy = req.query.sortBy || 'id';
-   const sortOrder = req.query.sortOrder === 'desc' ? 'desc' : 'asc';
-   
-   // Sort filtered users before pagination
-   filteredUsers.sort((a, b) => {
-       let aVal = a[sortBy];
-       let bVal = b[sortBy];
-       
-       if (typeof aVal === 'string') {
-           aVal = aVal.toLowerCase();
-           bVal = bVal.toLowerCase();
-       }
-       
-       if (sortOrder === 'desc') {
-           return bVal > aVal ? 1 : -1;
-       } else {
-           return aVal > bVal ? 1 : -1;
-       }
-   });
-   ```
-
-3. **Add comprehensive validation** (already implemented in solution):
-   ```javascript
-   // Validate and sanitize pagination parameters
-   let page = parseInt(req.query.page, 10) || 1;
-   let limit = parseInt(req.query.limit, 10) || 5;
-   
-   if (isNaN(page) || page < 1) page = 1;
-   if (isNaN(limit) || limit < 1) limit = 5;
-   
-   const MAX_LIMIT = 100;
-   if (limit > MAX_LIMIT) limit = MAX_LIMIT;
-   
-   page = Math.floor(page);
-   limit = Math.floor(limit);
-   
-   // Validate role and status values
-   const validRoles = ['admin', 'user', 'moderator'];
-   const validStatuses = ['active', 'inactive'];
-   
-   if (role && !validRoles.includes(role)) {
-       return res.status(400).json({ error: 'Invalid role' });
-   }
-   
-   if (status && !validStatuses.includes(status)) {
-       return res.status(400).json({ error: 'Invalid status' });
-   }
-   ```
-
-4. **Handle page not found** (already implemented in solution):
-   ```javascript
-   if (totalPages > 0 && page > totalPages) {
-       return res.status(404).json({ error: 'Page not found' });
-   }
-   ```
-
-5. **Add case-insensitive role and status filtering**:
-   ```javascript
-   if (role) {
-       filteredUsers = filteredUsers.filter(user => 
-           user.role.toLowerCase() === role.toLowerCase()
-       );
-   }
-   ```
+1. **Add refresh tokens**: Implement token refresh mechanism
+2. **Add logout functionality**: Blacklist tokens
+3. **Add rate limiting**: Prevent brute force attacks
+4. **Add email verification**: Send verification emails
+5. **Add password reset**: Implement forgot password flow
+6. **Add role-based access**: Different permissions for different users
 
 ## What You Learned
 
-- ✅ Implementing pagination with `slice()`
-- ✅ Processing query parameters for both pagination and filtering
-- ✅ Applying multiple filters to data
-- ✅ Combining filtering and pagination correctly
-- ✅ Calculating offsets and page counts on filtered data
-- ✅ Returning comprehensive metadata (pagination + filters)
-- ✅ Testing paginated and filtered APIs
-- ✅ Understanding the importance of applying filters before pagination
+- ✅ Password hashing with bcrypt
+- ✅ JWT token generation and verification
+- ✅ Authentication middleware creation
+- ✅ Protected route implementation
+- ✅ Input validation and sanitization
+- ✅ Security best practices
+- ✅ Error handling for authentication
+- ✅ User registration and login flows
 
 ## Troubleshooting
 
-**Getting all users instead of a page?**
-- Check your `slice()` parameters
-- Make sure `offset` is calculated correctly
+**"bcrypt is not defined" error?**
+- Make sure you've installed bcrypt: `npm install bcrypt`
+- Import it at the top: `const bcrypt = require('bcrypt');`
 
-**Page calculation wrong?**
-- Remember: `Math.ceil()` for total pages
-- Pages start at 1, not 0
+**"jwt is not defined" error?**
+- Make sure you've installed jsonwebtoken: `npm install jsonwebtoken`
+- Import it at the top: `const jwt = require('jsonwebtoken');`
 
-**NaN in pagination?**
-- Use `parseInt()` on query parameters
-- Provide default values with `|| 1`
+**"Invalid token" error?**
+- Check that you're sending the token in the correct format
+- Make sure the token hasn't expired
+- Verify the JWT_SECRET is the same for signing and verifying
+
+**"User not found" error?**
+- Make sure the user exists in the users array
+- Check that the username is spelled correctly
+- Verify the user was registered successfully
+
+**Password validation failing?**
+- Check that the password meets all requirements
+- Make sure you're using the correct validation function
+- Verify the password is being hashed correctly
+
+Remember: Security is critical - always hash passwords, validate input, and handle errors properly!

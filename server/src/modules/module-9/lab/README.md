@@ -1,317 +1,334 @@
-# Module 9: Pagination and Filtering
+# Module 9: Authentication & Security
 
-## What is Pagination?
+## What is Authentication?
 
-Pagination is the process of dividing large datasets into smaller, manageable chunks (pages). Instead of returning 10,000 users at once, you return 20 users per page.
+Authentication is the process of verifying who a user is. It's like showing your ID card to prove you are who you say you are.
 
-## What is Filtering?
+## Authentication vs Authorization
 
-Filtering allows users to search and narrow down results based on specific criteria. It's essential for helping users find exactly what they're looking for in large datasets.
-
-## Why Use Pagination and Filtering?
-
-- **Performance**: Faster response times and reduced memory usage
-- **User Experience**: Easier to navigate and find specific data
-- **Bandwidth**: Smaller data transfers
-- **Scalability**: Handle large datasets efficiently
-- **Searchability**: Allow users to find specific information quickly
-
-## Pagination Concepts
-
-### Key Terms
-
-- **Page**: Current page number (usually starts at 1)
-- **Limit/Size**: Number of items per page
-- **Offset/Skip**: Number of items to skip
-- **Total**: Total number of items in database
-
-### Basic Formula
+- **Authentication**: "Who are you?" (verifying identity)
+- **Authorization**: "What can you do?" (verifying permissions)
 
 ```javascript
-const offset = (page - 1) * limit;
+// Authentication: Login process
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Verify credentials
+    if (isValidUser(username, password)) {
+        // Create token for authenticated user
+        const token = createToken(username);
+        res.json({ token });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
 
-// Example: Page 3 with 10 items per page
-// offset = (3 - 1) * 10 = 20 (skip first 20 items)
+// Authorization: Check permissions
+app.get('/admin', authenticateToken, (req, res) => {
+    if (req.user.role === 'admin') {
+        res.json({ message: 'Admin panel' });
+    } else {
+        res.status(403).json({ error: 'Access denied' });
+    }
+});
 ```
 
-## Query Parameters for Pagination and Filtering
+## Common Authentication Methods
 
-Standard pagination and filtering use these query parameters:
+### 1. Session-Based Authentication
 
-```
-GET /api/users?page=2&limit=10
-GET /api/users?search=john&role=admin&status=active
-GET /api/users?page=1&limit=5&search=alice&role=user
-GET /api/products?page=1&size=20&category=electronics&minPrice=100
-```
-
-## Basic Pagination Implementation
+Uses server-side sessions with cookies:
 
 ```javascript
-app.get('/api/users', (req, res) => {
-    // Get pagination parameters from query string
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+const session = require('express-session');
+
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+}));
+
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
     
-    // Calculate offset
-    const offset = (page - 1) * limit;
+    if (isValidUser(username, password)) {
+        req.session.userId = getUserId(username);
+        res.json({ message: 'Logged in successfully' });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
+    }
+});
+```
+
+### 2. JWT (JSON Web Token) Authentication
+
+Stateless authentication using tokens:
+
+```javascript
+const jwt = require('jsonwebtoken');
+
+// Create token
+function createToken(user) {
+    return jwt.sign(
+        { userId: user.id, username: user.username },
+        'your-secret-key',
+        { expiresIn: '24h' }
+    );
+}
+
+// Verify token
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
     
-    // Simulate database query
-    const allUsers = getUsersFromDatabase();
-    const users = allUsers.slice(offset, offset + limit);
+    if (!token) {
+        return res.status(401).json({ error: 'Access token required' });
+    }
     
-    // Calculate pagination info
-    const totalUsers = allUsers.length;
-    const totalPages = Math.ceil(totalUsers / limit);
-    
-    res.json({
-        data: users,
-        pagination: {
-            page: page,
-            limit: limit,
-            total: totalUsers,
-            totalPages: totalPages,
-            hasNext: page < totalPages,
-            hasPrev: page > 1
+    jwt.verify(token, 'your-secret-key', (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid token' });
         }
+        req.user = user;
+        next();
     });
+}
+```
+
+## Password Security
+
+### Hashing Passwords
+
+Never store plain text passwords! Always hash them:
+
+```javascript
+const bcrypt = require('bcrypt');
+
+// Hash password when creating user
+async function createUser(username, password) {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    // Store username and hashedPassword in database
+    return { username, password: hashedPassword };
+}
+
+// Verify password during login
+async function verifyPassword(plainPassword, hashedPassword) {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+}
+```
+
+### Password Requirements
+
+Implement strong password policies:
+
+```javascript
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    if (password.length < minLength) {
+        return { valid: false, error: 'Password must be at least 8 characters' };
+    }
+    
+    if (!hasUpperCase) {
+        return { valid: false, error: 'Password must contain uppercase letter' };
+    }
+    
+    if (!hasLowerCase) {
+        return { valid: false, error: 'Password must contain lowercase letter' };
+    }
+    
+    if (!hasNumbers) {
+        return { valid: false, error: 'Password must contain number' };
+    }
+    
+    if (!hasSpecialChar) {
+        return { valid: false, error: 'Password must contain special character' };
+    }
+    
+    return { valid: true };
+}
+```
+
+## Security Middleware
+
+### Rate Limiting
+
+Prevent brute force attacks:
+
+```javascript
+const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 requests per windowMs
+    message: 'Too many login attempts, please try again later',
+    standardHeaders: true,
+    legacyHeaders: false,
 });
+
+app.use('/login', loginLimiter);
 ```
 
-## What is Filtering?
+### CORS (Cross-Origin Resource Sharing)
 
-Filtering allows users to search and narrow down results based on specific criteria.
+Control which domains can access your API:
 
-## Common Filter Types
-
-### Text Search
 ```javascript
-// Search by name
-GET /api/users?search=john
+const cors = require('cors');
 
-// Search in specific field
-GET /api/users?name=john
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://yourdomain.com'],
+    credentials: true
+}));
 ```
 
-### Exact Match
-```javascript
-// Filter by status
-GET /api/orders?status=completed
+### Helmet.js
 
-// Filter by category
-GET /api/products?category=electronics
-```
-
-### Range Filters
-```javascript
-// Price range
-GET /api/products?minPrice=10&maxPrice=100
-
-// Date range
-GET /api/orders?startDate=2024-01-01&endDate=2024-12-31
-```
-
-## Basic Filtering Implementation
+Set security headers:
 
 ```javascript
-app.get('/api/products', (req, res) => {
-    let products = getAllProducts();
-    
-    // Filter by category
-    if (req.query.category) {
-        products = products.filter(p => 
-            p.category.toLowerCase() === req.query.category.toLowerCase()
-        );
-    }
-    
-    // Filter by price range
-    if (req.query.minPrice) {
-        products = products.filter(p => p.price >= parseFloat(req.query.minPrice));
-    }
-    
-    if (req.query.maxPrice) {
-        products = products.filter(p => p.price <= parseFloat(req.query.maxPrice));
-    }
-    
-    // Text search in name or description
-    if (req.query.search) {
-        const searchTerm = req.query.search.toLowerCase();
-        products = products.filter(p => 
-            p.name.toLowerCase().includes(searchTerm) ||
-            p.description.toLowerCase().includes(searchTerm)
-        );
-    }
-    
-    res.json({ data: products, total: products.length });
-});
-```
+const helmet = require('helmet');
 
-## Combining Pagination and Filtering
-
-```javascript
-app.get('/api/products', (req, res) => {
-    let products = getAllProducts();
-    
-    // Apply filters first
-    if (req.query.category) {
-        products = products.filter(p => 
-            p.category.toLowerCase() === req.query.category.toLowerCase()
-        );
-    }
-    
-    if (req.query.search) {
-        const searchTerm = req.query.search.toLowerCase();
-        products = products.filter(p => 
-            p.name.toLowerCase().includes(searchTerm)
-        );
-    }
-    
-    // Get total after filtering
-    const totalFiltered = products.length;
-    
-    // Apply pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
-    
-    const paginatedProducts = products.slice(offset, offset + limit);
-    
-    res.json({
-        data: paginatedProducts,
-        pagination: {
-            page: page,
-            limit: limit,
-            total: totalFiltered,
-            totalPages: Math.ceil(totalFiltered / limit),
-            hasNext: page < Math.ceil(totalFiltered / limit),
-            hasPrev: page > 1
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
         },
-        filters: {
-            category: req.query.category || null,
-            search: req.query.search || null
-        }
-    });
+    },
+}));
+```
+
+## Common Security Vulnerabilities
+
+### 1. SQL Injection
+
+**Bad:**
+```javascript
+const query = `SELECT * FROM users WHERE username = '${username}'`;
+```
+
+**Good:**
+```javascript
+const query = 'SELECT * FROM users WHERE username = ?';
+db.query(query, [username]);
+```
+
+### 2. XSS (Cross-Site Scripting)
+
+**Bad:**
+```javascript
+res.send(`<h1>Hello ${req.body.name}</h1>`);
+```
+
+**Good:**
+```javascript
+const escapeHtml = require('escape-html');
+res.send(`<h1>Hello ${escapeHtml(req.body.name)}</h1>`);
+```
+
+### 3. CSRF (Cross-Site Request Forgery)
+
+Use CSRF tokens:
+
+```javascript
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
+app.use(csrfProtection);
+
+app.get('/form', (req, res) => {
+    res.render('form', { csrfToken: req.csrfToken() });
 });
 ```
 
-## Sorting Data
+## Role-Based Access Control (RBAC)
 
-Often combined with pagination and filtering:
+Implement different permission levels:
 
 ```javascript
-app.get('/api/products', (req, res) => {
-    let products = getAllProducts();
-    
-    // Apply filters...
-    
-    // Apply sorting
-    const sortBy = req.query.sortBy || 'name';
-    const sortOrder = req.query.sortOrder === 'desc' ? 'desc' : 'asc';
-    
-    products.sort((a, b) => {
-        let aVal = a[sortBy];
-        let bVal = b[sortBy];
+const roles = {
+    admin: ['read', 'write', 'delete', 'admin'],
+    moderator: ['read', 'write'],
+    user: ['read']
+};
+
+function checkPermission(requiredPermission) {
+    return (req, res, next) => {
+        const userRole = req.user.role;
+        const userPermissions = roles[userRole] || [];
         
-        // Handle strings
-        if (typeof aVal === 'string') {
-            aVal = aVal.toLowerCase();
-            bVal = bVal.toLowerCase();
-        }
-        
-        if (sortOrder === 'desc') {
-            return bVal > aVal ? 1 : -1;
+        if (userPermissions.includes(requiredPermission)) {
+            next();
         } else {
-            return aVal > bVal ? 1 : -1;
+            res.status(403).json({ error: 'Insufficient permissions' });
         }
+    };
+}
+
+// Usage
+app.delete('/users/:id', authenticateToken, checkPermission('delete'), (req, res) => {
+    // Delete user logic
+});
+```
+
+## Environment Variables
+
+Never hardcode secrets in your code:
+
+```javascript
+// .env file
+JWT_SECRET=your-super-secret-jwt-key
+DB_PASSWORD=your-database-password
+API_KEY=your-api-key
+
+// In your code
+require('dotenv').config();
+
+const jwtSecret = process.env.JWT_SECRET;
+const dbPassword = process.env.DB_PASSWORD;
+```
+
+## Security Best Practices
+
+1. **Always validate input** - Sanitize and validate all user input
+2. **Use HTTPS** - Encrypt data in transit
+3. **Keep dependencies updated** - Regularly update npm packages
+4. **Log security events** - Monitor for suspicious activity
+5. **Implement proper error handling** - Don't expose sensitive information
+6. **Use strong secrets** - Generate cryptographically secure random keys
+7. **Regular security audits** - Review code for vulnerabilities
+
+## Testing Security
+
+```javascript
+// Test authentication
+describe('Authentication', () => {
+    it('should reject invalid credentials', async () => {
+        const response = await request(app)
+            .post('/login')
+            .send({ username: 'wrong', password: 'wrong' })
+            .expect(401);
+        
+        expect(response.body.error).to.equal('Invalid credentials');
     });
     
-    // Apply pagination...
-    
-    res.json({
-        data: paginatedProducts,
-        pagination: { /* ... */ },
-        sorting: {
-            sortBy: sortBy,
-            sortOrder: sortOrder
-        }
+    it('should require authentication for protected routes', async () => {
+        await request(app)
+            .get('/profile')
+            .expect(401);
     });
 });
 ```
 
-## Input Validation
-
-Always validate and sanitize query parameters:
-
-```javascript
-function validatePaginationParams(req) {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    
-    // Limit the maximum page size
-    const maxLimit = 100;
-    const validLimit = limit > maxLimit ? maxLimit : limit;
-    
-    // Ensure positive numbers
-    const validPage = page < 1 ? 1 : page;
-    
-    return { page: validPage, limit: validLimit };
-}
-```
-
-## Database Considerations
-
-For real databases, use database-specific pagination:
-
-```javascript
-// MongoDB example
-const users = await User.find(filters)
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .sort({ createdAt: -1 });
-
-// SQL example
-const users = await User.findAll({
-    where: filters,
-    offset: (page - 1) * limit,
-    limit: limit,
-    order: [['createdAt', 'DESC']]
-});
-```
-
-## API Response Format
-
-Standard response structure:
-
-```json
-{
-    "data": [...],
-    "pagination": {
-        "page": 2,
-        "limit": 10,
-        "total": 156,
-        "totalPages": 16,
-        "hasNext": true,
-        "hasPrev": true
-    },
-    "filters": {
-        "category": "electronics",
-        "search": "phone"
-    },
-    "sorting": {
-        "sortBy": "price",
-        "sortOrder": "asc"
-    }
-}
-```
-
-## Key Takeaways
-
-- **Pagination** improves performance and user experience by breaking large datasets into manageable chunks
-- **Filtering** helps users find specific data quickly and efficiently
-- **Always apply filters before pagination** to ensure accurate results
-- **Validate and limit query parameters** to prevent abuse and ensure data integrity
-- **Use database-level pagination** for better performance with large datasets
-- **Provide clear metadata** in responses (pagination info, applied filters)
-- **Consider sorting** alongside pagination and filtering for better user experience
-- **Test edge cases** like empty results, invalid parameters, and boundary conditions
-- **Design consistent API responses** that include data, pagination, and filter information
+Remember: Security is not optional - it's essential for protecting your users and your application!

@@ -1,10 +1,10 @@
 {
   "id": "module-9",
-  "title": "Pagination and Filtering",
-  "description": "Learn how to implement pagination and filtering in APIs to handle large datasets efficiently and improve user experience",
-  "difficulty": "Intermediate",
-  "estimatedTime": "75 minutes",
-  "tags": ["pagination", "filtering", "query-parameters", "api-design", "performance", "data-handling", "express", "middleware"],
+  "title": "Authentication & Security",
+  "description": "Learn how to implement authentication and security measures in Express.js applications",
+  "difficulty": "Advanced",
+  "estimatedTime": "90 minutes",
+  "tags": ["authentication", "security", "jwt", "bcrypt", "middleware", "express", "api-security"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -18,23 +18,23 @@
     }
   },
   "learningObjectives": [
-    "Understand pagination concepts and benefits",
-    "Implement basic pagination using query parameters",
-    "Calculate offset and page counts correctly",
-    "Handle edge cases in pagination (empty pages, invalid parameters)",
-    "Return proper pagination metadata in API responses",
-    "Apply filtering before pagination for accurate results",
-    "Validate and sanitize query parameters",
-    "Test paginated endpoints with various scenarios",
-    "Understand performance implications of pagination",
-    "Design consistent API response structures for paginated data"
+    "Understand authentication concepts and security principles",
+    "Implement JWT-based authentication",
+    "Create secure password hashing with bcrypt",
+    "Build authentication middleware for route protection",
+    "Handle user registration and login flows",
+    "Implement proper session management",
+    "Understand common security vulnerabilities",
+    "Apply security best practices in Express.js",
+    "Create role-based access control",
+    "Implement proper error handling for security"
   ],
   "prerequisites": [
     "Basic JavaScript knowledge",
     "Understanding of Express.js framework",
-    "Familiarity with HTTP query parameters",
-    "Basic understanding of array methods (slice, filter)",
-    "Knowledge of JSON format",
-    "Understanding of mathematical operations (Math.ceil)"
+    "Familiarity with HTTP headers and cookies",
+    "Basic understanding of JSON Web Tokens",
+    "Knowledge of middleware concepts",
+    "Understanding of password security principles"
   ]
 }

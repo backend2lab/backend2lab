@@ -1,10 +1,10 @@
 {
   "id": "module-6",
-  "title": "Middleware",
-  "description": "Learn how to create and use middleware functions in Express.js to process requests, handle authentication, logging, and more",
+  "title": "Pagination and Filtering",
+  "description": "Learn how to implement pagination and filtering in APIs to handle large datasets efficiently and improve user experience",
   "difficulty": "Intermediate",
-  "estimatedTime": "60 minutes",
-  "tags": ["express", "middleware", "authentication", "logging", "api", "security"],
+  "estimatedTime": "75 minutes",
+  "tags": ["pagination", "filtering", "query-parameters", "api-design", "performance", "data-handling", "express", "middleware"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -18,17 +18,23 @@
     }
   },
   "learningObjectives": [
-    "Understand what middleware is and how it works",
-    "Create custom middleware functions",
-    "Implement authentication middleware",
-    "Use middleware for request logging",
-    "Apply middleware to specific routes",
-    "Handle middleware execution order",
-    "Create error handling middleware"
+    "Understand pagination concepts and benefits",
+    "Implement basic pagination using query parameters",
+    "Calculate offset and page counts correctly",
+    "Handle edge cases in pagination (empty pages, invalid parameters)",
+    "Return proper pagination metadata in API responses",
+    "Apply filtering before pagination for accurate results",
+    "Validate and sanitize query parameters",
+    "Test paginated endpoints with various scenarios",
+    "Understand performance implications of pagination",
+    "Design consistent API response structures for paginated data"
   ],
   "prerequisites": [
-    "Basic Express.js knowledge",
-    "Understanding of HTTP requests and responses",
-    "JavaScript fundamentals"
+    "Basic JavaScript knowledge",
+    "Understanding of Express.js framework",
+    "Familiarity with HTTP query parameters",
+    "Basic understanding of array methods (slice, filter)",
+    "Knowledge of JSON format",
+    "Understanding of mathematical operations (Math.ceil)"
   ]
 }

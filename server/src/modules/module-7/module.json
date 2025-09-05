@@ -1,10 +1,10 @@
 {
   "id": "module-7",
-  "title": "Data Persistence",
-  "description": "Learn how to implement data persistence using file-based storage and understand the fundamentals of database connections",
+  "title": "Middleware",
+  "description": "Learn how to create and use middleware functions in Express.js to process requests, handle authentication, logging, and more",
   "difficulty": "Intermediate",
-  "estimatedTime": "75 minutes",
-  "tags": ["data-persistence", "file-system", "json", "database", "storage", "crud"],
+  "estimatedTime": "60 minutes",
+  "tags": ["express", "middleware", "authentication", "logging", "api", "security"],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -18,18 +18,17 @@
     }
   },
   "learningObjectives": [
-    "Understand different types of data storage",
-    "Implement file-based data persistence with JSON",
-    "Create CRUD operations for data storage",
-    "Handle file system errors gracefully",
-    "Understand database concepts and connections",
-    "Separate data layer from business logic",
-    "Implement proper error handling for data operations"
+    "Understand what middleware is and how it works",
+    "Create custom middleware functions",
+    "Implement authentication middleware",
+    "Use middleware for request logging",
+    "Apply middleware to specific routes",
+    "Handle middleware execution order",
+    "Create error handling middleware"
   ],
   "prerequisites": [
-    "Basic JavaScript knowledge",
-    "Understanding of JSON format",
-    "Familiarity with Node.js file system operations",
-    "Basic Express.js knowledge"
+    "Basic Express.js knowledge",
+    "Understanding of HTTP requests and responses",
+    "JavaScript fundamentals"
   ]
 }

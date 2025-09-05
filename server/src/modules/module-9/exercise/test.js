@@ -228,14 +228,10 @@ describe('Pagination and Filtering Exercise', () => {
     it('should handle page beyond available data', async () => {
       const response = await request('http://localhost:3000')
         .get('/api/users?page=10&limit=3')
-        .expect(200)
+        .expect(404)
         .expect('Content-Type', /json/);
 
-      expect(response.body.data).to.have.length(0);
-      expect(response.body.pagination).to.have.property('page', 10);
-      expect(response.body.pagination).to.have.property('limit', 3);
-      expect(response.body.pagination).to.have.property('total', 15);
-      expect(response.body.pagination).to.have.property('totalPages', 5);
+      expect(response.body).to.have.property('error', 'Page not found');
     });
 
     it('should handle invalid page parameter', async () => {
@@ -324,6 +320,93 @@ describe('Pagination and Filtering Exercise', () => {
       expect(response.body.data).to.have.length(0);
       expect(response.body.pagination).to.have.property('total', 0);
       expect(response.body.filters).to.have.property('status', 'invalid');
+    });
+
+    it('should enforce maximum limit', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=200')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 100); // Should be capped at 100
+      expect(response.body.data).to.have.length(15); // All users returned
+    });
+
+    it('should handle negative page numbers', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=-5')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 1); // Should default to 1
+      expect(response.body.data).to.have.length(5); // Default limit
+    });
+
+    it('should handle negative limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=-10')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 5); // Should default to 5
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should handle zero page number', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=0')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 1); // Should default to 1
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should handle zero limit value', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=0')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 5); // Should default to 5
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should return 404 for page beyond available data', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=100')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.property('error', 'Page not found');
+    });
+
+    it('should return 404 for page beyond filtered data', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?role=admin&page=10')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.property('error', 'Page not found');
+    });
+
+    it('should handle decimal page numbers', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=2.7')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 2); // Should be floored to 2
+    });
+
+    it('should handle decimal limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=3.9')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 3); // Should be floored to 3
+      expect(response.body.data).to.have.length(3);
     });
   });
 });

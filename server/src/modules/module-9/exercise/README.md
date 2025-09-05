@@ -175,12 +175,35 @@ app.listen(3000, () => {
    }
    ```
 
-4. **Apply pagination to filtered results**:
+4. **Apply pagination to filtered results with validation**:
    ```javascript
+   // Get pagination parameters with validation
+   let page = parseInt(req.query.page, 10) || 1;
+   let limit = parseInt(req.query.limit, 10) || 5;
+   
+   // Validate and sanitize pagination parameters
+   if (isNaN(page) || page < 1) page = 1;
+   if (isNaN(limit) || limit < 1) limit = 5;
+   
+   const MAX_LIMIT = 100;
+   if (limit > MAX_LIMIT) limit = MAX_LIMIT;
+   
+   // Ensure integers
+   page = Math.floor(page);
+   limit = Math.floor(limit);
+   
+   // Calculate pagination after filtering
    const totalFiltered = filteredUsers.length;
-   const offset = (page - 1) * limit;
-   const pageUsers = filteredUsers.slice(offset, offset + limit);
    const totalPages = Math.ceil(totalFiltered / limit);
+   
+   // Check if page exists
+   if (totalPages > 0 && page > totalPages) {
+       return res.status(404).json({ error: 'Page not found' });
+   }
+   
+   const startIndex = (page - 1) * limit;
+   const endIndex = page * limit;
+   const pageUsers = filteredUsers.slice(startIndex, endIndex);
    ```
 
 ## Testing Your API
@@ -307,11 +330,20 @@ Once you complete the basic version, try these:
    });
    ```
 
-3. **Add validation**:
+3. **Add comprehensive validation** (already implemented in solution):
    ```javascript
-   // Limit maximum page size
-   const maxLimit = 20;
-   const limit = Math.min(parseInt(req.query.limit) || 5, maxLimit);
+   // Validate and sanitize pagination parameters
+   let page = parseInt(req.query.page, 10) || 1;
+   let limit = parseInt(req.query.limit, 10) || 5;
+   
+   if (isNaN(page) || page < 1) page = 1;
+   if (isNaN(limit) || limit < 1) limit = 5;
+   
+   const MAX_LIMIT = 100;
+   if (limit > MAX_LIMIT) limit = MAX_LIMIT;
+   
+   page = Math.floor(page);
+   limit = Math.floor(limit);
    
    // Validate role and status values
    const validRoles = ['admin', 'user', 'moderator'];
@@ -326,9 +358,9 @@ Once you complete the basic version, try these:
    }
    ```
 
-4. **Handle empty pages**:
+4. **Handle page not found** (already implemented in solution):
    ```javascript
-   if (page > totalPages && totalPages > 0) {
+   if (totalPages > 0 && page > totalPages) {
        return res.status(404).json({ error: 'Page not found' });
    }
    ```

@@ -32,10 +32,6 @@ const users = [
 // - Return response with data, pagination info, and applied filters
 
 app.get('/api/users', (req, res) => {
-    // TODO: Get pagination parameters
-    const page = undefined; // Your code here
-    const limit = undefined; // Your code here
-    
     // TODO: Get filtering parameters
     const search = undefined; // Your code here
     const role = undefined; // Your code here
@@ -59,11 +55,25 @@ app.get('/api/users', (req, res) => {
         // Your code here
     }
     
+    // TODO: Get pagination parameters with validation
+    let page = undefined; // Your code here
+    let limit = undefined; // Your code here
+    
+    // TODO: Validate and sanitize pagination parameters
+    // Check for NaN, negative values, and set defaults
+    // Set maximum limit (e.g., 100)
+    // Ensure integers with Math.floor()
+    
     // TODO: Calculate pagination after filtering
     const totalFiltered = undefined; // Your code here
-    const offset = undefined; // Your code here
-    const pageUsers = undefined; // Your code here
     const totalPages = undefined; // Your code here
+    
+    // TODO: Check if page exists (return 404 if page > totalPages)
+    
+    // TODO: Calculate start and end indices for slicing
+    const startIndex = undefined; // Your code here
+    const endIndex = undefined; // Your code here
+    const pageUsers = undefined; // Your code here
     
     // TODO: Return response with data, pagination, and filters
     res.json({

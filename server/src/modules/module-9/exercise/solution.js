@@ -25,10 +25,6 @@ const users = [
 
 // GET /api/users endpoint with pagination and filtering
 app.get('/api/users', (req, res) => {
-    // Get pagination parameters
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-    
     // Get filtering parameters
     const search = req.query.search;
     const role = req.query.role;
@@ -55,11 +51,33 @@ app.get('/api/users', (req, res) => {
         filteredUsers = filteredUsers.filter(user => user.status === status);
     }
     
+    // Get pagination parameters with validation
+    let page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 5;
+    
+    // Validate and sanitize pagination parameters
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 5;
+    
+    const MAX_LIMIT = 100;
+    if (limit > MAX_LIMIT) limit = MAX_LIMIT;
+    
+    // Ensure integers
+    page = Math.floor(page);
+    limit = Math.floor(limit);
+    
     // Calculate pagination after filtering
     const totalFiltered = filteredUsers.length;
-    const offset = (page - 1) * limit;
-    const pageUsers = filteredUsers.slice(offset, offset + limit);
     const totalPages = Math.ceil(totalFiltered / limit);
+    
+    // Check if page exists
+    if (totalPages > 0 && page > totalPages) {
+        return res.status(404).json({ error: 'Page not found' });
+    }
+    
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const pageUsers = filteredUsers.slice(startIndex, endIndex);
     
     // Return response with data, pagination, and filters
     res.json({

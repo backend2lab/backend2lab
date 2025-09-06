@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -205,5 +205,5 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Authentication server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });

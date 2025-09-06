@@ -309,7 +309,7 @@ export class TestRunner {
 
         serverProcess.stdout.on('data', (data: Buffer) => {
           const output = data.toString();
-          if (output.includes('Server running') || output.includes('listening')) {
+          if (output.includes('Server running') || output.includes('listening') || output.includes('http://localhost:3000')) {
             clearTimeout(timeout);
             resolve();
           }

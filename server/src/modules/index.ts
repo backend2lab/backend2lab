@@ -47,7 +47,12 @@ export function getAllModules(): Module[] {
   try {
     const moduleDirs = readdirSync(modulesPath, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory() && dirent.name.startsWith('module-'))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => {
+        // Extract numeric part from module names (e.g., "module-10" -> 10)
+        const numA = parseInt(a.name.split('-')[1], 10);
+        const numB = parseInt(b.name.split('-')[1], 10);
+        return numA - numB;
+      });
 
     for (const moduleDir of moduleDirs) {
       const moduleConfigPath = join(modulesPath, moduleDir.name, 'module.json');

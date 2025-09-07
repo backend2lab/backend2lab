@@ -1,18 +1,19 @@
 package handlers
 
 import (
-	"backend-playground-server/internal/services"
 	"net/http"
+
+	"github.com/backend2lab/backend2lab/server/internal/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 type TestHandler struct {
-	testRunner *services.TestRunner
+	testRunner services.TestRunnerInterface
 }
 
-func NewTestHandler(testRunner *services.TestRunner) *TestHandler {
+func NewTestHandler(testRunner services.TestRunnerInterface) *TestHandler {
 	return &TestHandler{
 		testRunner: testRunner,
 	}

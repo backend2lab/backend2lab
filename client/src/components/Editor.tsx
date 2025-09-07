@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFileCode, 
+  faFile,
+} from "@fortawesome/free-solid-svg-icons";
+import { faPython, faJava, faJs } from "@fortawesome/free-brands-svg-icons";
+import { useTheme } from '../contexts/ThemeContext';
 
 interface FileTab {
   id: string;
@@ -16,9 +23,12 @@ interface Props {
   solution?: string;
   runCode?: (code: string) => void;
   readOnly?: boolean;
+  hasAttemptedSubmit?: boolean;
 }
 
-export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly }: Props) {
+export default function CodeEditor({ code, onCodeChange, testCases, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
+  const { theme } = useTheme();
+  
   const [files, setFiles] = useState<FileTab[]>([
     {
       id: 'server.js',
@@ -120,30 +130,30 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
   const getFileIcon = (language: string) => {
     switch (language) {
       case 'javascript':
-        return '⚡';
+        return <FontAwesomeIcon icon={faJs} className="text-yellow-400" />;
       case 'python':
-        return '🐍';
+        return <FontAwesomeIcon icon={faPython} className="text-blue-500" />;
       case 'java':
-        return '☕';
+        return <FontAwesomeIcon icon={faJava} className="text-red-500" />;
       case 'json':
-        return '📦';
+        return <FontAwesomeIcon icon={faFileCode} className="text-green-400" />;
       default:
-        return '📄';
+        return <FontAwesomeIcon icon={faFile} className="text-gray-400" />;
     }
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-tactical-background min-h-0">
+    <div className="w-full h-full flex flex-col bg-theme-background min-h-0">
       {/* Tabs Bar */}
-      <div className="w-full flex items-center bg-tactical-surface border-b border-tactical-border-primary h-12 flex-shrink-0">
+      <div className="w-full flex items-center bg-theme-surface border-b border-theme-primary h-12 flex-shrink-0">
         {files.map((file) => (
           <div
             key={file.id}
             onClick={() => handleTabClick(file.id)}
-            className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-tactical-border-primary flex-1 transition-colors ${
+            className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-theme-primary flex-1 transition-colors ${
               file.isActive 
-                ? 'bg-tactical-background text-tactical-text-primary' 
-                : 'bg-tactical-surface text-tactical-text-secondary hover:bg-neutral-800 hover:text-tactical-text-primary'
+                ? 'bg-theme-background text-theme-primary' 
+                : 'bg-theme-surface text-theme-secondary hover:bg-slate-100 dark:hover:bg-neutral-800 hover:text-theme-primary'
             }`}
           >
             <span className="text-sm font-tactical">{getFileIcon(file.language)}</span>
@@ -153,9 +163,9 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       </div>
 
       {/* Editor Header */}
-      <div className="flex items-center justify-between px-4 h-12 bg-tactical-surface border-b border-tactical-border-primary flex-shrink-0">
+      <div className="flex items-center justify-between px-4 h-12 bg-theme-surface border-b border-theme-primary flex-shrink-0">
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-tactical-text-secondary font-tactical">{activeFile.name}</span>
+          <span className="text-sm font-medium text-theme-secondary font-tactical">{activeFile.name}</span>
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
             <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
@@ -163,7 +173,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-tactical-text-secondary capitalize font-tactical">{activeFile.language}</span>
+          <span className="text-xs text-theme-secondary capitalize font-tactical">{activeFile.language}</span>
         </div>
       </div>
 
@@ -183,13 +193,12 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               readOnly: readOnly || false,
               minimap: { enabled: false },
               fontSize: 14,
-              lineHeight: 20,
+              lineHeight: 24,
               fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
               lineNumbers: "on",
               roundedSelection: false,
               scrollBeyondLastLine: false,
               automaticLayout: true,
-              theme: "vs-dark",
               scrollbar: {
                 vertical: 'visible',
                 horizontal: 'visible',
@@ -201,48 +210,55 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
               overviewRulerBorder: false,
               hideCursorInOverviewRuler: true,
               overviewRulerLanes: 0,
-              lineDecorationsWidth: 10,
+              lineDecorationsWidth: 20,
               glyphMargin: false,
-              folding: true,
-              foldingStrategy: 'indentation',
+              folding: false, // Disable folding for better performance
               lineNumbersMinChars: 3,
-              renderLineHighlight: 'all',
+              renderLineHighlight: 'line', // Changed from 'all' to 'line' for better performance
               selectOnLineNumbers: true,
               wordWrap: 'on',
               wrappingStrategy: 'advanced',
               suggestOnTriggerCharacters: true,
               acceptSuggestionOnEnter: 'on',
               tabCompletion: 'on',
-              wordBasedSuggestions: 'allDocuments',
+              wordBasedSuggestions: 'off', // Disable word-based suggestions for better performance
               parameterHints: {
-                enabled: true,
-                cycle: true,
+                enabled: false, // Disable parameter hints for better performance
               },
               autoIndent: 'full',
-              formatOnPaste: true,
-              formatOnType: true,
-              dragAndDrop: true,
-              links: true,
-              colorDecorators: true,
+              formatOnPaste: false, // Disable format on paste for better performance
+              formatOnType: false, // Disable format on type for better performance
+              dragAndDrop: false, // Disable drag and drop for better performance
+              links: false, // Disable links for better performance
+              colorDecorators: false, // Disable color decorators for better performance
               bracketPairColorization: {
                 enabled: true,
               },
               guides: {
                 bracketPairs: true,
-                indentation: true,
+                indentation: false, // Disable indentation guides for better performance
               },
-              renderWhitespace: 'selection',
-              cursorBlinking: 'smooth',
-              cursorSmoothCaretAnimation: 'on',
-              smoothScrolling: true,
+              renderWhitespace: 'none', // Changed from 'selection' to 'none' for better performance
+              cursorBlinking: 'blink', // Changed from 'smooth' to 'blink' for better performance
+              smoothScrolling: false, // Disable smooth scrolling for better performance
               mouseWheelScrollSensitivity: 1,
               fastScrollSensitivity: 5,
               padding: {
                 top: 8,
                 bottom: 8,
               },
+              // Additional performance optimizations
+              contextmenu: true,
+              quickSuggestions: {
+                other: true,
+                comments: false,
+                strings: false,
+              },
+              hover: {
+                enabled: false, // Disable hover for better performance
+              },
             }}
-            theme="vs-dark"
+            theme={theme === 'dark' ? 'vs-dark' : 'vs'}
             className="rounded-none"
             onMount={(editor) => {
               editor.focus();
@@ -274,11 +290,11 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         {/* Split Resizer */}
         {showSolution && activeFile.id === 'server.js' && (
           <div 
-            className="w-1 bg-tactical-border-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
+            className="w-1 bg-theme-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
             onMouseDown={handleSplitDrag}
           >
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-1 h-8 bg-tactical-border-primary rounded-full"></div>
+              <div className="w-1 h-8 bg-theme-primary rounded-full"></div>
             </div>
           </div>
         )}
@@ -286,7 +302,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
         {/* Solution Editor */}
         {showSolution && solution && activeFile.id === 'server.js' && (
           <div 
-            className="relative min-h-0 border-l border-tactical-border-primary"
+            className="relative min-h-0 border-l border-theme-primary"
             style={{ width: `${100 - splitPosition}%` }}
           >
             <Editor
@@ -297,13 +313,12 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 readOnly: true,
                 minimap: { enabled: false },
                 fontSize: 14,
-                lineHeight: 20,
+                lineHeight: 24,
                 fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
                 lineNumbers: "on",
                 roundedSelection: false,
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
-                theme: "vs-dark",
                 scrollbar: {
                   vertical: 'visible',
                   horizontal: 'visible',
@@ -315,7 +330,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                 overviewRulerBorder: false,
                 hideCursorInOverviewRuler: true,
                 overviewRulerLanes: 0,
-                lineDecorationsWidth: 10,
+                lineDecorationsWidth: 20,
                 glyphMargin: false,
                 folding: true,
                 foldingStrategy: 'indentation',
@@ -356,7 +371,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
                   bottom: 8,
                 },
               }}
-              theme="vs-dark"
+              theme={theme === 'dark' ? 'vs-dark' : 'vs'}
               className="rounded-none"
             />
           </div>
@@ -364,7 +379,7 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       </div>
 
       {/* Editor Footer */}
-      <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-t border-tactical-border-primary text-xs text-tactical-text-secondary font-tactical flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-2 bg-theme-surface border-t border-theme-primary text-xs text-theme-secondary font-tactical flex-shrink-0">
         <div className="flex items-center space-x-4">
           <span>Ln {cursorPosition.line}, Col {cursorPosition.column}{selectionInfo}</span>
           <span>Spaces: 2</span>
@@ -377,15 +392,15 @@ export default function CodeEditor({ code, onCodeChange, testCases, solution, ru
       </div>
 
       {!readOnly && runCode && (
-        <div className="flex justify-between items-center p-4 bg-tactical-surface border-t border-tactical-border-primary">
+        <div className="flex justify-between items-center p-4 bg-theme-surface border-t border-theme-primary">
           <div className="flex items-center space-x-2">
-            {solution && activeFile.id === 'server.js' && (
+            {solution && activeFile.id === 'server.js' && hasAttemptedSubmit && (
               <button 
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
                   showSolution 
                     ? 'bg-tactical-error text-white hover:bg-red-600' 
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    : 'dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 bg-slate-200 hover:bg-slate-300 text-theme-secondary'
                 }`}
               >
                 {showSolution ? 'Hide Solution' : 'Show Solution'}

@@ -1,0 +1,40 @@
+{
+  "id": "module-6",
+  "title": "Pagination and Filtering",
+  "description": "Learn how to implement pagination and filtering in APIs to handle large datasets efficiently and improve user experience",
+  "difficulty": "Intermediate",
+  "estimatedTime": "75 minutes",
+  "tags": ["pagination", "filtering", "query-parameters", "api-design", "performance", "data-handling", "express", "middleware"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand pagination concepts and benefits",
+    "Implement basic pagination using query parameters",
+    "Calculate offset and page counts correctly",
+    "Handle edge cases in pagination (empty pages, invalid parameters)",
+    "Return proper pagination metadata in API responses",
+    "Apply filtering before pagination for accurate results",
+    "Validate and sanitize query parameters",
+    "Test paginated endpoints with various scenarios",
+    "Understand performance implications of pagination",
+    "Design consistent API response structures for paginated data"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of Express.js framework",
+    "Familiarity with HTTP query parameters",
+    "Basic understanding of array methods (slice, filter)",
+    "Knowledge of JSON format",
+    "Understanding of mathematical operations (Math.ceil)"
+  ]
+}

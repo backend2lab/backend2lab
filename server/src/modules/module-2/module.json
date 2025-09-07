@@ -1,0 +1,32 @@
+{
+  "id": "module-2",
+  "title": "HTTP Basics & First Server",
+  "description": "Learn HTTP fundamentals and build your first Node.js web server",
+  "difficulty": "Beginner",
+  "estimatedTime": "30 minutes",
+  "tags": ["nodejs", "http", "server", "basics", "web"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand HTTP request-response cycle",
+    "Learn HTTP methods and status codes",
+    "Create a basic Node.js HTTP server",
+    "Handle requests and send responses",
+    "Serve HTML content to browsers"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of web browsers"
+  ]
+}
+

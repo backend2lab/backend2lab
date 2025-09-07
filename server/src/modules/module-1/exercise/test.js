@@ -1,58 +1,53 @@
-// Test Cases for Hello World Server
-// These are the test cases that your server should pass
-
 const { expect } = require('chai');
-const request = require('supertest');
 
-describe('Hello World Server', () => {
-  it('should return 200 OK and correct JSON for GET /', async () => {
-    const response = await request('http://localhost:3000')
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', /json/);
+describe('Greeting Function', () => {
+  let greetings;
 
-    expect(response.body).to.deep.equal({ message: 'Hello, World!' });
+  before(() => {
+    try {
+      greetings = require('./tmp-server'); // file is created by testRunner
+    } catch (error) {
+      throw new Error('Could not load main module. Make sure main.js exists and exports greetUser function.');
+    }
   });
 
-  it('should return 404 for GET /hello', async () => {
-    await request('http://localhost:3000')
-      .get('/hello')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should export greetUser function', () => {
+    expect(greetings).to.have.property('greetUser');
+    expect(greetings.greetUser).to.be.a('function');
   });
 
-  it('should return 404 for POST /', async () => {
-    await request('http://localhost:3000')
-      .post('/')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should return correct greeting for "Alice"', () => {
+    const result = greetings.greetUser('Alice');
+    expect(result).to.equal('Hello, Alice! Welcome to Node.js!');
   });
 
-  it('should return 404 for PUT /', async () => {
-    await request('http://localhost:3000')
-      .put('/')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should return correct greeting for "Bob"', () => {
+    const result = greetings.greetUser('Bob');
+    expect(result).to.equal('Hello, Bob! Welcome to Node.js!');
   });
 
-  it('should return 404 for DELETE /', async () => {
-    await request('http://localhost:3000')
-      .delete('/')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should return correct greeting for "Charlie"', () => {
+    const result = greetings.greetUser('Charlie');
+    expect(result).to.equal('Hello, Charlie! Welcome to Node.js!');
   });
 
-  it('should return 404 for GET /api', async () => {
-    await request('http://localhost:3000')
-      .get('/api')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should return correct greeting for "Diana"', () => {
+    const result = greetings.greetUser('Diana');
+    expect(result).to.equal('Hello, Diana! Welcome to Node.js!');
   });
 
-  it('should return 404 for GET /users', async () => {
-    await request('http://localhost:3000')
-      .get('/users')
-      .expect(404)
-      .expect('Content-Type', /json/);
+  it('should return correct greeting for "Eve"', () => {
+    const result = greetings.greetUser('Eve');
+    expect(result).to.equal('Hello, Eve! Welcome to Node.js!');
+  });
+
+  it('should handle empty string input', () => {
+    const result = greetings.greetUser('');
+    expect(result).to.equal('Hello, ! Welcome to Node.js!');
+  });
+
+  it('should handle special characters in name', () => {
+    const result = greetings.greetUser('John-Doe');
+    expect(result).to.equal('Hello, John-Doe! Welcome to Node.js!');
   });
 });

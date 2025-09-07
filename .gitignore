@@ -50,6 +50,7 @@ coverage
 *.local
 tmp
 temp
+tmp-server.js
 
 # OS generated files
 .DS_Store
@@ -63,3 +64,4 @@ Thumbs.db
 
 #mics
 TODO.md
+Module.md

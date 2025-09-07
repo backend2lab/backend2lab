@@ -1,87 +1,140 @@
-# Module 1: API Basics & Node.js Server Setup
+# Module 1: Environment Setup & Node.js Basics
 
-Welcome to your first step in backend API development! 🎉
+## What is Node.js?
 
-In this module, you'll learn the fundamentals of APIs, HTTP, and how to build your first server.
+Node.js is a JavaScript runtime that lets you run JavaScript on your computer (server-side), not just in web browsers. It's built on Chrome's V8 engine and is perfect for building backend applications and APIs.
 
-## 1. What is an API?
+## Why Node.js for Backend?
 
-An **API (Application Programming Interface)** allows two systems to communicate. In web development, APIs use **HTTP** protocol.
+- **Same Language**: Use JavaScript for both frontend and backend
+- **Fast**: Non-blocking, event-driven architecture
+- **NPM**: Huge ecosystem of packages
+- **JSON**: Native support for JSON data
 
-### Example Request/Response Cycle:
-- **Client**: `GET /hello`
-- **Server**: responds with `{ "message": "Hello, World!" }`
+## Core Concepts
 
-APIs are like waiters in a restaurant - they take your request, communicate with the kitchen (server), and bring back your food (response).
+### 1. Runtime Environment
 
-## 2. HTTP Basics
+Node.js provides a runtime environment where JavaScript can execute outside the browser. It includes:
+- File system access
+- Network capabilities  
+- Process management
 
-### HTTP Methods:
-- **GET** → retrieve data
-- **POST** → send new data
-- **PUT/PATCH** → update existing data
-- **DELETE** → remove data
+### 2. Modules
 
-### Status Codes:
-- **200 OK** → Success
-- **400 Bad Request** → Invalid input
-- **404 Not Found** → Resource not found
-- **500 Internal Server Error** → Something broke
-
-## 3. Setting up a Node.js Server
-
-### Basic HTTP Server Structure
+Node.js uses a module system to organize code:
 
 ```javascript
-const http = require('http');
+// Importing a built-in module
+const fs = require('fs');
 
-const server = http.createServer((req, res) => {
-  // Handle requests here
-});
+// Importing your own module
+const myModule = require('./myModule');
 
-server.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
+// Exporting from a module
+module.exports = {
+    greeting: 'Hello World'
+};
 ```
 
-### Request Handling
+### 3. Package Management with NPM
 
-```javascript
-const server = http.createServer((req, res) => {
-  // Check the request method and URL
-  if (req.method === 'GET' && req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Hello, World!' }));
-  } else {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Not Found' }));
+NPM (Node Package Manager) handles dependencies:
+
+```bash
+# Initialize a new project
+npm init
+
+# Install a package
+npm install express
+
+# Install as dev dependency
+npm install --save-dev nodemon
+```
+
+### 4. Package.json
+
+The `package.json` file is your project's configuration:
+
+```json
+{
+  "name": "my-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
   }
+}
+```
+
+### 5. File System Operations
+
+Node.js can read and write files:
+
+```javascript
+const fs = require('fs');
+
+// Read a file
+fs.readFile('data.txt', 'utf8', (err, data) => {
+    if (err) throw err;
+    console.log(data);
+});
+
+// Write a file
+fs.writeFile('output.txt', 'Hello World', (err) => {
+    if (err) throw err;
+    console.log('File saved!');
 });
 ```
 
-### Key Concepts
+## Project Structure
 
-- **req.method**: HTTP method (GET, POST, etc.)
-- **req.url**: Requested URL path
-- **res.writeHead()**: Set status code and headers
-- **res.end()**: Send response and close connection
-- **JSON.stringify()**: Convert objects to JSON strings
+A typical Node.js project structure:
 
-## 4. Best Practices
+```
+my-backend/
+├── package.json
+├── index.js          # Main entry point
+├── routes/           # API routes
+├── models/           # Data models
+├── utils/            # Helper functions
+└── data/             # Data files
+```
 
-1. **Always set Content-Type header** for JSON responses
-2. **Handle all routes** - return 404 for unknown paths
-3. **Use proper HTTP status codes**
-4. **Validate request methods** - only allow what you need
-5. **Error handling** - graceful error responses
+## Getting Started
 
-## 5. Next Steps
+1. **Check Node.js installation**:
+   ```bash
+   node --version
+   npm --version
+   ```
 
-In the Exercise section, you'll build your own Hello World server that:
-- Responds to GET requests at the root path
-- Returns JSON with a "Hello, World!" message
-- Handles 404 errors for other routes
-- Uses proper HTTP status codes and headers
+2. **Create a new project**:
+   ```bash
+   mkdir my-backend
+   cd my-backend
+   npm init -y
+   ```
 
-Ready to start coding? Head to the Exercise tab! 🚀
+3. **Create your first file** (`index.js`):
+   ```javascript
+   console.log('Hello, Node.js!');
+   ```
 
+4. **Run your program**:
+   ```bash
+   node index.js
+   ```
+
+## Key Takeaways
+
+- Node.js runs JavaScript on the server
+- Use modules to organize code
+- NPM manages packages and dependencies
+- package.json configures your project
+- File system operations are asynchronous
+- Start simple with console.log and basic file operations

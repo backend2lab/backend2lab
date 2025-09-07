@@ -1,0 +1,40 @@
+{
+  "id": "module-9",
+  "title": "Authentication & Security",
+  "description": "Learn how to implement authentication and security measures in Express.js applications",
+  "difficulty": "Advanced",
+  "estimatedTime": "90 minutes",
+  "tags": ["authentication", "security", "jwt", "bcrypt", "middleware", "express", "api-security"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand authentication concepts and security principles",
+    "Implement JWT-based authentication",
+    "Create secure password hashing with bcrypt",
+    "Build authentication middleware for route protection",
+    "Handle user registration and login flows",
+    "Implement proper session management",
+    "Understand common security vulnerabilities",
+    "Apply security best practices in Express.js",
+    "Create role-based access control",
+    "Implement proper error handling for security"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of Express.js framework",
+    "Familiarity with HTTP headers and cookies",
+    "Basic understanding of JSON Web Tokens",
+    "Knowledge of middleware concepts",
+    "Understanding of password security principles"
+  ]
+}

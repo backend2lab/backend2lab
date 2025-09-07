@@ -61,6 +61,7 @@ export interface RunResult {
   executionTime: number;
   serverOutput?: string;
   error?: string;
+  output?: string;
 }
 
 const API_BASE_URL = config.apiBaseUrl;

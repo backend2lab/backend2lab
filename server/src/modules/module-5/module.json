@@ -1,0 +1,33 @@
+{
+  "id": "module-5",
+  "title": "Request Handling & Validation",
+  "description": "Learn how to handle different types of request data (URL parameters, query strings, request bodies) and implement proper input validation for secure APIs",
+  "difficulty": "Intermediate",
+  "estimatedTime": "60 minutes",
+  "tags": ["express", "validation", "request-handling", "api", "security"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand different types of request data (params, query, body)",
+    "Implement input validation for required fields",
+    "Validate data types and formats",
+    "Return appropriate HTTP status codes",
+    "Create consistent API response formats",
+    "Handle edge cases and error scenarios"
+  ],
+  "prerequisites": [
+    "Basic Express.js knowledge",
+    "Understanding of HTTP methods and status codes",
+    "JavaScript fundamentals"
+  ]
+}

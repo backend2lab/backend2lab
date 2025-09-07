@@ -1,0 +1,35 @@
+{
+  "id": "module-8",
+  "title": "Data Persistence",
+  "description": "Learn how to implement data persistence using file-based storage and understand the fundamentals of database connections",
+  "difficulty": "Intermediate",
+  "estimatedTime": "75 minutes",
+  "tags": ["data-persistence", "file-system", "json", "database", "storage", "crud"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand different types of data storage",
+    "Implement file-based data persistence with JSON",
+    "Create CRUD operations for data storage",
+    "Handle file system errors gracefully",
+    "Understand database concepts and connections",
+    "Separate data layer from business logic",
+    "Implement proper error handling for data operations"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of JSON format",
+    "Familiarity with Node.js file system operations",
+    "Basic Express.js knowledge"
+  ]
+}

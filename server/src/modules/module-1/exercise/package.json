@@ -1,21 +1,14 @@
 {
-  "name": "hello-world-server-exercise",
+  "name": "module-1-greeting-exercise",
   "version": "1.0.0",
-  "description": "Module 1 Exercise: Hello World Server",
-  "main": "server.js",
+  "description": "Simple greeting function exercise for Node.js basics",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "mocha test.js",
-    "dev": "node server.js"
+    "start": "node main.js",
+    "test": "mocha test.js"
   },
-  "keywords": [
-    "nodejs",
-    "http",
-    "server",
-    "api",
-    "exercise"
-  ],
-  "author": "Backend2Lab",
+  "keywords": ["nodejs", "basics", "modules", "exercise"],
+  "author": "Backend Playground",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

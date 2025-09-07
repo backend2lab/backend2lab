@@ -1,11 +1,12 @@
 package main
 
 import (
-	"backend-playground-server/internal/handlers"
-	"backend-playground-server/internal/middleware"
-	"backend-playground-server/internal/services"
 	"log"
 	"os"
+
+	"github.com/backend2lab/backend2lab/server/internal/handlers"
+	"github.com/backend2lab/backend2lab/server/internal/middleware"
+	"github.com/backend2lab/backend2lab/server/internal/services"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,10 @@ func main() {
 	testHandler := handlers.NewTestHandler(testRunner)
 
 	// Setup Gin router
-	router := gin.Default()
+	router := gin.New()
+	
+	// Add recovery middleware
+	router.Use(gin.Recovery())
 
 	// CORS middleware
 	config := cors.DefaultConfig()

@@ -14,6 +14,35 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// safeJoin joins baseDir and rel, ensuring the result is within baseDir (prevents path traversal)
+func safeJoin(baseDir, rel string) (string, error) {
+	absBase, err := filepath.Abs(baseDir)
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve base dir: %w", err)
+	}
+	absPath := filepath.Join(absBase, rel)
+	absPath, err = filepath.Abs(absPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve abs path: %w", err)
+	}
+	if !strings.HasPrefix(absPath, absBase+string(os.PathSeparator)) && absPath != absBase {
+		return "", fmt.Errorf("path traversal detected: %s", rel)
+	}
+	return absPath, nil
+}
+	"backend-playground-server/internal/models"
+	"encoding/json"
+	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+)
+
 type ModuleService struct {
 	modulesPath string
 }
@@ -53,8 +82,28 @@ func (s *ModuleService) GetAllModules() ([]models.Module, error) {
 
 	// Sort by module number
 	sort.Slice(moduleDirs, func(i, j int) bool {
-		numI, _ := strconv.Atoi(strings.Split(moduleDirs[i].Name(), "-")[1])
-		numJ, _ := strconv.Atoi(strings.Split(moduleDirs[j].Name(), "-")[1])
+		partsI := strings.Split(moduleDirs[i].Name(), "-")
+		partsJ := strings.Split(moduleDirs[j].Name(), "-")
+		numI, errI := -1, error(nil)
+		numJ, errJ := -1, error(nil)
+		if len(partsI) > 1 {
+			numI, errI = strconv.Atoi(partsI[1])
+		}
+		if len(partsJ) > 1 {
+			numJ, errJ = strconv.Atoi(partsJ[1])
+		}
+		if errI != nil && errJ != nil {
+			return moduleDirs[i].Name() < moduleDirs[j].Name()
+		}
+		if errI != nil {
+			return false
+		}
+		if errJ != nil {
+			return true
+		}
+		if numI == numJ {
+			return moduleDirs[i].Name() < moduleDirs[j].Name()
+		}
 		return numI < numJ
 	})
 

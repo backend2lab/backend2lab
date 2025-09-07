@@ -2,8 +2,6 @@ module github.com/backend2lab/backend2lab/server
 
 go 1.25.0
 
-toolchain go1.24.7
-
 require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1

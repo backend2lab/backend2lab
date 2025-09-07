@@ -24,7 +24,7 @@ docker compose down
 
 - **Server**: Go application with Air for hot reload
   - URL: http://localhost:4000
-  - Health check: http://localhost:4000/api/modules
+  - Health check: http://localhost:4000/health
   - API: http://localhost:4000/api
 
 - **Client**: React application with Vite for hot reload
@@ -36,16 +36,16 @@ docker compose down
 ### Build and Run Individual Services
 
 ```bash
-# Build server
-docker build -t backend-playground-server ./server
+# Build server (development stage with hot reload)
+docker build --target development -t backend-playground-server ./server
 
-# Build client
-docker build -t backend-playground-client ./client
+# Build client (development stage with hot reload)
+docker build --target development -t backend-playground-client ./client
 
-# Run server in development mode
+# Run server in development mode (with hot reload via Air)
 docker run -p 4000:4000 -v $(pwd)/server:/app backend-playground-server
 
-# Run client in development mode
+# Run client in development mode (with hot reload via Vite)
 docker run -p 4200:4200 -v $(pwd)/client:/app backend-playground-client
 ```
 

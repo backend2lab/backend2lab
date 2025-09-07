@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/backend2lab/backend2lab/server/internal/handlers"
 	"github.com/backend2lab/backend2lab/server/internal/middleware"
@@ -48,7 +49,12 @@ func main() {
 
 	// Health check endpoint
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "healthy"})
+		c.JSON(200, gin.H{
+			"status":    "healthy",
+			"service":   "backend-playground-server",
+			"version":   "1.0.0",
+			"timestamp": time.Now().Unix(),
+		})
 	})
 
 	// API routes

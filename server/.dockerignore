@@ -44,4 +44,4 @@ coverage/
 .env.production.local
 
 # Air temp files
-.air.toml
+# .air.toml - needed for development builds

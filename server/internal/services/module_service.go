@@ -1,15 +1,17 @@
 package services
 
 import (
-	"backend-playground-server/internal/models"
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"math"
 	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/backend2lab/backend2lab/server/internal/models"
 
 	"github.com/sirupsen/logrus"
 )
@@ -30,18 +32,22 @@ func safeJoin(baseDir, rel string) (string, error) {
 	}
 	return absPath, nil
 }
-	"backend-playground-server/internal/models"
-	"encoding/json"
-	"fmt"
-	"io/fs"
-	"os"
-	"path/filepath"
-	"sort"
-	"strconv"
-	"strings"
 
-	"github.com/sirupsen/logrus"
-)
+// extractModuleNumber extracts the numeric suffix from a module name (e.g., "module-1" -> 1)
+// Returns math.MaxInt32 for non-numeric or malformed names to sort them last
+func extractModuleNumber(name string) int {
+	parts := strings.Split(name, "-")
+	if len(parts) < 2 {
+		return math.MaxInt32
+	}
+	
+	num, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return math.MaxInt32
+	}
+	
+	return num
+}
 
 type ModuleService struct {
 	modulesPath string
@@ -80,31 +86,21 @@ func (s *ModuleService) GetAllModules() ([]models.Module, error) {
 		}
 	}
 
-	// Sort by module number
+	// Sort by module number with robust parsing
 	sort.Slice(moduleDirs, func(i, j int) bool {
-		partsI := strings.Split(moduleDirs[i].Name(), "-")
-		partsJ := strings.Split(moduleDirs[j].Name(), "-")
-		numI, errI := -1, error(nil)
-		numJ, errJ := -1, error(nil)
-		if len(partsI) > 1 {
-			numI, errI = strconv.Atoi(partsI[1])
+		nameI := moduleDirs[i].Name()
+		nameJ := moduleDirs[j].Name()
+		
+		// Extract numeric suffix from module names
+		numI := extractModuleNumber(nameI)
+		numJ := extractModuleNumber(nameJ)
+		
+		if numI != numJ {
+			return numI < numJ
 		}
-		if len(partsJ) > 1 {
-			numJ, errJ = strconv.Atoi(partsJ[1])
-		}
-		if errI != nil && errJ != nil {
-			return moduleDirs[i].Name() < moduleDirs[j].Name()
-		}
-		if errI != nil {
-			return false
-		}
-		if errJ != nil {
-			return true
-		}
-		if numI == numJ {
-			return moduleDirs[i].Name() < moduleDirs[j].Name()
-		}
-		return numI < numJ
+		
+		// Use name as tie-breaker for deterministic sorting
+		return nameI < nameJ
 	})
 
 	// Load each module
@@ -154,11 +150,18 @@ func (s *ModuleService) GetModuleContent(moduleId string) (*models.ModuleContent
 
 	modulePath := filepath.Join(s.modulesPath, moduleId)
 
+	// Check if module directory exists
+	if _, err := os.Stat(modulePath); os.IsNotExist(err) {
+		return nil, fmt.Errorf("module directory does not exist: %s", moduleId)
+	}
+
 	// Read lab content
 	var labContent string
 	if module.Files.Lab.Readme != nil {
-		labReadmePath := filepath.Join(modulePath, *module.Files.Lab.Readme)
-		if content, err := os.ReadFile(labReadmePath); err == nil {
+		labReadmePath, err := safeJoin(modulePath, *module.Files.Lab.Readme)
+		if err != nil {
+			logrus.Warnf("Skipping lab readme due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(labReadmePath); err == nil {
 			labContent = string(content)
 		}
 	}
@@ -168,40 +171,50 @@ func (s *ModuleService) GetModuleContent(moduleId string) (*models.ModuleContent
 
 	// Read exercise README
 	if module.Files.Exercise.Readme != nil {
-		exerciseReadmePath := filepath.Join(modulePath, *module.Files.Exercise.Readme)
-		if content, err := os.ReadFile(exerciseReadmePath); err == nil {
+		exerciseReadmePath, err := safeJoin(modulePath, *module.Files.Exercise.Readme)
+		if err != nil {
+			logrus.Warnf("Skipping exercise readme due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(exerciseReadmePath); err == nil {
 			exerciseContent.Readme = string(content)
 		}
 	}
 
 	// Read exercise server file
 	if module.Files.Exercise.Server != nil {
-		exerciseServerPath := filepath.Join(modulePath, *module.Files.Exercise.Server)
-		if content, err := os.ReadFile(exerciseServerPath); err == nil {
+		exerciseServerPath, err := safeJoin(modulePath, *module.Files.Exercise.Server)
+		if err != nil {
+			logrus.Warnf("Skipping exercise server file due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(exerciseServerPath); err == nil {
 			exerciseContent.EditorFiles.Server = string(content)
 		}
 	}
 
 	// Read exercise test file
 	if module.Files.Exercise.Test != nil {
-		exerciseTestPath := filepath.Join(modulePath, *module.Files.Exercise.Test)
-		if content, err := os.ReadFile(exerciseTestPath); err == nil {
+		exerciseTestPath, err := safeJoin(modulePath, *module.Files.Exercise.Test)
+		if err != nil {
+			logrus.Warnf("Skipping exercise test file due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(exerciseTestPath); err == nil {
 			exerciseContent.EditorFiles.Test = string(content)
 		}
 	}
 
 	// Read exercise package file
 	if module.Files.Exercise.Package != nil {
-		exercisePackagePath := filepath.Join(modulePath, *module.Files.Exercise.Package)
-		if content, err := os.ReadFile(exercisePackagePath); err == nil {
+		exercisePackagePath, err := safeJoin(modulePath, *module.Files.Exercise.Package)
+		if err != nil {
+			logrus.Warnf("Skipping exercise package file due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(exercisePackagePath); err == nil {
 			exerciseContent.EditorFiles.Package = string(content)
 		}
 	}
 
 	// Read exercise solution
 	if module.Files.Exercise.Solution != nil {
-		exerciseSolutionPath := filepath.Join(modulePath, *module.Files.Exercise.Solution)
-		if content, err := os.ReadFile(exerciseSolutionPath); err == nil {
+		exerciseSolutionPath, err := safeJoin(modulePath, *module.Files.Exercise.Solution)
+		if err != nil {
+			logrus.Warnf("Skipping exercise solution file due to path traversal: %v", err)
+		} else if content, err := os.ReadFile(exerciseSolutionPath); err == nil {
 			exerciseContent.Solution = string(content)
 		}
 	}

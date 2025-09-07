@@ -42,7 +42,7 @@ deps:
 
 # Install air for hot reload (development)
 install-air:
-	$(GOGET) -u github.com/air-verse/air
+	$(GOGET) install github.com/air-verse/air@latest
 
 # Docker build
 docker-build:

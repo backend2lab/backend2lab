@@ -1,7 +1,6 @@
 package services
 
 import (
-	"backend-playground-server/internal/models"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -15,20 +14,27 @@ import (
 	"strings"
 	"time"
 
+	"github.com/backend2lab/backend2lab/server/internal/models"
+
 	"github.com/sirupsen/logrus"
 )
 
 type TestRunner struct {
 	modulesPath string
+	httpClient  *http.Client
 }
 
+// NewTestRunner creates a new TestRunner instance
 func NewTestRunner() *TestRunner {
 	modulesPath := filepath.Join("src", "modules")
-
 	return &TestRunner{
 		modulesPath: modulesPath,
+		httpClient: &http.Client{
+			Timeout: 5 * time.Second,
+		},
 	}
 }
+
 
 // RunCode executes the provided code for a module
 func (t *TestRunner) RunCode(moduleId, inputCode string) (*models.RunResult, error) {
@@ -264,7 +270,7 @@ func (t *TestRunner) runServerCode(moduleId, inputCode string, startTime time.Ti
 		time.Sleep(500 * time.Millisecond)
 		
 		// Check if server is responding
-		resp, err := http.Get("http://localhost:3000/")
+		resp, err := t.httpClient.Get("http://localhost:3000/")
 		if err == nil {
 			resp.Body.Close()
 			serverStarted = true
@@ -364,7 +370,7 @@ func (t *TestRunner) runServerTests(moduleId, inputCode string, startTime time.T
 		time.Sleep(500 * time.Millisecond)
 		
 		// Check if server is responding
-		resp, err := http.Get("http://localhost:3000/")
+		resp, err := t.httpClient.Get("http://localhost:3000/")
 		if err == nil {
 			resp.Body.Close()
 			serverStarted = true

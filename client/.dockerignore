@@ -1,14 +1,15 @@
 # Dependencies
 node_modules/
-*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Build outputs
 dist/
 build/
-*/dist/
-*/build/
-tmp/
-*/tmp/
+.temp/
+.cache/
 
 # IDE files
 .vscode/
@@ -32,7 +33,6 @@ docker-compose*
 
 # Test files
 coverage/
-*/coverage/
 *.test.js
 *.test.ts
 *.test.tsx
@@ -47,11 +47,8 @@ coverage/
 .env.test.local
 .env.production.local
 
-# Logs
-*.log
-logs/
+# Vite
+.vite/
 
-# Documentation
-README.md
-LICENSE
-*.md
+# Wrangler
+.wrangler/

@@ -64,8 +64,16 @@ func TestModuleService_GetAllModules(t *testing.T) {
 		t.Fatal("Expected at least one module, got none")
 	}
 	
-	if modules[0].ID != "module-1" {
-		t.Errorf("Expected module ID 'module-1', got '%s'", modules[0].ID)
+	// Find module-1 in the results (avoid order assumptions)
+	found := false
+	for _, module := range modules {
+		if module.ID == "module-1" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("Expected to find module-1 in results")
 	}
 }
 

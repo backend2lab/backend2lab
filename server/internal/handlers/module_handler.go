@@ -1,18 +1,19 @@
 package handlers
 
 import (
-	"backend-playground-server/internal/services"
 	"net/http"
+
+	"github.com/backend2lab/backend2lab/server/internal/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 type ModuleHandler struct {
-	moduleService *services.ModuleService
+	moduleService services.ModuleServiceInterface
 }
 
-func NewModuleHandler(moduleService *services.ModuleService) *ModuleHandler {
+func NewModuleHandler(moduleService services.ModuleServiceInterface) *ModuleHandler {
 	return &ModuleHandler{
 		moduleService: moduleService,
 	}

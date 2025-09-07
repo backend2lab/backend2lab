@@ -1,182 +1,188 @@
-# Module 7 Exercise: User Data Storage API
+# Module 7 Exercise: Route Protection Middleware
 
 ## Objective
-Create a REST API with data persistence using JSON files, demonstrating the transition from in-memory to persistent storage through HTTP endpoints.
+Create a custom middleware function that protects specific routes by checking for an authorization header.
 
 ## What You'll Build
-A complete REST API that:
-- Saves user data to a JSON file
-- Loads user data from the JSON file
-- Handles missing files gracefully
-- Provides full CRUD operations via HTTP endpoints
+A middleware function that:
+- Checks for authorization header in requests
+- Allows access if header is present
+- Blocks access if header is missing
+- Only applies to specific protected routes
 
 ## Setup Instructions
 
-1. **Install dependencies**:
+1. **Create project folder**:
    ```bash
-   npm install
+   mkdir auth-middleware
+   cd auth-middleware
+   npm init -y
+   npm install express
    ```
 
-2. **Start the server**:
-   ```bash
-   npm start
+2. **Create this file**:
    ```
-
-3. **Run tests**:
-   ```bash
-   npm test
+   auth-middleware/
+   └── server.js
    ```
 
 ## Your Task
 
-Complete the data storage functions in `server.js`:
+Create `server.js` and complete the auth middleware:
 
 ```javascript
-// TODO: Create a function to save users to JSON file
-// The function should:
-// - Take users array as parameter
-// - Use fs.writeFileSync to save to DATA_FILE
-// - Convert array to JSON string with JSON.stringify
-// - Add error handling with try/catch
-// - Return true on success, false on error
+const express = require('express');
+const app = express();
 
-function saveUsers(users) {
+// TODO: Create an authorization middleware function
+// The function should:
+// - Check if req.headers.authorization exists
+// - If exists: call next() to continue
+// - If missing: send 401 status with error message
+
+function checkAuth(req, res, next) {
     // Your code here
+    
 }
 
-// TODO: Create a function to load users from JSON file
-// The function should:
-// - Read the file with fs.readFileSync
-// - Parse JSON string back to array with JSON.parse  
-// - Return empty array if file doesn't exist
-// - Add error handling with try/catch
+// Public routes (no middleware needed)
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome! This is a public page.' });
+});
 
-function loadUsers() {
-    // Your code here
-}
+app.get('/about', (req, res) => {
+    res.json({ message: 'About page - open to everyone' });
+});
+
+// TODO: Protected routes (use your middleware)
+// Add checkAuth middleware BETWEEN the route and handler
+
+app.get('/profile', /* add middleware here */, (req, res) => {
+    res.json({ message: 'Your profile data', user: 'John Doe' });
+});
+
+app.get('/settings', /* add middleware here */, (req, res) => {
+    res.json({ message: 'Your settings', theme: 'dark' });
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
 ```
-
-## API Endpoints
-
-Once you complete the functions, your API will support these endpoints:
-
-### GET /users
-- Returns all users
-- Response: Array of user objects
-
-### POST /users
-- Creates a new user
-- Body: `{ "name": "string", "email": "string", "age": number (optional) }`
-- Response: Created user object with ID
-
-### GET /users/:id
-- Returns a specific user by ID
-- Response: User object or 404 if not found
-
-### PUT /users/:id
-- Updates a specific user by ID
-- Body: `{ "name": "string", "email": "string", "age": number (optional) }`
-- Response: Updated user object or 404 if not found
-
-### DELETE /users/:id
-- Deletes a specific user by ID
-- Response: Success message or 404 if not found
 
 ## Step-by-Step Guide
 
-### For `saveUsers` function:
-1. Use `try/catch` block for error handling
-2. Inside try: use `fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2))`
-3. Return `true` on success
-4. In catch: log the error and return `false`
+1. **Complete the checkAuth function**:
+   - Check if `req.headers.authorization` exists
+   - If it exists, call `next()` to continue
+   - If missing, send `res.status(401).json({ error: 'Authorization required' })`
 
-### For `loadUsers` function:
-1. Use `try/catch` block for error handling
-2. Inside try: read file with `fs.readFileSync(DATA_FILE, 'utf8')`
-3. Parse the data with `JSON.parse(data)` and return it
-4. In catch: return empty array `[]`
+2. **Add middleware to protected routes**:
+   - Place `checkAuth` between the route path and handler function
+   - Example: `app.get('/profile', checkAuth, (req, res) => { ... })`
 
-## Testing Your API
+## Testing Your Middleware
 
-1. **Start the server**:
+1. **Start your server**:
    ```bash
-   npm start
+   node server.js
    ```
 
-2. **Test with curl or Postman**:
+2. **Test public routes** (should work):
+   - Visit `http://localhost:3000/` 
+   - Visit `http://localhost:3000/about`
 
+3. **Test protected routes without auth** (should fail):
+   - Visit `http://localhost:3000/profile`
+   - Visit `http://localhost:3000/settings`
+
+4. **Test protected routes with auth** (should work):
+   - Use Postman, curl, or browser dev tools to add Authorization header:
    ```bash
-   # Get all users (empty initially)
-   curl http://localhost:3000/users
-
-   # Create a user
-   curl -X POST http://localhost:3000/users \
-     -H "Content-Type: application/json" \
-     -d '{"name": "John Doe", "email": "john@example.com", "age": 30}'
-
-   # Get all users (should show the created user)
-   curl http://localhost:3000/users
-
-   # Get specific user (replace USER_ID with actual ID)
-   curl http://localhost:3000/users/USER_ID
-
-   # Update user
-   curl -X PUT http://localhost:3000/users/USER_ID \
-     -H "Content-Type: application/json" \
-     -d '{"name": "John Smith", "age": 31}'
-
-   # Delete user
-   curl -X DELETE http://localhost:3000/users/USER_ID
+   # Using curl
+   curl -H "Authorization: Bearer token123" http://localhost:3000/profile
+   
+   # Using Postman: Add header "Authorization" with value "Bearer token123"
    ```
 
-3. **Run automated tests**:
-   ```bash
-   npm test
-   ```
+## Expected Output
 
-## Expected Behavior
+**Public routes (no auth needed)**:
+```json
+{ "message": "Welcome! This is a public page." }
+```
 
-- Data persists between server restarts
-- File `users.json` is created automatically
-- All CRUD operations work correctly
-- Proper error handling for missing files
-- Validation for required fields (name, email)
+**Protected routes without auth header**:
+```json
+{ "error": "Authorization required" }
+```
+
+**Protected routes with auth header**:
+```json
+{ "message": "Your profile data", "user": "John Doe" }
+```
 
 ## Challenge Extensions
 
 Once you complete the basic version, try these:
 
-1. **Add data validation**: Validate email format, age range, etc.
-2. **Add search functionality**: Create `GET /users?search=name` endpoint
-3. **Add pagination**: Implement `GET /users?page=1&limit=10`
-4. **Add sorting**: Implement `GET /users?sort=name&order=asc`
-5. **Async versions**: Use `fs.promises` instead of sync functions
+1. **Validate token format**: Check if authorization starts with "Bearer "
+2. **Add user info**: Extract user data from token and add to req.user
+3. **Different permissions**: Create admin-only routes with separate middleware
+4. **Combine middleware**: Add both logging and auth middleware to the same route
+
+## Example Extensions
+
+```javascript
+// Extension 1: Validate Bearer token format
+function checkBearerToken(req, res, next) {
+    const auth = req.headers.authorization;
+    
+    if (!auth || !auth.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Bearer token required' });
+    }
+    
+    next();
+}
+
+// Extension 3: Admin-only middleware
+function checkAdmin(req, res, next) {
+    const token = req.headers.authorization;
+    
+    // Simple check (in real app, decode JWT)
+    if (token === 'Bearer admin-token') {
+        next();
+    } else {
+        res.status(403).json({ error: 'Admin access required' });
+    }
+}
+
+// Extension 4: Combine multiple middleware
+app.get('/admin', checkAuth, checkAdmin, (req, res) => {
+    res.json({ message: 'Admin dashboard' });
+});
+```
 
 ## What You Learned
 
-- ✅ Converting in-memory data to file-based persistence
-- ✅ Writing data to JSON files with `fs.writeFileSync`
-- ✅ Reading data from JSON files with `fs.readFileSync`
-- ✅ JSON serialization and deserialization
-- ✅ Error handling for file operations
-- ✅ Creating REST API endpoints with Express
-- ✅ Implementing full CRUD operations
-- ✅ Separating data layer from API routes
+- ✅ Creating custom middleware functions
+- ✅ Placing middleware between routes and handlers
+- ✅ Checking request headers for authorization
+- ✅ Sending appropriate error responses
+- ✅ Understanding middleware execution flow
+- ✅ Protecting specific routes selectively
 
 ## Troubleshooting
 
-**"ENOENT" error?**
-- The file doesn't exist - that's normal for first run
-- Your `loadUsers` function should handle this
+**Middleware not working?**
+- Make sure you're calling `next()` when authorization is present
+- Check that middleware is placed between route and handler
 
-**JSON parse error?**
-- Check `users.json` for syntax errors
-- Make sure JSON is valid (use a JSON validator)
+**Getting 404 errors?**
+- Verify your route paths are correct
+- Check that the server is running on the right port
 
-**Permission denied?**
-- Make sure you have write permissions in the directory
-- Try running from a different folder
-
-**Port already in use?**
-- Change the PORT constant in server.js
-- Or kill the process using port 3000
+**Authorization header not working?**
+- Ensure the header name is exactly "Authorization"
+- Check that you're sending the request to the correct URL

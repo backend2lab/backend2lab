@@ -1,5 +1,6 @@
 import Editor from "@monaco-editor/react";
 import { useMemo } from "react";
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CodeDisplayProps {
   code: string;
@@ -14,6 +15,8 @@ export function CodeDisplay({
   showLineNumbers = true, 
   className = "" 
 }: CodeDisplayProps) {
+  const { theme } = useTheme();
+  
   // Ensure code is a string
   const safeCode = typeof code === 'string' ? code : String(code || '');
   
@@ -28,14 +31,14 @@ export function CodeDisplay({
   const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + padding);
 
   return (
-    <div className={`bg-neutral-900 rounded-lg overflow-hidden border border-tactical-border-primary my-3 ${className}`}>
-      <div className="flex items-center justify-between px-4 py-2 bg-tactical-surface border-b border-tactical-border-primary">
-        <span className="text-sm text-tactical-text-secondary font-mono">
+    <div className={`bg-theme-surface rounded-lg overflow-hidden border border-theme-primary my-3 ${className}`}>
+      <div className="flex items-center justify-between px-4 py-2 bg-theme-surface border-b border-theme-primary">
+        <span className="text-sm text-theme-secondary font-mono">
           {language}
         </span>
         <button
           onClick={() => navigator.clipboard.writeText(safeCode)}
-          className="h-6 w-6 p-0 text-tactical-text-secondary hover:text-tactical-text-primary transition-colors"
+          className="h-6 w-6 p-0 text-theme-secondary hover:text-theme-primary transition-colors"
         >
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -58,7 +61,6 @@ export function CodeDisplay({
             roundedSelection: false,
             scrollBeyondLastLine: false,
             automaticLayout: true,
-            theme: "vs-dark",
             scrollbar: {
               vertical: 'hidden',
               horizontal: 'auto',
@@ -91,7 +93,7 @@ export function CodeDisplay({
               bottom: 8,
             },
           }}
-          theme="vs-dark"
+          theme={theme === 'dark' ? 'vs-dark' : 'vs'}
           className="rounded-none"
         />
       </div>

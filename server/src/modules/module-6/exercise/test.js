@@ -1,99 +1,412 @@
 const { expect } = require('chai');
 const request = require('supertest');
 
-describe('Middleware Exercise', () => {
-
-  describe('Public Routes', () => {
-    it('should return welcome message for GET /', async () => {
+describe('Pagination and Filtering Exercise', () => {
+  describe('GET /api/users', () => {
+    it('should return paginated users with default parameters', async () => {
       const response = await request('http://localhost:3000')
-        .get('/')
+        .get('/api/users')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).to.have.property('message', 'Welcome! This is a public page.');
+      expect(response.body).to.have.property('data');
+      expect(response.body).to.have.property('pagination');
+      expect(response.body).to.have.property('filters');
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(5); // Default limit is 5
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 5);
+      expect(response.body.pagination).to.have.property('total', 15);
+      expect(response.body.pagination).to.have.property('totalPages', 3);
+      expect(response.body.filters).to.have.property('search', null);
+      expect(response.body.filters).to.have.property('role', null);
+      expect(response.body.filters).to.have.property('status', null);
     });
 
-    it('should return about message for GET /about', async () => {
+    it('should return first page with correct users', async () => {
       const response = await request('http://localhost:3000')
-        .get('/about')
+        .get('/api/users?page=1&limit=3')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).to.have.property('message', 'About page - open to everyone');
+      expect(response.body.data).to.have.length(3);
+      expect(response.body.data[0]).to.have.property('id', 1);
+      expect(response.body.data[0]).to.have.property('name', 'Alice Johnson');
+      expect(response.body.data[0]).to.have.property('role', 'admin');
+      expect(response.body.data[0]).to.have.property('status', 'active');
+      expect(response.body.data[1]).to.have.property('id', 2);
+      expect(response.body.data[1]).to.have.property('name', 'Bob Smith');
+      expect(response.body.data[1]).to.have.property('role', 'user');
+      expect(response.body.data[1]).to.have.property('status', 'active');
+      expect(response.body.data[2]).to.have.property('id', 3);
+      expect(response.body.data[2]).to.have.property('name', 'Charlie Brown');
+      expect(response.body.data[2]).to.have.property('role', 'user');
+      expect(response.body.data[2]).to.have.property('status', 'inactive');
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 3);
+      expect(response.body.pagination).to.have.property('total', 15);
+      expect(response.body.pagination).to.have.property('totalPages', 5);
     });
-  });
 
-  describe('Protected Routes - Without Authorization', () => {
-    it('should return 401 for GET /profile without auth header', async () => {
+    it('should filter users by role', async () => {
       const response = await request('http://localhost:3000')
-        .get('/profile')
-        .expect(401)
-        .expect('Content-Type', /json/);
-
-      expect(response.body).to.have.property('error', 'Authorization required');
-    });
-
-    it('should return 401 for GET /settings without auth header', async () => {
-      const response = await request('http://localhost:3000')
-        .get('/settings')
-        .expect(401)
-        .expect('Content-Type', /json/);
-
-      expect(response.body).to.have.property('error', 'Authorization required');
-    });
-  });
-
-  describe('Protected Routes - With Authorization', () => {
-    it('should return profile data for GET /profile with auth header', async () => {
-      const response = await request('http://localhost:3000')
-        .get('/profile')
-        .set('Authorization', 'Bearer token123')
+        .get('/api/users?role=admin')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).to.have.property('message', 'Your profile data');
-      expect(response.body).to.have.property('user', 'John Doe');
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data.length).to.be.greaterThan(0);
+      expect(response.body.data.every(user => user.role === 'admin')).to.be.true;
+      expect(response.body.pagination).to.have.property('total', 4); // 4 admin users
+      expect(response.body.filters).to.have.property('role', 'admin');
+      expect(response.body.filters).to.have.property('search', null);
+      expect(response.body.filters).to.have.property('status', null);
     });
 
-    it('should return settings data for GET /settings with auth header', async () => {
+    it('should filter users by status', async () => {
       const response = await request('http://localhost:3000')
-        .get('/settings')
-        .set('Authorization', 'Bearer token123')
+        .get('/api/users?status=active')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).to.have.property('message', 'Your settings');
-      expect(response.body).to.have.property('theme', 'dark');
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data.length).to.be.greaterThan(0);
+      expect(response.body.data.every(user => user.status === 'active')).to.be.true;
+      expect(response.body.pagination).to.have.property('total', 10); // 10 active users
+      expect(response.body.filters).to.have.property('status', 'active');
+      expect(response.body.filters).to.have.property('role', null);
+      expect(response.body.filters).to.have.property('search', null);
     });
 
-    it('should work with any authorization header value', async () => {
+    it('should search users by name', async () => {
       const response = await request('http://localhost:3000')
-        .get('/profile')
-        .set('Authorization', 'Basic dXNlcjpwYXNz')
+        .get('/api/users?search=john')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).to.have.property('message', 'Your profile data');
-    });
-  });
-
-  describe('Other endpoints', () => {
-    it('should return 404 for POST /profile', async () => {
-      await request('http://localhost:3000')
-        .post('/profile')
-        .expect(404);
-    });
-
-    it('should return 404 for PUT /settings', async () => {
-      await request('http://localhost:3000')
-        .put('/settings')
-        .expect(404);
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data.length).to.be.greaterThan(0);
+      expect(response.body.data.every(user => 
+        user.name.toLowerCase().includes('john') || 
+        user.email.toLowerCase().includes('john')
+      )).to.be.true;
+      expect(response.body.pagination).to.have.property('total', 2); // Alice Johnson, Mike Johnson
+      expect(response.body.filters).to.have.property('search', 'john');
+      expect(response.body.filters).to.have.property('role', null);
+      expect(response.body.filters).to.have.property('status', null);
     });
 
-    it('should return 404 for DELETE /profile', async () => {
-      await request('http://localhost:3000')
-        .delete('/profile')
-        .expect(404);
+    it('should search users by email', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=alice@example.com')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(1);
+      expect(response.body.data[0]).to.have.property('name', 'Alice Johnson');
+      expect(response.body.data[0]).to.have.property('email', 'alice@example.com');
+      expect(response.body.pagination).to.have.property('total', 1);
+      expect(response.body.filters).to.have.property('search', 'alice@example.com');
+    });
+
+    it('should combine role and status filters', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?role=user&status=active')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data.length).to.be.greaterThan(0);
+      expect(response.body.data.every(user => 
+        user.role === 'user' && user.status === 'active'
+      )).to.be.true;
+      expect(response.body.pagination).to.have.property('total', 5); // 5 active users
+      expect(response.body.filters).to.have.property('role', 'user');
+      expect(response.body.filters).to.have.property('status', 'active');
+      expect(response.body.filters).to.have.property('search', null);
+    });
+
+    it('should combine search and role filters', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=alice&role=admin')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(1);
+      expect(response.body.data[0]).to.have.property('name', 'Alice Johnson');
+      expect(response.body.data[0]).to.have.property('role', 'admin');
+      expect(response.body.pagination).to.have.property('total', 1);
+      expect(response.body.filters).to.have.property('search', 'alice');
+      expect(response.body.filters).to.have.property('role', 'admin');
+      expect(response.body.filters).to.have.property('status', null);
+    });
+
+    it('should combine all filters', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=alice&role=admin&status=active')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(1);
+      expect(response.body.data[0]).to.have.property('name', 'Alice Johnson');
+      expect(response.body.data[0]).to.have.property('role', 'admin');
+      expect(response.body.data[0]).to.have.property('status', 'active');
+      expect(response.body.pagination).to.have.property('total', 1);
+      expect(response.body.filters).to.have.property('search', 'alice');
+      expect(response.body.filters).to.have.property('role', 'admin');
+      expect(response.body.filters).to.have.property('status', 'active');
+    });
+
+    it('should handle pagination with filters', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?role=user&page=1&limit=2')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(2);
+      expect(response.body.data.every(user => user.role === 'user')).to.be.true;
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 2);
+      expect(response.body.pagination).to.have.property('total', 8); // 8 users total
+      expect(response.body.pagination).to.have.property('totalPages', 4); // 8 users / 2 per page = 4 pages
+    });
+
+    it('should return empty results for non-matching filters', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=nonexistent')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(0);
+      expect(response.body.pagination).to.have.property('total', 0);
+      expect(response.body.pagination).to.have.property('totalPages', 0);
+      expect(response.body.filters).to.have.property('search', 'nonexistent');
+    });
+
+    it('should handle case-insensitive search', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=ALICE')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.data).to.have.length(1);
+      expect(response.body.data[0]).to.have.property('name', 'Alice Johnson');
+      expect(response.body.pagination).to.have.property('total', 1);
+    });
+
+    it('should handle different limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=1&limit=10')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(10);
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 10);
+      expect(response.body.pagination).to.have.property('total', 15);
+      expect(response.body.pagination).to.have.property('totalPages', 2);
+    });
+
+    it('should handle large limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=1&limit=20')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(15);
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 20);
+      expect(response.body.pagination).to.have.property('total', 15);
+      expect(response.body.pagination).to.have.property('totalPages', 1);
+    });
+
+    it('should handle page beyond available data', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=10&limit=3')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.property('error', 'Page not found');
+    });
+
+    it('should handle invalid page parameter', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=abc&limit=3')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(3);
+      expect(response.body.pagination).to.have.property('page', 1); // Should default to 1
+      expect(response.body.pagination).to.have.property('limit', 3);
+    });
+
+    it('should handle invalid limit parameter', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=1&limit=xyz')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(5); // Should default to 5
+      expect(response.body.pagination).to.have.property('page', 1);
+      expect(response.body.pagination).to.have.property('limit', 5); // Should default to 5
+    });
+
+    it('should return correct response structure', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=1&limit=2')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.all.keys(['data', 'pagination', 'filters']);
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.pagination).to.be.an('object');
+      expect(response.body.filters).to.be.an('object');
+      
+      // Check pagination structure
+      expect(response.body.pagination).to.have.all.keys(['page', 'limit', 'total', 'totalPages']);
+      expect(response.body.pagination.page).to.be.a('number');
+      expect(response.body.pagination.limit).to.be.a('number');
+      expect(response.body.pagination.total).to.be.a('number');
+      expect(response.body.pagination.totalPages).to.be.a('number');
+      
+      // Check filters structure
+      expect(response.body.filters).to.have.all.keys(['search', 'role', 'status']);
+      
+      // Check user object structure
+      if (response.body.data.length > 0) {
+        const user = response.body.data[0];
+        expect(user).to.have.all.keys(['id', 'name', 'email', 'role', 'status']);
+        expect(user.id).to.be.a('number');
+        expect(user.name).to.be.a('string');
+        expect(user.email).to.be.a('string');
+        expect(user.role).to.be.a('string');
+        expect(user.status).to.be.a('string');
+      }
+    });
+
+    it('should handle empty search string', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?search=')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(5); // Should return default pagination
+      expect(response.body.pagination).to.have.property('total', 15);
+      expect(response.body.filters).to.have.property('search', '');
+    });
+
+    it('should handle invalid role filter', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?role=invalid')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(0);
+      expect(response.body.pagination).to.have.property('total', 0);
+      expect(response.body.filters).to.have.property('role', 'invalid');
+    });
+
+    it('should handle invalid status filter', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?status=invalid')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.data).to.have.length(0);
+      expect(response.body.pagination).to.have.property('total', 0);
+      expect(response.body.filters).to.have.property('status', 'invalid');
+    });
+
+    it('should enforce maximum limit', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=200')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 100); // Should be capped at 100
+      expect(response.body.data).to.have.length(15); // All users returned
+    });
+
+    it('should handle negative page numbers', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=-5')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 1); // Should default to 1
+      expect(response.body.data).to.have.length(5); // Default limit
+    });
+
+    it('should handle negative limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=-10')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 5); // Should default to 5
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should handle zero page number', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=0')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 1); // Should default to 1
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should handle zero limit value', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=0')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 5); // Should default to 5
+      expect(response.body.data).to.have.length(5);
+    });
+
+    it('should return 404 for page beyond available data', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=100')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.property('error', 'Page not found');
+    });
+
+    it('should return 404 for page beyond filtered data', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?role=admin&page=10')
+        .expect(404)
+        .expect('Content-Type', /json/);
+
+      expect(response.body).to.have.property('error', 'Page not found');
+    });
+
+    it('should handle decimal page numbers', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?page=2.7')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('page', 2); // Should be floored to 2
+    });
+
+    it('should handle decimal limit values', async () => {
+      const response = await request('http://localhost:3000')
+        .get('/api/users?limit=3.9')
+        .expect(200)
+        .expect('Content-Type', /json/);
+
+      expect(response.body.pagination).to.have.property('limit', 3); // Should be floored to 3
+      expect(response.body.data).to.have.length(3);
     });
   });
 });

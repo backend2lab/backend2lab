@@ -1,21 +1,24 @@
 {
-  "name": "module-7-data-persistence",
+  "name": "module-7-middleware-exercise",
   "version": "1.0.0",
-  "description": "Module 7 Exercise: User Data Storage API",
+  "description": "Route protection middleware exercise for Express.js middleware",
   "main": "server.js",
   "scripts": {
-    "test": "mocha test.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha test.js"
   },
-  "keywords": ["data-persistence", "file-system", "json", "nodejs", "express", "api"],
+  "keywords": ["express", "middleware", "authentication", "api", "exercise"],
   "author": "Backend Playground",
   "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "express": "^4.18.0"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
-    "chai": "^4.3.0",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
     "supertest": "^6.3.0"
   }
 }

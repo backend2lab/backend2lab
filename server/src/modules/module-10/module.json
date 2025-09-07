@@ -1,0 +1,40 @@
+{
+  "id": "module-10",
+  "title": "File Uploads and Handling",
+  "description": "Learn how to handle file uploads in Express.js applications using Multer middleware",
+  "difficulty": "Intermediate",
+  "estimatedTime": "75 minutes",
+  "tags": ["file-upload", "multer", "multipart", "express", "middleware", "file-handling", "security"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/server.js",
+      "test": "exercise/test.js",
+      "solution": "exercise/solution.js",
+      "package": "exercise/package.json"
+    }
+  },
+  "learningObjectives": [
+    "Understand how file uploads work in web applications",
+    "Learn about multipart/form-data content type",
+    "Install and configure Multer middleware for file uploads",
+    "Handle single and multiple file uploads",
+    "Implement file type validation and size limits",
+    "Configure custom storage destinations and filenames",
+    "Serve uploaded files back to users",
+    "Implement proper error handling for uploads",
+    "Apply security best practices for file uploads",
+    "Create comprehensive file upload APIs"
+  ],
+  "prerequisites": [
+    "Basic JavaScript knowledge",
+    "Understanding of Express.js framework",
+    "Familiarity with middleware concepts",
+    "Basic understanding of HTTP requests and responses",
+    "Knowledge of file system operations",
+    "Understanding of form data and content types"
+  ]
+}

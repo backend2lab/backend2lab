@@ -1,4 +1,4 @@
-module backend-playground-server
+module github.com/backend2lab/backend2lab/server
 
 go 1.23.0
 

@@ -1,173 +1,128 @@
-# Docker Development Setup for Backend2Lab
+# Docker Setup for Backend Playground
 
-This document explains how to run the Backend2Lab project in development mode using Docker.
-
-## Prerequisites
-
-- Docker installed on your system
-- Docker Compose (usually comes with Docker Desktop)
+This project includes Docker configuration for both development and production environments with hot reload support.
 
 ## Quick Start
 
-### Option 1: Using Docker Compose (Recommended)
-
-1. **Build and run the development environment:**
-   ```bash
-   docker compose up --build
-   ```
-
-2. **Run in detached mode:**
-   ```bash
-   docker compose up -d --build
-   ```
-
-3. **Stop the services:**
-   ```bash
-   docker compose down
-   ```
-
-### Option 2: Using the Development Script
-
-Use the provided development script for easy startup:
+### Development with Hot Reload
 
 ```bash
-./dev.sh
-```
+# Start both services with hot reload
+docker compose up
 
-This script will:
-- Check if Docker is running
-- Build and start the development containers
-- Show you the URLs to access your services
-
-## Development Features
-
-The Docker setup provides:
-
-- **Hot Reloading**: Both client and server automatically reload when you make changes
-- **Volume Mounting**: Your local code is mounted into the containers
-- **Live Updates**: Changes are reflected immediately without rebuilding
-- **Development Tools**: Full access to development features and debugging
-
-## Accessing the Application
-
-Once the containers are running:
-
-- **Client (Frontend):** http://localhost:4200
-- **Server API:** http://localhost:4000
-- **API Endpoints:**
-  - `GET /api/modules` - List all available modules
-  - `GET /api/modules/:moduleId` - Get specific module content
-  - `POST /api/test/:moduleId` - Run tests for a module
-  - `POST /api/run/:moduleId` - Execute code for a module
-
-## Environment Variables
-
-The development environment uses these default settings:
-
-- `NODE_ENV`: `development` (enables hot reloading and debugging)
-- `HOST`: `0.0.0.0` (allows external connections)
-- `PORT`: `4000` (server) and `4200` (client)
-- `VITE_API_URL`: `http://localhost:4000` (client connects to server)
-
-You can override these in the `docker-compose.yml` file if needed.
-
-## Project Structure
-
-The Docker development setup includes:
-
-```
-├── docker-compose.yml          # Main development orchestration
-├── server/
-│   ├── Dockerfile.dev         # Server development container
-│   └── package.json           # Server dependencies
-├── client/
-│   ├── Dockerfile.dev         # Client development container
-│   └── package.json           # Client dependencies
-└── dev.sh                     # Development startup script
-```
-
-### Container Details:
-
-- **Server Container**: Node.js 18 + npm, runs `npm run dev` with tsx
-- **Client Container**: Node.js 20 + pnpm, runs `pnpm run dev` with Vite
-- **Ports**: Server (4000), Client (4200)
-- **Volumes**: Local code mounted for hot reloading
-
-## Troubleshooting
-
-### Check container logs:
-```bash
-# View all logs
-docker compose logs
-
-# View specific service logs
-docker compose logs server
-docker compose logs client
-
-# Follow logs in real-time
-docker compose logs -f
-```
-
-### Access container shell:
-```bash
-# Access server container
-docker compose exec server sh
-
-# Access client container
-docker compose exec client sh
-```
-
-### Rebuild without cache:
-```bash
-# Rebuild all services
-docker compose build --no-cache
-
-# Rebuild specific service
-docker compose build --no-cache server
-docker compose build --no-cache client
-```
-
-### Clean up:
-```bash
-# Remove containers and networks
-docker compose down
-
-# Remove containers, networks, and volumes
-docker compose down -v
-
-# Remove all unused containers, networks, and images
-docker system prune -a
-```
-
-## Development Workflow
-
-### Daily Development:
-1. **Start the environment**: `./dev.sh` or `docker compose up --build`
-2. **Make changes** to your code - they'll automatically reload
-3. **View logs** if needed: `docker compose logs -f`
-4. **Stop when done**: `docker compose down`
-
-### Common Commands:
-```bash
-# Start development environment
-docker compose up --build
+# Or run in background
+docker compose up -d
 
 # View logs
 docker compose logs -f
 
-# Rebuild after dependency changes
-docker compose build --no-cache
-
 # Stop services
 docker compose down
-
-# Restart a specific service
-docker compose restart server
-docker compose restart client
 ```
 
-### Tips:
-- The client will automatically reload when you save React/TypeScript files
-- The server will restart when you save Node.js/TypeScript files
-- Check the logs if something isn't working as expected
-- Use `docker compose down` to clean up when you're done developing
+### Services
+
+- **Server**: Go application with Air for hot reload
+  - URL: http://localhost:4000
+  - Health check: http://localhost:4000/api/modules
+  - API: http://localhost:4000/api
+
+- **Client**: React application with Vite for hot reload
+  - URL: http://localhost:4200
+  - Hot reload enabled for instant updates
+
+## Docker Commands
+
+### Build and Run Individual Services
+
+```bash
+# Build server
+docker build -t backend-playground-server ./server
+
+# Build client
+docker build -t backend-playground-client ./client
+
+# Run server in development mode
+docker run -p 4000:4000 -v $(pwd)/server:/app backend-playground-server
+
+# Run client in development mode
+docker run -p 4200:4200 -v $(pwd)/client:/app backend-playground-client
+```
+
+### Production Builds
+
+```bash
+# Build production images
+docker build --target production -t backend-playground-server:prod ./server
+docker build --target production -t backend-playground-client:prod ./client
+
+# Run production containers
+docker run -p 4000:4000 backend-playground-server:prod
+docker run -p 80:80 backend-playground-client:prod
+```
+
+## Development Features
+
+### Hot Reload
+- **Server**: Uses Air to automatically rebuild and restart the Go application on file changes
+- **Client**: Uses Vite's built-in hot module replacement for instant updates
+
+## Troubleshooting
+
+### Port Conflicts
+If ports 4000 or 4200 are already in use:
+```bash
+# Check what's using the ports
+lsof -i :4000
+lsof -i :4200
+
+# Kill processes or change ports in docker compose.yml
+```
+
+### Permission Issues
+```bash
+# Fix file permissions
+sudo chown -R $USER:$USER ./server ./client
+
+# Or run with user permissions
+docker compose run --user $(id -u):$(id -g) server
+```
+
+### Clean Up
+```bash
+# Remove containers and networks
+docker compose down
+
+# Remove images
+docker compose down --rmi all
+
+# Remove volumes
+docker compose down -v
+
+# Clean everything
+docker system prune -a
+```
+
+## File Structure
+
+```
+.
+├── docker compose.yml          # Main compose file
+├── .dockerignore              # Root dockerignore
+├── server/
+│   ├── Dockerfile             # Multi-stage server build
+│   └── .dockerignore          # Server-specific ignores
+└── client/
+    ├── Dockerfile             # Multi-stage client build
+    └── .dockerignore          # Client-specific ignores
+```
+
+## Multi-stage Builds
+
+### Server (Go)
+- **development**: Includes Air for hot reload + Node.js for TypeScript
+- **production**: Minimal Alpine image with just the binary
+
+### Client (React)
+- **development**: Node.js with Vite dev server
+- **production**: Nginx serving static files

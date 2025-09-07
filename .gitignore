@@ -61,9 +61,6 @@ tmp-server.js
 ehthumbs.db
 Thumbs.db
 
-#config
-.air.toml
-
 
 #mics
 TODO.md

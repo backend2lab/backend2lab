@@ -382,17 +382,23 @@ function AppContent() {
                 <h4 className="text-sm font-semibold text-theme-primary mb-2">Test Results</h4>
                 <div className="bg-theme-background rounded border border-theme-primary p-3 max-h-48 overflow-y-auto">
                   <div className="space-y-2">
-                    {testResults.results.map((result, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
-                          {result.passed ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} />}
-                        </span>
-                        <span className="text-sm text-theme-primary">{result.testName}</span>
-                        {!result.passed && result.error && (
-                          <span className="text-xs text-red-400">({result.error})</span>
-                        )}
+                    {testResults.results && testResults.results.length > 0 ? (
+                      testResults.results.map((result, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
+                            {result.passed ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} />}
+                          </span>
+                          <span className="text-sm text-theme-primary">{result.testName}</span>
+                          {!result.passed && result.error && (
+                            <span className="text-xs text-red-400">({result.error})</span>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-theme-secondary">
+                        {testResults.totalTests === 0 ? 'No tests were executed' : 'No test results available'}
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>

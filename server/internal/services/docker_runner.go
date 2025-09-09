@@ -114,7 +114,7 @@ func (d *DockerRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteRe
 	if err := d.buildModuleImage(moduleId, imageName); err != nil {
 		return &models.TestSuiteResult{
 			ModuleID:      moduleId,
-			TotalTests:    330,
+			TotalTests:    0,
 			PassedTests:   0,
 			FailedTests:   0,
 			Results:       []models.TestResult{{TestName: "Setup", Passed: false, Error: &[]string{fmt.Sprintf("Failed to build module image: %s", err.Error())}[0]}},
@@ -128,7 +128,7 @@ func (d *DockerRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteRe
 	if err != nil {
 		return &models.TestSuiteResult{
 			ModuleID:      moduleId,
-			TotalTests:    220,
+			TotalTests:    0,
 			PassedTests:   0,
 			FailedTests:   0,
 			Results:       []models.TestResult{{TestName: "Setup", Passed: false, Error: &[]string{fmt.Sprintf("Failed to create container: %s", err.Error())}[0]}},
@@ -145,7 +145,7 @@ func (d *DockerRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteRe
 	if err != nil {
 		return &models.TestSuiteResult{
 			ModuleID:      moduleId,
-			TotalTests:    110,
+			TotalTests:    0,
 			PassedTests:   0,
 			FailedTests:   0,
 			Results:       []models.TestResult{{TestName: "Execution", Passed: false, Error: &[]string{fmt.Sprintf("Container execution failed: %s", err.Error())}[0]}},
@@ -186,7 +186,6 @@ func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
 	defer cancel()
 
 	buildResponse, err := d.dockerClient.ImageBuild(buildCtx, buildContext, buildOptions)
-	fmt.Println(err, "---error to build")
 	if err != nil {
 		return fmt.Errorf("failed to build image: %w", err)
 	}
@@ -307,14 +306,6 @@ func (d *DockerRunner) createBuildContext(modulePath string) (io.Reader, error) 
 func (d *DockerRunner) createContainer(containerName, imageName, inputCode, moduleId string) (string, error) {
 	ctx := context.Background()
 
-	// Create container config
-	// var cmd []string
-	// if moduleId == "module-1" {
-	// 	// For module-1, run the code directly (function-based)
-	// 	cmd = []string{"node", "tmp-server.js"}
-	// } else {
-	// 	// For other modules, run as server
-	// }
 	cmd := []string{"node", "tmp-server.js"}
 	
 	containerConfig := &container.Config{

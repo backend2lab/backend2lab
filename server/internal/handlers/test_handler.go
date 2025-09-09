@@ -27,6 +27,12 @@ func (h *TestHandler) RunTests(c *gin.Context) {
 		return
 	}
 
+	// Validate moduleId to prevent path traversal attacks
+	if !ValidateModuleId(moduleId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid module ID format"})
+		return
+	}
+
 	var request struct {
 		Code string `json:"code" binding:"required"`
 	}
@@ -51,6 +57,12 @@ func (h *TestHandler) RunCode(c *gin.Context) {
 	moduleId := c.Param("moduleId")
 	if moduleId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Module ID is required"})
+		return
+	}
+
+	// Validate moduleId to prevent path traversal attacks
+	if !ValidateModuleId(moduleId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid module ID format"})
 		return
 	}
 

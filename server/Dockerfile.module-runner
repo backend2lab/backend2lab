@@ -1,0 +1,26 @@
+# Dockerfile for safe module execution
+FROM node:20.12-alpine
+
+# Install security tools and dependencies
+RUN apk add --no-cache \
+    dumb-init \
+    && addgroup -g 1001 -S nodejs \
+    && adduser -S nodejs -u 1001
+
+# Create working directory
+WORKDIR /app
+
+# Copy exercise and install dependencies
+COPY ./ ./
+RUN npm install
+
+# Create a non-root user for execution
+USER nodejs
+
+# Set up environment for safe execution
+# ENV NODE_ENV=production
+ENV PORT=3000
+
+# Default command (will be overridden)
+CMD ["node", "server.js"]
+

@@ -22,16 +22,26 @@ import (
 type TestRunner struct {
 	modulesPath string
 	httpClient  *http.Client
+	dockerRunner *DockerRunner
 }
 
 // NewTestRunner creates a new TestRunner instance
 func NewTestRunner() *TestRunner {
 	modulesPath := filepath.Join("src", "modules")
+	
+	// Initialize Docker runner
+	dockerRunner, err := NewDockerRunner()
+	if err != nil {
+		logrus.Warnf("Failed to initialize Docker runner, falling back to direct execution: %v", err)
+		dockerRunner = nil
+	}
+	
 	return &TestRunner{
 		modulesPath: modulesPath,
 		httpClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
+		dockerRunner: dockerRunner,
 	}
 }
 
@@ -43,7 +53,9 @@ func (t *TestRunner) RunCode(moduleId, inputCode string) (*models.RunResult, err
 	if moduleId == "module-1" {
 		return t.runModule1Code(moduleId, inputCode, startTime)
 	}
+
 	return t.runServerCode(moduleId, inputCode, startTime)
+	// return nil, fmt.Errorf("Docker runner not available and direct execution not implemented for module: %s", moduleId)
 }
 
 // RunTests executes tests for the provided code
@@ -54,6 +66,7 @@ func (t *TestRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteResu
 		return t.runModule1Tests(moduleId, inputCode, startTime)
 	}
 	return t.runServerTests(moduleId, inputCode, startTime)
+	// return nil, fmt.Errorf("Docker runner not available and direct execution not implemented for module: %s", moduleId)
 }
 
 // runModule1Code executes function-based code for module-1

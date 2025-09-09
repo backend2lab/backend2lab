@@ -25,8 +25,8 @@ FROM golang:1.25-alpine AS development
 # Install air for hot reload and other tools
 RUN go install github.com/air-verse/air@latest
 
-# Install Node.js, npm, and curl for health checks
-RUN apk add --no-cache nodejs npm
+# Install Node.js, npm, curl for health checks, and Docker CLI
+RUN apk add --no-cache nodejs npm curl docker-cli
 
 # Set working directory
 WORKDIR /app

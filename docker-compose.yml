@@ -11,13 +11,14 @@ services:
       - ./server:/app
       - /app/node_modules
       - /app/tmp
+      - /var/run/docker.sock:/var/run/docker.sock  # Docker socket for container execution
     environment:
       - HOST=0.0.0.0
       - PORT=4000
       - GIN_MODE=debug
+      - DOCKER_HOST=unix:///var/run/docker.sock
     networks:
       - backend-playground
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
       interval: 30s
@@ -45,7 +46,6 @@ services:
     depends_on:
       server:
         condition: service_healthy
-    restart: unless-stopped
 
 networks:
   backend-playground:

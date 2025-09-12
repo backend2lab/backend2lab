@@ -6,8 +6,8 @@ import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService.js";
+import { ModuleService } from "./services/moduleService";
+import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';

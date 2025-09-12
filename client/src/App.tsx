@@ -343,7 +343,6 @@ function AppContent() {
               key={currentModuleId} // force complete component re-render
               code={code} 
               onCodeChange={setCode}
-              testCases={moduleContent.exerciseContent.editorFiles.test}
               packageJson={moduleContent.exerciseContent.editorFiles.package}
               solution={moduleContent.exerciseContent.solution}
               runCode={handleRunCode}

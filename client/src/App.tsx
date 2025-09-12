@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -6,8 +6,8 @@ import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { ModuleService } from "./services/moduleService.js";
-import type { ModuleContent, TestSuiteResult, RunResult, Module } from "./services/moduleService.js";
+import { ModuleService } from "./services/moduleService";
+import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -34,9 +34,26 @@ function AppContent() {
     loadAvailableModules();
   }, []);
 
+  const loadModuleContent = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const content = await ModuleService.getModuleContent(currentModuleId);
+      setModuleContent(content);
+      setCode(content.exerciseContent.editorFiles.server);
+      
+      // Set exercise type based on module ID
+      setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load module content');
+    } finally {
+      setLoading(false);
+    }
+  }, [currentModuleId]);
+
   useEffect(() => {
     loadModuleContent();
-  }, [currentModuleId]);
+  }, [loadModuleContent]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -62,23 +79,6 @@ function AppContent() {
       setAvailableModules(modules);
     } catch (err) {
       console.error('Failed to load available modules:', err);
-    }
-  };
-
-  const loadModuleContent = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const content = await ModuleService.getModuleContent(currentModuleId);
-      setModuleContent(content);
-      setCode(content.exerciseContent.editorFiles.server);
-      
-      // Set exercise type based on module ID
-      setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load module content');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -344,6 +344,7 @@ function AppContent() {
               code={code} 
               onCodeChange={setCode}
               testCases={moduleContent.exerciseContent.editorFiles.test}
+              packageJson={moduleContent.exerciseContent.editorFiles.package}
               solution={moduleContent.exerciseContent.solution}
               runCode={handleRunCode}
               hasAttemptedSubmit={hasAttemptedSubmit}
@@ -385,7 +386,7 @@ function AppContent() {
                 <div className="bg-theme-background rounded border border-theme-primary p-3 max-h-48 overflow-y-auto">
                   <div className="space-y-2">
                     {testResults.results && testResults.results.length > 0 ? (
-                      testResults.results.map((result: any, index: number) => (
+                      testResults.results.map((result: TestResult, index: number) => (
                         <div key={index} className="flex items-center space-x-2">
                           <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
                             {result.passed ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} />}

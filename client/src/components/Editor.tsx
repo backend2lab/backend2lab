@@ -19,7 +19,6 @@ interface FileTab {
 interface Props {
   code: string;
   onCodeChange: (code: string) => void;
-  testCases: string;
   packageJson: string;
   solution?: string;
   runCode?: (code: string) => void;
@@ -27,7 +26,7 @@ interface Props {
   hasAttemptedSubmit?: boolean;
 }
 
-export default function CodeEditor({ code, onCodeChange, testCases, packageJson, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
+export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
   const { theme } = useTheme();
   
   const [files, setFiles] = useState<FileTab[]>([
@@ -37,13 +36,6 @@ export default function CodeEditor({ code, onCodeChange, testCases, packageJson,
       language: 'javascript',
       content: code,
       isActive: true
-    },
-    {
-      id: 'test-cases.js',
-      name: 'test-cases.js',
-      language: 'javascript',
-      content: testCases,
-      isActive: false
     },
     {
       id: 'package.json',
@@ -66,14 +58,12 @@ export default function CodeEditor({ code, onCodeChange, testCases, packageJson,
       prevFiles.map(file => 
         file.id === 'server.js' 
           ? { ...file, content: code }
-          : file.id === 'test-cases.js'
-          ? { ...file, content: testCases }
           : file.id === 'package.json'
           ? { ...file, content: packageJson }
           : file
       )
     );
-  }, [code, testCases, packageJson]);
+  }, [code, packageJson]);
 
   const activeFile = files.find(file => file.isActive) || files[0];
 

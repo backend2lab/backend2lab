@@ -1,6 +1,6 @@
-# Tactical Operations Design System
+# b2l Operations Design System
 
-A comprehensive design system for cyberpunk/tactical themed interfaces with dark aesthetics and high-tech functionality.
+A comprehensive design system for cyberpunk/b2l themed interfaces with dark aesthetics and high-tech functionality.
 
 ## Color Palette
 
@@ -161,7 +161,7 @@ A comprehensive design system for cyberpunk/tactical themed interfaces with dark
 - Don't mix font families - stick to Geist Mono throughout
 - Don't use more than the defined 5 colors without explicit need
 - Don't create complex gradients - maintain the stark, technical aesthetic
-- Don't use decorative elements that break the tactical theme
+- Don't use decorative elements that break the b2l theme
 
 ## Code Examples
 
@@ -195,4 +195,4 @@ A comprehensive design system for cyberpunk/tactical themed interfaces with dark
 </div>
 \`\`\`
 
-This design system ensures consistency across the tactical operations interface while maintaining the cyberpunk aesthetic and technical functionality.
+This design system ensures consistency across the b2l operations interface while maintaining the cyberpunk aesthetic and technical functionality.

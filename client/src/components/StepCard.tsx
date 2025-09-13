@@ -29,17 +29,17 @@ export function StepCard({
   const { theme } = useTheme();
   
   return (
-    <div className={`${theme === 'dark' ? 'tactical-card' : 'bg-theme-surface border border-theme-primary rounded-lg'} p-6`}>
+    <div className={`${theme === 'dark' ? 'b2l-card' : 'bg-theme-surface border border-theme-primary rounded-lg'} p-6`}>
       <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-tactical-primary text-white font-semibold text-sm">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-b2l-primary text-white font-semibold text-sm">
           {stepNumber}
         </div>
         <div className="flex-1 space-y-6">
           <div>
-            <h3 className="text-xl font-semibold text-theme-primary mb-3 font-tactical">
+            <h3 className="text-xl font-semibold text-theme-primary mb-3 font-b2l">
               {title}
             </h3>
-            <p className="text-theme-secondary leading-relaxed font-tactical">
+            <p className="text-theme-secondary leading-relaxed font-b2l">
               {description}
             </p>
           </div>
@@ -64,7 +64,7 @@ export function StepCard({
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="btn-tactical-secondary bg-theme-surface border border-theme-primary text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 text-sm px-3 py-2 flex items-center gap-1 rounded transition-colors"
+                  className="btn-b2l-secondary bg-theme-surface border border-theme-primary text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 text-sm px-3 py-2 flex items-center gap-1 rounded transition-colors"
                 >
                   {link.text}
                   {link.external && (

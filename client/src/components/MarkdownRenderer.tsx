@@ -181,7 +181,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               // Check if this is a test case heading
                               if (text.includes('Test Case')) {
                                 return (
-                                  <h3 className="text-lg font-semibold text-tactical-accent mb-4 mt-6 first:mt-0 border-l-4 border-tactical-accent pl-4 bg-theme-surface py-2 rounded-r">
+                                  <h3 className="text-lg font-semibold text-b2l-accent mb-4 mt-6 first:mt-0 border-l-4 border-b2l-accent pl-4 bg-theme-surface py-2 rounded-r">
                                     {children}
                                   </h3>
                                 );
@@ -232,7 +232,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               // Special styling for test case details
                               if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
                                 return (
-                                  <span className="dark:bg-tactical-accent/20 bg-tactical-accent/10 px-2 py-1 rounded text-sm font-mono text-tactical-accent border border-tactical-accent/30 font-semibold">
+                                  <span className="dark:bg-b2l-accent/20 bg-b2l-accent/10 px-2 py-1 rounded text-sm font-mono text-b2l-accent border border-b2l-accent/30 font-semibold">
                                     {children}
                                   </span>
                                 );
@@ -306,7 +306,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               );
                             },
                             blockquote: ({ children }) => (
-                              <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-theme-secondary bg-theme-surface py-2 rounded-r">
+                              <blockquote className="border-l-4 border-b2l-highlight pl-4 italic text-theme-secondary bg-theme-surface py-2 rounded-r">
                                 {children}
                               </blockquote>
                             ),
@@ -350,7 +350,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             // Check if this is a test case heading
             if (text.includes('Test Case')) {
               return (
-                <h3 className="text-xl font-semibold text-tactical-accent mb-4 mt-6 first:mt-0 border-l-4 border-tactical-accent pl-4 bg-theme-surface py-2 rounded-r">
+                <h3 className="text-xl font-semibold text-b2l-accent mb-4 mt-6 first:mt-0 border-l-4 border-b2l-accent pl-4 bg-theme-surface py-2 rounded-r">
                   {children}
                 </h3>
               );
@@ -384,7 +384,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             // Special styling for test case details
             if (text.includes('GET') || text.includes('POST') || text.includes('localhost:3000') || text.includes('application/json')) {
               return (
-                <span className="dark:bg-tactical-accent/20 bg-tactical-accent/10 px-2 py-1 rounded text-sm font-mono text-tactical-accent border border-tactical-accent/30 font-semibold">
+                <span className="dark:bg-b2l-accent/20 bg-b2l-accent/10 px-2 py-1 rounded text-sm font-mono text-b2l-accent border border-b2l-accent/30 font-semibold">
                   {children}
                 </span>
               );
@@ -438,7 +438,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
             );
           },
         blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-tactical-highlight pl-4 italic text-theme-secondary bg-theme-surface py-3 rounded-r mb-4">
+            <blockquote className="border-l-4 border-b2l-highlight pl-4 italic text-theme-secondary bg-theme-surface py-3 rounded-r mb-4">
             {children}
           </blockquote>
         ),

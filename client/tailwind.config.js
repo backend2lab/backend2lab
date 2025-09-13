@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Tactical Operations Design System Colors
-        tactical: {
+        // b2l Operations Design System Colors
+        b2l: {
           primary: '#3b82f6', // blue-500 - Primary brand color (reduced orange)
           accent: '#10b981', // emerald-500 - Accent color for highlights
           highlight: '#8b5cf6', // violet-500 - Highlight color for special elements
@@ -46,7 +46,7 @@ export default {
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
-          500: '#3b82f6', // Updated to tactical primary (blue)
+          500: '#3b82f6', // Updated to b2l primary (blue)
           600: '#2563eb',
           700: '#1d4ed8',
           900: '#1e3a8a',
@@ -74,15 +74,15 @@ export default {
         },
       },
       fontFamily: {
-        'tactical': ['Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'monospace'],
-        'primary': ['Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'monospace'],
-        'mono': ['Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'monospace'],
+        'b2l': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
+        'primary': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
+        'mono': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
       },
       boxShadow: {
-        'tactical': '0 4px 6px rgba(0, 0, 0, 0.5)',
-        'tactical-lg': '0 8px 25px rgba(0, 0, 0, 0.6)',
-        'tactical-light': '0 4px 6px rgba(0, 0, 0, 0.1)',
-        'tactical-light-lg': '0 8px 25px rgba(0, 0, 0, 0.15)',
+        'b2l': '0 4px 6px rgba(0, 0, 0, 0.5)',
+        'b2l-lg': '0 8px 25px rgba(0, 0, 0, 0.6)',
+        'b2l-light': '0 4px 6px rgba(0, 0, 0, 0.1)',
+        'b2l-light-lg': '0 8px 25px rgba(0, 0, 0, 0.15)',
         'soft': '0 2px 4px rgba(0, 0, 0, 0.05)',
         'medium': '0 4px 6px rgba(0, 0, 0, 0.05)',
         'large': '0 4px 12px rgba(0, 0, 0, 0.1)',
@@ -94,7 +94,7 @@ export default {
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'tactical-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'b2l-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {

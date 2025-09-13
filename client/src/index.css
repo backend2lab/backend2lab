@@ -208,12 +208,12 @@
   }
 
   .console-output-b2l {
-    @apply font-b2l text-sm text-b2l-text-primary whitespace-pre-wrap bg-neutral-900 p-3 rounded-lg border border-b2l-border-primary;
+    @apply font-b2l text-sm text-b2l-text-primary whitespace-pre-wrap bg-b2l-surface p-3 rounded-lg border border-b2l-border-primary;
   }
 
   /* Test Case Components */
   .test-case-card-b2l {
-    @apply bg-neutral-900 rounded-lg p-4 border border-b2l-border-primary;
+    @apply bg-b2l-surface rounded-lg p-4 border border-b2l-border-primary;
   }
 
   .test-case-input-b2l {
@@ -271,8 +271,8 @@
 }
 
   /* Code syntax highlighting */
-  .monaco-editor {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif !important;
+  .monaco-editor, .monaco-editor .view-lines {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace !important;
   }
 
   /* Monaco Editor customizations */
@@ -407,19 +407,19 @@
 
   .prose pre {
     @apply bg-black border border-b2l-border-primary rounded-lg overflow-hidden mb-4 shadow-lg;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   }
 
   /* Code block improvements */
   .prose pre code {
     @apply bg-transparent border-none p-0 text-sm leading-relaxed;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   }
 
   /* Monaco-style syntax highlighting */
   .hljs {
     @apply bg-transparent text-white;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   }
 
   .hljs-keyword {
@@ -489,7 +489,7 @@
   /* Monaco-style code block enhancements */
   .monaco-style-code {
     @apply bg-black text-white;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
     line-height: 1.5;
   }
 
@@ -501,7 +501,7 @@
   /* Line numbers (optional) */
   .monaco-line-numbers {
     @apply text-gray-600 text-xs select-none;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   }
 
   .prose blockquote {

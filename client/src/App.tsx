@@ -243,7 +243,7 @@ function AppContent() {
                 <button 
                   onClick={() => setShowModuleDropdown(!showModuleDropdown)}
                   disabled={loading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 light:hover:bg-b2l-light-surface-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-sm font-medium font-b2l">
                     {loading ? (

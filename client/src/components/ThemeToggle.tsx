@@ -16,7 +16,7 @@ export function ThemeToggle({ className = '' }: ThemeToggleProps) {
         theme === 'dark'
           ? 'bg-b2l-surface hover:bg-neutral-800 text-b2l-text-secondary hover:text-b2l-text-primary'
           : 'bg-b2l-light-surface hover:bg-slate-100 text-b2l-light-text-secondary hover:text-b2l-light-text-primary'
-      } border border-theme-primary dark:border-b2l-border-primary light:border-b2l-light-border-primary ${className}`}
+      } border border-theme-primary ${className}`}
       title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
     >

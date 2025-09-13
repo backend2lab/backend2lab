@@ -7,243 +7,243 @@
 
 /* Custom component styles using @apply */
 @layer components {
-  /* Tactical Operations Design System Components */
+  /* b2l Operations Design System Components */
   
   /* Cards */
-  .tactical-card {
-    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg shadow-tactical;
+  .b2l-card {
+    @apply bg-b2l-surface border border-b2l-border-primary rounded-lg shadow-b2l;
   }
 
-  .tactical-card-hover {
+  .b2l-card-hover {
     @apply hover:bg-neutral-800 transition-colors;
   }
 
   /* Status Indicators */
   .status-active {
-    @apply w-2 h-2 bg-tactical-success rounded-full animate-tactical-pulse;
+    @apply w-2 h-2 bg-b2l-success rounded-full animate-b2l-pulse;
   }
 
   .status-standby {
-    @apply w-2 h-2 bg-tactical-warning rounded-full;
+    @apply w-2 h-2 bg-b2l-warning rounded-full;
   }
 
   .status-error {
-    @apply w-2 h-2 bg-tactical-error rounded-full;
+    @apply w-2 h-2 bg-b2l-error rounded-full;
   }
 
   /* Data Display */
-  .tactical-data {
-    @apply text-2xl font-bold text-tactical-text-primary font-tactical;
+  .b2l-data {
+    @apply text-2xl font-bold text-b2l-text-primary font-b2l;
   }
 
-  .tactical-label {
-    @apply text-xs text-tactical-text-secondary font-tactical;
+  .b2l-label {
+    @apply text-xs text-b2l-text-secondary font-b2l;
   }
 
   /* Navigation Items */
-  .tactical-nav-item {
-    @apply w-full flex items-center gap-3 p-3 rounded transition-colors font-tactical;
+  .b2l-nav-item {
+    @apply w-full flex items-center gap-3 p-3 rounded transition-colors font-b2l;
   }
 
-  .tactical-nav-item-active {
-    @apply bg-tactical-primary text-white;
+  .b2l-nav-item-active {
+    @apply bg-b2l-primary text-white;
   }
 
-  .tactical-nav-item-inactive {
-    @apply text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
+  .b2l-nav-item-inactive {
+    @apply text-b2l-text-secondary hover:text-b2l-text-primary hover:bg-neutral-800;
   }
 
   /* Section Headers */
-  .tactical-section-header {
-    @apply text-sm font-medium text-tactical-text-secondary tracking-wider font-tactical;
+  .b2l-section-header {
+    @apply text-sm font-medium text-b2l-text-secondary tracking-wider font-b2l;
   }
 
   /* Button Components */
-  .btn-tactical-primary {
-    @apply bg-tactical-primary text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-blue-600 focus:outline-none font-tactical;
+  .btn-b2l-primary {
+    @apply bg-b2l-primary text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-blue-600 focus:outline-none font-b2l;
   }
 
-  .btn-tactical-secondary {
-    @apply bg-transparent text-tactical-primary px-6 py-3 rounded-lg font-medium border-2 border-tactical-primary cursor-pointer transition-colors hover:bg-tactical-primary hover:text-white focus:outline-none font-tactical;
+  .btn-b2l-secondary {
+    @apply bg-transparent text-b2l-primary px-6 py-3 rounded-lg font-medium border-2 border-b2l-primary cursor-pointer transition-colors hover:bg-b2l-primary hover:text-white focus:outline-none font-b2l;
   }
 
-  .btn-tactical-success {
-    @apply bg-success-600 text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-success-700 focus:outline-none font-tactical;
+  .btn-b2l-success {
+    @apply bg-success-600 text-white px-6 py-3 rounded-lg font-medium border-none cursor-pointer transition-colors hover:bg-success-700 focus:outline-none font-b2l;
   }
 
   /* Code Editor Components */
-  .code-editor-tactical {
-    @apply border border-tactical-border-primary rounded-xl overflow-hidden bg-tactical-background shadow-tactical;
+  .code-editor-b2l {
+    @apply border border-b2l-border-primary rounded-xl overflow-hidden bg-b2l-background shadow-b2l;
   }
 
-  .editor-header-tactical {
-    @apply bg-tactical-surface px-4 py-3 border-b border-tactical-border-primary flex justify-between items-center;
+  .editor-header-b2l {
+    @apply bg-b2l-surface px-4 py-3 border-b border-b2l-border-primary flex justify-between items-center;
   }
 
-  .editor-content-tactical {
-    @apply min-h-[400px] font-tactical;
+  .editor-content-b2l {
+    @apply min-h-[400px] font-b2l;
   }
 
   /* Problem Card Components */
-  .problem-card-tactical {
-    @apply bg-tactical-surface border border-tactical-border-primary rounded-xl p-6 shadow-tactical transition-colors hover:shadow-tactical-lg;
+  .problem-card-b2l {
+    @apply bg-b2l-surface border border-b2l-border-primary rounded-xl p-6 shadow-b2l transition-colors hover:shadow-b2l-lg;
   }
 
-  .problem-title-tactical {
-    @apply text-xl font-semibold text-tactical-text-primary mb-2 font-tactical;
+  .problem-title-b2l {
+    @apply text-xl font-semibold text-b2l-text-primary mb-2 font-b2l;
   }
 
-  .problem-difficulty-tactical {
+  .problem-difficulty-b2l {
     @apply inline-block px-3 py-1 rounded-2xl text-sm font-medium mb-4;
   }
 
-  .difficulty-easy-tactical {
+  .difficulty-easy-b2l {
     @apply bg-success-100 text-success-700;
   }
 
-  .difficulty-medium-tactical {
+  .difficulty-medium-b2l {
     @apply bg-warning-100 text-warning-700;
   }
 
-  .difficulty-hard-tactical {
+  .difficulty-hard-b2l {
     @apply bg-error-100 text-error-700;
   }
 
   /* Navigation Components */
-  .navbar-tactical {
-    @apply bg-tactical-surface border-b border-tactical-border-primary py-4 sticky top-0 z-50 shadow-tactical;
+  .navbar-b2l {
+    @apply bg-b2l-surface border-b border-b2l-border-primary py-4 sticky top-0 z-50 shadow-b2l;
   }
 
-  .nav-container-tactical {
+  .nav-container-b2l {
     @apply flex justify-between items-center max-w-6xl mx-auto px-4;
   }
 
-  .nav-logo-tactical {
-    @apply text-xl font-bold text-tactical-primary font-tactical;
+  .nav-logo-b2l {
+    @apply text-xl font-bold text-b2l-primary font-b2l;
   }
 
-  .nav-menu-tactical {
+  .nav-menu-b2l {
     @apply flex gap-6 items-center;
   }
 
-  .nav-link-tactical {
-    @apply text-tactical-text-secondary no-underline font-medium transition-colors hover:text-tactical-primary focus:outline-none rounded font-tactical;
+  .nav-link-b2l {
+    @apply text-b2l-text-secondary no-underline font-medium transition-colors hover:text-b2l-primary focus:outline-none rounded font-b2l;
   }
 
-  .nav-link-tactical.active {
-    @apply text-tactical-primary;
+  .nav-link-b2l.active {
+    @apply text-b2l-primary;
   }
 
   /* Status Badge Components */
-  .status-badge-tactical {
-    @apply inline-flex items-center gap-2 px-3 py-2 rounded-3xl text-sm font-medium font-tactical;
+  .status-badge-b2l {
+    @apply inline-flex items-center gap-2 px-3 py-2 rounded-3xl text-sm font-medium font-b2l;
   }
 
-  .status-running-tactical {
-    @apply bg-tactical-primary bg-opacity-20 text-tactical-primary;
+  .status-running-b2l {
+    @apply bg-b2l-primary bg-opacity-20 text-b2l-primary;
   }
 
-  .status-success-tactical {
+  .status-success-b2l {
     @apply bg-success-100 text-success-700;
   }
 
-  .status-error-tactical {
+  .status-error-b2l {
     @apply bg-error-100 text-error-700;
   }
 
-  .status-warning-tactical {
+  .status-warning-b2l {
     @apply bg-warning-100 text-warning-700;
   }
 
   /* Form Components */
-  .input-field-tactical {
-    @apply w-full px-4 py-3 border-2 border-tactical-border-primary rounded-lg text-base transition-colors focus:outline-none focus:border-tactical-primary bg-tactical-surface text-tactical-text-primary font-tactical;
+  .input-field-b2l {
+    @apply w-full px-4 py-3 border-2 border-b2l-border-primary rounded-lg text-base transition-colors focus:outline-none focus:border-b2l-primary bg-b2l-surface text-b2l-text-primary font-b2l;
   }
 
-  .input-field-tactical.error {
-    @apply border-tactical-error;
+  .input-field-b2l.error {
+    @apply border-b2l-error;
   }
 
-  .input-label-tactical {
-    @apply block text-sm font-medium text-tactical-text-secondary mb-2 font-tactical;
+  .input-label-b2l {
+    @apply block text-sm font-medium text-b2l-text-secondary mb-2 font-b2l;
   }
 
-  .input-error-tactical {
-    @apply text-sm text-tactical-error mt-1 font-tactical;
+  .input-error-b2l {
+    @apply text-sm text-b2l-error mt-1 font-b2l;
   }
 
   /* Loading Components */
-  .loading-tactical {
+  .loading-b2l {
     @apply opacity-60 pointer-events-none;
   }
 
-  .loading-spinner-tactical {
-    @apply w-5 h-5 border-2 border-tactical-border-primary border-t-tactical-primary rounded-full animate-spin;
+  .loading-spinner-b2l {
+    @apply w-5 h-5 border-2 border-b2l-border-primary border-t-b2l-primary rounded-full animate-spin;
   }
 
   /* Tab Components */
-  .tab-button-tactical {
-    @apply px-4 sm:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap focus:outline-none font-tactical;
+  .tab-button-b2l {
+    @apply px-4 sm:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap focus:outline-none font-b2l;
   }
 
-  .tab-button-tactical.active {
-    @apply bg-tactical-background text-tactical-primary;
+  .tab-button-b2l.active {
+    @apply bg-b2l-background text-b2l-primary;
   }
 
-  .tab-button-tactical.inactive {
-    @apply bg-tactical-surface text-tactical-text-secondary hover:text-tactical-text-primary hover:bg-neutral-800;
+  .tab-button-b2l.inactive {
+    @apply bg-b2l-surface text-b2l-text-secondary hover:text-b2l-text-primary hover:bg-neutral-800;
   }
 
   /* Console Components */
-  .console-container-tactical {
-    @apply border-t border-tactical-border-primary bg-tactical-background;
+  .console-container-b2l {
+    @apply border-t border-b2l-border-primary bg-b2l-background;
   }
 
-  .console-header-tactical {
-    @apply px-4 sm:px-6 py-3 border-b border-tactical-border-primary bg-tactical-surface;
+  .console-header-b2l {
+    @apply px-4 sm:px-6 py-3 border-b border-b2l-border-primary bg-b2l-surface;
   }
 
-  .console-content-tactical {
-    @apply p-4 h-32 sm:h-48 overflow-y-auto bg-tactical-surface;
+  .console-content-b2l {
+    @apply p-4 h-32 sm:h-48 overflow-y-auto bg-b2l-surface;
   }
 
-  .console-output-tactical {
-    @apply font-tactical text-sm text-tactical-text-primary whitespace-pre-wrap bg-neutral-900 p-3 rounded-lg border border-tactical-border-primary;
+  .console-output-b2l {
+    @apply font-b2l text-sm text-b2l-text-primary whitespace-pre-wrap bg-neutral-900 p-3 rounded-lg border border-b2l-border-primary;
   }
 
   /* Test Case Components */
-  .test-case-card-tactical {
-    @apply bg-neutral-900 rounded-lg p-4 border border-tactical-border-primary;
+  .test-case-card-b2l {
+    @apply bg-neutral-900 rounded-lg p-4 border border-b2l-border-primary;
   }
 
-  .test-case-input-tactical {
-    @apply bg-tactical-surface border border-tactical-border-primary rounded-lg p-3 font-tactical text-sm text-tactical-text-primary;
+  .test-case-input-b2l {
+    @apply bg-b2l-surface border border-b2l-border-primary rounded-lg p-3 font-b2l text-sm text-b2l-text-primary;
   }
 
   /* Activity Log Entry */
   .activity-log-entry {
-    @apply text-xs border-l-2 border-tactical-primary pl-3 hover:bg-neutral-800 p-2 rounded transition-colors font-tactical;
+    @apply text-xs border-l-2 border-b2l-primary pl-3 hover:bg-neutral-800 p-2 rounded transition-colors font-b2l;
   }
 
   .activity-timestamp {
-    @apply text-tactical-text-secondary font-tactical;
+    @apply text-b2l-text-secondary font-b2l;
   }
 
   .activity-content {
-    @apply text-tactical-text-primary;
+    @apply text-b2l-text-primary;
   }
 
   .activity-highlight {
-    @apply text-tactical-primary font-tactical;
+    @apply text-b2l-primary font-b2l;
   }
 
   /* Utility Classes */
-  .hover-lift-tactical {
-    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-tactical-lg;
+  .hover-lift-b2l {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-b2l-lg;
   }
 
-  .focus-ring-tactical {
-    @apply transition-colors focus:outline-none focus:ring-2 focus:ring-tactical-primary focus:ring-offset-2 focus:ring-offset-tactical-background;
+  .focus-ring-b2l {
+    @apply transition-colors focus:outline-none focus:ring-2 focus:ring-b2l-primary focus:ring-offset-2 focus:ring-offset-b2l-background;
   }
 
   /* Screen Reader Only */
@@ -259,15 +259,15 @@
   }
 
  body {
-   @apply bg-tactical-background text-tactical-text-primary font-tactical;
+   @apply bg-b2l-background text-b2l-text-primary font-b2l;
  }
 
 .light body {
-  @apply bg-tactical-light-background text-tactical-light-text-primary;
+  @apply bg-b2l-light-background text-b2l-light-text-primary;
 }
 
 .dark body {
-  @apply bg-tactical-background text-tactical-text-primary;
+  @apply bg-b2l-background text-b2l-text-primary;
 }
 
   /* Code syntax highlighting */
@@ -327,86 +327,86 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-tactical-border-primary rounded-full;
+    @apply bg-b2l-border-primary rounded-full;
   }
 
   .light ::-webkit-scrollbar-thumb {
-    @apply bg-tactical-light-border-primary rounded-full;
+    @apply bg-b2l-light-border-primary rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-tactical-border-secondary;
+    @apply bg-b2l-border-secondary;
   }
 
   /* Selection styles */
   ::selection {
-    @apply bg-tactical-primary text-white;
+    @apply bg-b2l-primary text-white;
   }
 
   ::-moz-selection {
-    @apply bg-tactical-primary text-white;
+    @apply bg-b2l-primary text-white;
   }
 
   /* Markdown/Prose styles */
   .prose {
-    @apply text-tactical-text-primary;
+    @apply text-b2l-text-primary;
   }
 
   .prose h1 {
-    @apply text-3xl font-bold text-tactical-text-primary mb-6 mt-8 first:mt-0;
+    @apply text-3xl font-bold text-b2l-text-primary mb-6 mt-8 first:mt-0;
   }
 
   .prose h2 {
-    @apply text-2xl font-semibold text-tactical-text-primary mb-4 mt-6 first:mt-0;
+    @apply text-2xl font-semibold text-b2l-text-primary mb-4 mt-6 first:mt-0;
   }
 
   .prose h3 {
-    @apply text-xl font-medium text-tactical-text-primary mb-3 mt-4 first:mt-0;
+    @apply text-xl font-medium text-b2l-text-primary mb-3 mt-4 first:mt-0;
   }
 
   .prose p {
-    @apply text-tactical-text-secondary mb-4 leading-relaxed;
+    @apply text-b2l-text-secondary mb-4 leading-relaxed;
   }
 
   .prose ul {
-    @apply list-disc list-inside space-y-2 text-tactical-text-secondary mb-4;
+    @apply list-disc list-inside space-y-2 text-b2l-text-secondary mb-4;
   }
 
   .prose ol {
-    @apply list-decimal list-inside space-y-2 text-tactical-text-secondary mb-4;
+    @apply list-decimal list-inside space-y-2 text-b2l-text-secondary mb-4;
   }
 
   .prose li {
-    @apply text-tactical-text-secondary mb-4;
+    @apply text-b2l-text-secondary mb-4;
   }
 
   /* Test Case specific styles */
   .test-case-section {
-    @apply bg-tactical-surface/10 border border-tactical-border-primary/20 rounded-lg p-4 mb-6;
+    @apply bg-b2l-surface/10 border border-b2l-border-primary/20 rounded-lg p-4 mb-6;
   }
 
   .test-case-header {
-    @apply text-tactical-accent font-semibold border-l-4 border-tactical-accent pl-4 bg-tactical-surface/30 py-2 rounded-r mb-4;
+    @apply text-b2l-accent font-semibold border-l-4 border-b2l-accent pl-4 bg-b2l-surface/30 py-2 rounded-r mb-4;
   }
 
   .test-case-details {
-    @apply bg-tactical-surface/20 p-4 rounded-lg border border-tactical-border-primary/30 space-y-3;
+    @apply bg-b2l-surface/20 p-4 rounded-lg border border-b2l-border-primary/30 space-y-3;
   }
 
   .prose strong {
-    @apply font-semibold text-tactical-text-primary;
+    @apply font-semibold text-b2l-text-primary;
   }
 
   .prose em {
-    @apply italic text-tactical-text-secondary;
+    @apply italic text-b2l-text-secondary;
   }
 
   .prose code {
-    @apply bg-tactical-surface px-2 py-1 rounded text-sm font-mono text-tactical-highlight border border-tactical-border-primary;
+    @apply bg-b2l-surface px-2 py-1 rounded text-sm font-mono text-b2l-highlight border border-b2l-border-primary;
   }
 
   .prose pre {
-    @apply bg-black border border-tactical-border-primary rounded-lg overflow-hidden mb-4 shadow-lg;
+    @apply bg-black border border-b2l-border-primary rounded-lg overflow-hidden mb-4 shadow-lg;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
@@ -505,83 +505,83 @@
   }
 
   .prose blockquote {
-    @apply border-l-4 border-tactical-highlight pl-4 italic text-tactical-text-secondary bg-tactical-surface/50 py-3 rounded-r mb-4;
+    @apply border-l-4 border-b2l-highlight pl-4 italic text-b2l-text-secondary bg-b2l-surface/50 py-3 rounded-r mb-4;
   }
 
   .prose a {
-    @apply text-tactical-primary hover:text-blue-400 underline;
+    @apply text-b2l-primary hover:text-blue-400 underline;
   }
 
   .prose table {
-    @apply w-full border-collapse border border-tactical-border-primary mb-4;
+    @apply w-full border-collapse border border-b2l-border-primary mb-4;
   }
 
   .prose th {
-    @apply bg-tactical-surface border border-tactical-border-primary px-4 py-2 text-left font-semibold text-tactical-text-primary;
+    @apply bg-b2l-surface border border-b2l-border-primary px-4 py-2 text-left font-semibold text-b2l-text-primary;
   }
 
   .prose td {
-    @apply border border-tactical-border-primary px-4 py-2 text-tactical-text-secondary;
+    @apply border border-b2l-border-primary px-4 py-2 text-b2l-text-secondary;
   }
 
   /* Theme-aware background classes */
   .bg-theme-background {
-    @apply bg-tactical-background;
+    @apply bg-b2l-background;
   }
   
   .dark .bg-theme-background {
-    @apply bg-tactical-background;
+    @apply bg-b2l-background;
   }
   
   .light .bg-theme-background {
-    @apply bg-tactical-light-background;
+    @apply bg-b2l-light-background;
   }
 
   .bg-theme-surface {
-    @apply bg-tactical-surface;
+    @apply bg-b2l-surface;
   }
   
   .dark .bg-theme-surface {
-    @apply bg-tactical-surface;
+    @apply bg-b2l-surface;
   }
   
   .light .bg-theme-surface {
-    @apply bg-tactical-light-surface;
+    @apply bg-b2l-light-surface;
   }
 
   .text-theme-primary {
-    @apply text-tactical-text-primary;
+    @apply text-b2l-text-primary;
   }
   
   .dark .text-theme-primary {
-    @apply text-tactical-text-primary;
+    @apply text-b2l-text-primary;
   }
   
   .light .text-theme-primary {
-    @apply text-tactical-light-text-primary;
+    @apply text-b2l-light-text-primary;
   }
 
   .text-theme-secondary {
-    @apply text-tactical-text-secondary;
+    @apply text-b2l-text-secondary;
   }
   
   .dark .text-theme-secondary {
-    @apply text-tactical-text-secondary;
+    @apply text-b2l-text-secondary;
   }
   
   .light .text-theme-secondary {
-    @apply text-tactical-light-text-secondary;
+    @apply text-b2l-light-text-secondary;
   }
 
   .border-theme-primary {
-    @apply border-tactical-border-primary;
+    @apply border-b2l-border-primary;
   }
   
   .dark .border-theme-primary {
-    @apply border-tactical-border-primary;
+    @apply border-b2l-border-primary;
   }
   
   .light .border-theme-primary {
-    @apply border-tactical-light-border-primary;
+    @apply border-b2l-light-border-primary;
   }
 }

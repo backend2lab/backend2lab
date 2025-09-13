@@ -168,7 +168,7 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-theme-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-tactical-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b2l-primary mx-auto mb-4"></div>
           <p className="text-theme-secondary">Loading module content...</p>
         </div>
       </div>
@@ -188,7 +188,7 @@ function AppContent() {
           <p className="text-theme-secondary mb-4">{error}</p>
           <button 
             onClick={loadModuleContent}
-            className="px-4 py-2 bg-tactical-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-b2l-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
             Retry
           </button>
@@ -205,23 +205,23 @@ function AppContent() {
           <div className="flex items-center justify-between h-16">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-tactical-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-sm font-tactical">B2L</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm font-b2l">B2L</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-theme-primary font-tactical">Backend2Lab</span>
-                <span className="text-xs text-theme-secondary font-tactical">Learn Backend Development</span>
+                <span className="text-xl font-bold text-theme-primary font-b2l">Backend2Lab</span>
+                <span className="text-xs text-theme-secondary font-b2l">Learn Backend Development</span>
               </div>
             </div>
 
             {/* Module Info */}
             <div className="flex-1 flex justify-center max-w-2xl">
               <div className="text-center flex items-center">
-                <h1 className="text-lg font-semibold text-theme-primary font-tactical">
+                <h1 className="text-lg font-semibold text-theme-primary font-b2l">
                   {loading && moduleContent ? (
                     <div className="flex items-center space-x-2">
                       <span>{moduleContent.module.title}</span>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-tactical-primary"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-b2l-primary"></div>
                     </div>
                   ) : (
                     moduleContent?.module.title || 'Loading...'
@@ -243,13 +243,13 @@ function AppContent() {
                 <button 
                   onClick={() => setShowModuleDropdown(!showModuleDropdown)}
                   disabled={loading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 light:hover:bg-tactical-light-surface-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 light:hover:bg-b2l-light-surface-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="text-sm font-medium font-tactical">
+                  <span className="text-sm font-medium font-b2l">
                     {loading ? (
                       <div className="flex items-center space-x-2">
                         <span>{availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}</span>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-tactical-primary"></div>
+                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-b2l-primary"></div>
                       </div>
                     ) : (
                       availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'
@@ -269,7 +269,7 @@ function AppContent() {
                         onClick={() => handleModuleChange(module.id)}
                         className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors border-b border-theme-primary last:border-b-0 ${
                           module.id === currentModuleId 
-                            ? 'bg-tactical-primary text-white' 
+                            ? 'bg-b2l-primary text-white' 
                             : 'text-theme-primary'
                         }`}
                       >
@@ -288,7 +288,7 @@ function AppContent() {
                 href="https://github.com/backend2lab/backend2lab"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-tactical-text-secondary hover:text-tactical-primary transition-colors"
+                className="text-b2l-text-secondary hover:text-b2l-primary transition-colors"
                 title="View on GitHub"
               >
                 <FontAwesomeIcon icon={faGithub} size="2x" />
@@ -311,7 +311,7 @@ function AppContent() {
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 px-6 text-sm font-medium transition-all duration-200 border-b-2 flex items-center justify-center ${
                     activeTab === tab 
-                      ? 'text-tactical-primary border-tactical-primary bg-theme-background' 
+                      ? 'text-b2l-primary border-b2l-primary bg-theme-background' 
                       : 'text-theme-secondary border-transparent hover:text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800'
                   }`}
                 >
@@ -358,7 +358,7 @@ function AppContent() {
                 <button
                   onClick={() => handleRunCode()}
                   disabled={isRunning}
-                  className="px-3 py-1.5 text-xs font-medium bg-tactical-primary text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium bg-b2l-primary text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isRunning ? 'Running...' : 'Run'}
                 </button>

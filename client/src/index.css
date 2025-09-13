@@ -1,5 +1,5 @@
-/* Import Geist Mono font */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -255,7 +255,7 @@
 /* Base styles */
 @layer base {
   html {
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
  body {
@@ -272,7 +272,7 @@
 
   /* Code syntax highlighting */
   .monaco-editor {
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif !important;
   }
 
   /* Monaco Editor customizations */
@@ -407,19 +407,19 @@
 
   .prose pre {
     @apply bg-black border border-tactical-border-primary rounded-lg overflow-hidden mb-4 shadow-lg;
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
   /* Code block improvements */
   .prose pre code {
     @apply bg-transparent border-none p-0 text-sm leading-relaxed;
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
   /* Monaco-style syntax highlighting */
   .hljs {
     @apply bg-transparent text-white;
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
   .hljs-keyword {
@@ -489,7 +489,7 @@
   /* Monaco-style code block enhancements */
   .monaco-style-code {
     @apply bg-black text-white;
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     line-height: 1.5;
   }
 
@@ -501,7 +501,7 @@
   /* Line numbers (optional) */
   .monaco-line-numbers {
     @apply text-gray-600 text-xs select-none;
-    font-family: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 
   .prose blockquote {

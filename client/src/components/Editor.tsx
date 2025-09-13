@@ -156,8 +156,8 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
                 : 'bg-theme-surface text-theme-secondary hover:bg-slate-100 dark:hover:bg-neutral-800 hover:text-theme-primary'
             }`}
           >
-            <span className="text-sm font-tactical">{getFileIcon(file.language)}</span>
-            <span className="text-sm font-medium truncate font-tactical">{file.name}</span>
+            <span className="text-sm font-b2l">{getFileIcon(file.language)}</span>
+            <span className="text-sm font-medium truncate font-b2l">{file.name}</span>
           </div>
         ))}
       </div>
@@ -165,15 +165,15 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
       {/* Editor Header */}
       <div className="flex items-center justify-between px-4 h-12 bg-theme-surface border-b border-theme-primary flex-shrink-0">
         <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-theme-secondary font-tactical">{activeFile.name}</span>
+          <span className="text-sm font-medium text-theme-secondary font-b2l">{activeFile.name}</span>
           <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-tactical-error"></div>
-            <div className="w-3 h-3 rounded-full bg-tactical-warning"></div>
-            <div className="w-3 h-3 rounded-full bg-tactical-success"></div>
+            <div className="w-3 h-3 rounded-full bg-b2l-error"></div>
+            <div className="w-3 h-3 rounded-full bg-b2l-warning"></div>
+            <div className="w-3 h-3 rounded-full bg-b2l-success"></div>
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-theme-secondary capitalize font-tactical">{activeFile.language}</span>
+          <span className="text-xs text-theme-secondary capitalize font-b2l">{activeFile.language}</span>
         </div>
       </div>
 
@@ -290,7 +290,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
         {/* Split Resizer */}
         {showSolution && activeFile.id === 'server.js' && (
           <div 
-            className="w-1 bg-theme-primary cursor-col-resize hover:bg-tactical-primary transition-colors relative"
+            className="w-1 bg-theme-primary cursor-col-resize hover:bg-b2l-primary transition-colors relative"
             onMouseDown={handleSplitDrag}
           >
             <div className="absolute inset-0 flex items-center justify-center">
@@ -379,7 +379,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
       </div>
 
       {/* Editor Footer */}
-      <div className="flex items-center justify-between px-4 py-2 bg-theme-surface border-t border-theme-primary text-xs text-theme-secondary font-tactical flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-2 bg-theme-surface border-t border-theme-primary text-xs text-theme-secondary font-b2l flex-shrink-0">
         <div className="flex items-center space-x-4">
           <span>Ln {cursorPosition.line}, Col {cursorPosition.column}{selectionInfo}</span>
           <span>Spaces: 2</span>
@@ -399,7 +399,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
                   showSolution 
-                    ? 'bg-tactical-error text-white hover:bg-red-600' 
+                    ? 'bg-b2l-error text-white hover:bg-red-600' 
                     : 'dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 bg-slate-200 hover:bg-slate-300 text-theme-secondary'
                 }`}
               >

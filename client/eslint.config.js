@@ -2,9 +2,11 @@ import js from '@eslint/js';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-config-prettier';
+import typescriptEslint from 'typescript-eslint';
 
 export default [
   js.configs.recommended,
+  ...typescriptEslint.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: {

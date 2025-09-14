@@ -39,6 +39,12 @@ func (h *ModuleHandler) GetModuleContent(c *gin.Context) {
 		return
 	}
 
+	// Validate moduleId to prevent path traversal attacks
+	if !ValidateModuleId(moduleId) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid module ID format"})
+		return
+	}
+
 	moduleContent, err := h.moduleService.GetModuleContent(moduleId)
 	if err != nil {
 		logrus.Errorf("Failed to load module content for %s: %v", moduleId, err)

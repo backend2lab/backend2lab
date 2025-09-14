@@ -23,7 +23,7 @@ COPY . .
 EXPOSE 4200
 
 # Start development server with hot reload
-CMD ["pnpm", "dev", "--host", "0.0.0.0"]
+CMD ["pnpm", "dev", "--host", "0.0.0.0", "--port", "4200"]
 
 # Build stage
 FROM base AS builder

@@ -38,7 +38,7 @@ services:
       - ./client:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:4000
+      - VITE_API_BASE_URL=http://localhost:4000
       - VITE_HOST=0.0.0.0
       - VITE_PORT=4200
     networks:

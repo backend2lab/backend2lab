@@ -49,7 +49,7 @@ RUN npm install
 COPY . .
 
 # Expose port
-EXPOSE 4000
+EXPOSE 8080
 
 # Start with air for hot reload
 CMD ["air", "-c", ".air.toml"]
@@ -66,7 +66,7 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 
 # Expose port
-EXPOSE 4000
+EXPOSE 8080
 
 # Run the binary
 CMD ["./main"]

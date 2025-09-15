@@ -13,13 +13,17 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install packages
-RUN npm ci
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies
+RUN pnpm install
 
 # Copy local code to the container image.
 COPY . ./
 
 # Build the app.
-RUN npm run build
+RUN pnpm build
 
 # Use the Caddy image
 FROM caddy

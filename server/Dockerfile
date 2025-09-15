@@ -57,14 +57,19 @@ CMD ["air", "-c", ".air.toml"]
 # Production stage
 FROM alpine:latest AS production
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates
+# Install ca-certificates for HTTPS requests and Node.js for test execution
+RUN apk --no-cache add ca-certificates nodejs npm
 
 WORKDIR /root/
 
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
 
+# Copy Node.js dependencies and install them
+COPY --from=builder /app/package*.json ./
+RUN npm install --production
+
+# Copy the modules directory that the application needs at runtime
 COPY --from=builder /app/src ./src
 
 # Expose port

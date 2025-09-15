@@ -6,6 +6,10 @@ FROM node:lts-alpine AS build
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 ENV NPM_CONFIG_FUND=false
 
+ARG VITE_API_BASE_URL
+
+RUN echo $VITE_API_BASE_URL
+
 # Create and change to the app directory.
 WORKDIR /app
 

@@ -6,6 +6,7 @@ import CodeEditor from "./components/Editor";
 import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { WelcomeModal } from "./components/WelcomeModal";
 import { ModuleService } from "./services/moduleService";
 import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
@@ -26,13 +27,37 @@ function AppContent() {
   const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   // Default module ID - could be made configurable later
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
 
   useEffect(() => {
     loadAvailableModules();
+    checkWelcomeModal();
   }, []);
+
+  const checkWelcomeModal = () => {
+    try {
+      const hasSeenWelcome = localStorage.getItem('backend2lab-welcome-seen');
+      if (!hasSeenWelcome) {
+        // Small delay to ensure the app is fully loaded
+        setTimeout(() => setShowWelcomeModal(true), 500);
+      }
+    } catch {
+      // If localStorage is not available, show the modal anyway
+      setTimeout(() => setShowWelcomeModal(true), 500);
+    }
+  };
+
+  const handleCloseWelcomeModal = () => {
+    setShowWelcomeModal(false);
+    try {
+      localStorage.setItem('backend2lab-welcome-seen', 'true');
+    } catch {
+      // Ignore localStorage errors
+    }
+  };
 
   const loadModuleContent = useCallback(async () => {
     try {
@@ -199,6 +224,12 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-theme-background">
+      {/* Welcome Modal */}
+      <WelcomeModal 
+        isOpen={showWelcomeModal} 
+        onClose={handleCloseWelcomeModal} 
+      />
+      
       {/* Header Bar */}
       <header className="bg-theme-surface border-b border-theme-primary shadow-sm">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">

@@ -170,7 +170,7 @@ app.listen(PORT, () => {
               {/* Features Grid */}
               <div className="grid grid-cols-1 gap-4 mt-6">
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-b2l-primary rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
                     <FontAwesomeIcon icon={faCode} className="text-white text-sm" />
                   </div>
                   <div>
@@ -182,7 +182,7 @@ app.listen(PORT, () => {
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-b2l-accent rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
                     <FontAwesomeIcon icon={faPlay} className="text-white text-sm" />
                   </div>
                   <div>
@@ -194,7 +194,7 @@ app.listen(PORT, () => {
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-b2l-highlight rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
                     <FontAwesomeIcon icon={faCheckCircle} className="text-white text-sm" />
                   </div>
                   <div>

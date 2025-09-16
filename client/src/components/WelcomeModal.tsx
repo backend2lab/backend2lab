@@ -16,7 +16,6 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   const [demoCode, setDemoCode] = useState('');
   const [demoOutput, setDemoOutput] = useState('');
   const [isRunningDemo, setIsRunningDemo] = useState(false);
-  const [testResults, setTestResults] = useState<{passed: number, total: number, results: Array<{name: string, passed: boolean}>} | null>(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
@@ -74,65 +73,19 @@ app.listen(PORT, () => {
           
           timeoutId = setTimeout(typeText, delay);
         } else {
-          // Finished typing, wait a bit then run code
+          // Finished typing, wait a bit then reset for next cycle
           setTimeout(() => {
-            setIsAnimating(true);
-            setDemoOutput('Running code...\n');
+            setDemoCode('');
+            setDemoOutput('');
+            setIsAnimating(false);
+            currentIndex = 0;
+            isTyping = true;
             
+            // Start next cycle after a pause
             setTimeout(() => {
-              setDemoOutput(`✓ Code executed successfully!
-
---- Output ---
-Server running on port 3000
-✓ Express server started
-✓ API endpoint /api/hello is ready
-
---- End Output ---
-
-Execution time: 45ms
-
-Your code is working correctly!`);
-              
-              // After showing output, wait and then run tests
-              setTimeout(() => {
-                setDemoOutput('Running tests...\n');
-                
-                setTimeout(() => {
-                  const mockResults = {
-                    passed: 3,
-                    total: 3,
-                    results: [
-                      { name: 'Server starts successfully', passed: true },
-                      { name: 'API endpoint responds correctly', passed: true },
-                      { name: 'Port configuration works', passed: true }
-                    ]
-                  };
-                  
-                  setTestResults(mockResults);
-                  setDemoOutput(`✓ All 3 tests passed!
-
-Execution time: 89ms
-
-Congratulations! You've successfully completed this exercise!`);
-                  
-                  // After showing test results, wait and reset for next cycle
-                  setTimeout(() => {
-                    setDemoCode('');
-                    setDemoOutput('');
-                    setTestResults(null);
-                    setIsAnimating(false);
-                    currentIndex = 0;
-                    isTyping = true;
-                    
-                    // Start next cycle after a pause
-                    setTimeout(() => {
-                      typeText();
-                    }, 2000);
-                  }, 3000);
-                }, 1500);
-              }, 2000);
-            }, 1500);
-          }, 1000);
+              typeText();
+            }, 2000);
+          }, 3000);
         }
       }
     };
@@ -389,37 +342,6 @@ Congratulations! You've successfully completed this exercise!`);
               />
             </div>
 
-            {/* Output Panel */}
-            <div className="border-t-2 border-theme-primary bg-theme-background p-4 flex-shrink-0">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-theme-primary">Console</h3>
-              </div>
-              
-              <div className="bg-theme-surface rounded border-2 border-theme-primary p-3 h-24 overflow-y-auto">
-                <pre className="text-xs text-theme-primary whitespace-pre-wrap font-mono">
-                  {demoOutput || 'Ready to run your code...'}
-                </pre>
-              </div>
-
-              {/* Test Results */}
-              {testResults && (
-                <div className="mt-3">
-                  <h4 className="text-sm font-semibold text-theme-primary mb-2">Test Results</h4>
-                  <div className="bg-theme-surface rounded border-2 border-theme-primary p-3 max-h-20 overflow-y-auto">
-                    <div className="space-y-1">
-                      {testResults.results.map((result, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
-                            {result.passed ? <FontAwesomeIcon icon={faCheckCircle} className="text-xs" /> : <FontAwesomeIcon icon={faTimes} className="text-xs" />}
-                          </span>
-                          <span className="text-xs text-theme-primary">{result.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>

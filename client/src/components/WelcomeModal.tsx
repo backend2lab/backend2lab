@@ -161,9 +161,6 @@ app.listen(PORT, () => {
 
             {/* Platform Summary */}
             <div className="bg-theme-background rounded-xl p-6 border-2 border-theme-primary mb-6">
-              <h2 className="text-xl font-semibold text-theme-primary mb-4 font-b2l">
-                What is Backend2Lab?
-              </h2>
               <p className="text-theme-secondary leading-relaxed mb-4">
                 Backend2Lab is an <strong className="text-theme-primary">interactive learning platform</strong> that combines 
                 hands-on labs, practical exercises, and a real-time code playground. Learn backend development 

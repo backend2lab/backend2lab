@@ -18,7 +18,6 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   const [showCursor, setShowCursor] = useState(true);
 
   const fullDemoCode = `// Welcome to Backend2Lab!
-// This is a live code editor - try editing this code!
 
 const express = require('express');
 const app = express();

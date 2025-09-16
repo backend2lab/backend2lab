@@ -316,17 +316,17 @@ Congratulations! You've successfully completed this exercise!`);
                   <span className="text-sm font-medium text-theme-primary font-b2l">Live Demo</span>
                   <div className="flex items-center space-x-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs text-green-500 font-medium">Auto-running</span>
+                    <span className="text-xs text-green-500 font-medium">Running</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="px-3 py-1.5 text-xs font-medium bg-b2l-primary/20 text-b2l-primary rounded border border-b2l-primary/30 flex items-center space-x-1">
                     <FontAwesomeIcon icon={faPlay} className="text-xs" />
-                    <span>Auto Run</span>
+                    <span>Run</span>
                   </div>
                   <div className="px-3 py-1.5 text-xs font-medium bg-green-600/20 text-green-600 rounded border border-green-600/30 flex items-center space-x-1">
                     <FontAwesomeIcon icon={faCheckCircle} className="text-xs" />
-                    <span>Auto Test</span>
+                    <span>Test</span>
                   </div>
                 </div>
               </div>

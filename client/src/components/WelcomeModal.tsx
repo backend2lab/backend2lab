@@ -231,14 +231,7 @@ app.listen(PORT, () => {
                   className="bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
                 >
                   <FontAwesomeIcon icon={faRocket} className="text-sm" />
-                  <span>Start Learning Now</span>
-                </button>
-                
-                <button
-                  onClick={onClose}
-                  className="px-6 py-3 border border-theme-primary text-theme-primary rounded-xl font-semibold hover:bg-theme-background transition-colors"
-                >
-                  Explore First
+                  <span>Start Learning</span>
                 </button>
               </div>
             </div>

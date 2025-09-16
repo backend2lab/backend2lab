@@ -185,7 +185,7 @@ Congratulations! You've successfully completed this exercise!`);
       
       {/* Modal */}
       <div 
-        className={`relative w-full max-w-7xl h-[90vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-hidden ${
+        className={`relative w-full max-w-2xl lg:max-w-7xl h-[90vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-hidden ${
           isVisible 
             ? 'scale-100 opacity-100 translate-y-0' 
             : 'scale-95 opacity-0 translate-y-4'
@@ -293,13 +293,13 @@ Congratulations! You've successfully completed this exercise!`);
             {/* Quick Tips */}
             <div className="text-center">
               <p className="text-theme-secondary text-sm">
-                💡 <strong className="text-theme-primary">Pro tip:</strong> Try the live demo below!
+                💡 <strong className="text-theme-primary">Pro tip:</strong> <span className="hidden lg:inline">Try the live demo on the right!</span><span className="lg:hidden">Start with Module 1 to begin coding!</span>
               </p>
             </div>
           </div>
 
           {/* Right Column - Live Demo */}
-          <div className="w-full lg:w-1/2 border-t-2 lg:border-t-0 lg:border-l-2 border-theme-primary flex flex-col">
+          <div className="hidden lg:flex w-full lg:w-1/2 border-t-2 lg:border-t-0 lg:border-l-2 border-theme-primary flex-col">
             {/* Demo Header */}
             <div className="p-4 border-b-2 border-theme-primary bg-theme-background">
               <div className="flex items-center justify-between">

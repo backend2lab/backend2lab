@@ -20,8 +20,8 @@ func main() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 
 	// Get configuration from environment
-	host := getEnv("HOST", "0.0.0.0")
-	port := getEnv("PORT", "8080")
+	host := getEnv("HOST", "localhost")
+	port := getEnv("PORT", "4000")
 
 	// Initialize services
 	moduleService := services.NewModuleService()

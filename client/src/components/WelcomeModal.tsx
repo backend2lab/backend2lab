@@ -185,20 +185,12 @@ Congratulations! You've successfully completed this exercise!`);
       
       {/* Modal */}
       <div 
-        className={`relative w-full max-w-7xl h-[90vh] bg-theme-surface border border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 ${
+        className={`relative w-full max-w-7xl h-[90vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-hidden ${
           isVisible 
             ? 'scale-100 opacity-100 translate-y-0' 
             : 'scale-95 opacity-0 translate-y-4'
         }`}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-theme-background border border-theme-primary text-theme-secondary hover:text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors z-10"
-          aria-label="Close modal"
-        >
-          <FontAwesomeIcon icon={faTimes} className="text-sm" />
-        </button>
 
         {/* Two Column Layout */}
         <div className="flex flex-col lg:flex-row h-full">
@@ -220,7 +212,7 @@ Congratulations! You've successfully completed this exercise!`);
             </div>
 
             {/* Platform Summary */}
-            <div className="bg-theme-background rounded-xl p-6 border border-theme-primary mb-6">
+            <div className="bg-theme-background rounded-xl p-6 border-2 border-theme-primary mb-6">
               <h2 className="text-xl font-semibold text-theme-primary mb-4 font-b2l">
                 What is Backend2Lab?
               </h2>
@@ -271,7 +263,7 @@ Congratulations! You've successfully completed this exercise!`);
             </div>
 
             {/* Getting Started */}
-            <div className="bg-gradient-to-r from-b2l-primary/10 to-b2l-accent/10 rounded-xl p-6 border border-b2l-primary/20 mb-6">
+            <div className="bg-gradient-to-r from-b2l-primary/10 to-b2l-accent/10 rounded-xl p-6 border-2 border-b2l-primary/20 mb-6">
               <h3 className="text-lg font-semibold text-theme-primary mb-3 font-b2l">
                 Ready to start your backend journey?
               </h3>
@@ -307,9 +299,9 @@ Congratulations! You've successfully completed this exercise!`);
           </div>
 
           {/* Right Column - Live Demo */}
-          <div className="w-full lg:w-1/2 border-t lg:border-t-0 lg:border-l border-theme-primary flex flex-col">
+          <div className="w-full lg:w-1/2 border-t-2 lg:border-t-0 lg:border-l-2 border-theme-primary flex flex-col">
             {/* Demo Header */}
-            <div className="p-4 border-b border-theme-primary bg-theme-background">
+            <div className="p-4 border-b-2 border-theme-primary bg-theme-background">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <FontAwesomeIcon icon={faJs} className="text-yellow-400" />
@@ -398,12 +390,12 @@ Congratulations! You've successfully completed this exercise!`);
             </div>
 
             {/* Output Panel */}
-            <div className="border-t border-theme-primary bg-theme-background p-4 flex-shrink-0">
+            <div className="border-t-2 border-theme-primary bg-theme-background p-4 flex-shrink-0">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-theme-primary">Console</h3>
               </div>
               
-              <div className="bg-theme-surface rounded border border-theme-primary p-3 h-24 overflow-y-auto">
+              <div className="bg-theme-surface rounded border-2 border-theme-primary p-3 h-24 overflow-y-auto">
                 <pre className="text-xs text-theme-primary whitespace-pre-wrap font-mono">
                   {demoOutput || 'Ready to run your code...'}
                 </pre>
@@ -413,7 +405,7 @@ Congratulations! You've successfully completed this exercise!`);
               {testResults && (
                 <div className="mt-3">
                   <h4 className="text-sm font-semibold text-theme-primary mb-2">Test Results</h4>
-                  <div className="bg-theme-surface rounded border border-theme-primary p-3 max-h-20 overflow-y-auto">
+                  <div className="bg-theme-surface rounded border-2 border-theme-primary p-3 max-h-20 overflow-y-auto">
                     <div className="space-y-1">
                       {testResults.results.map((result, index) => (
                         <div key={index} className="flex items-center space-x-2">

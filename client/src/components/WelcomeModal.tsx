@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCode, faPlay, faCheckCircle, faRocket, faFileCode } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faPlay, faCheckCircle, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faJs } from '@fortawesome/free-brands-svg-icons';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -14,9 +14,6 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   const { theme } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [demoCode, setDemoCode] = useState('');
-  const [demoOutput, setDemoOutput] = useState('');
-  const [isRunningDemo, setIsRunningDemo] = useState(false);
-  const [animationStep, setAnimationStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
 
@@ -76,7 +73,6 @@ app.listen(PORT, () => {
           // Finished typing, wait a bit then reset for next cycle
           setTimeout(() => {
             setDemoCode('');
-            setDemoOutput('');
             setIsAnimating(false);
             currentIndex = 0;
             isTyping = true;

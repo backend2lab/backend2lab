@@ -235,13 +235,6 @@ app.listen(PORT, () => {
                 </button>
               </div>
             </div>
-
-            {/* Quick Tips */}
-            <div className="text-center">
-              <p className="text-theme-secondary text-sm">
-                💡 <strong className="text-theme-primary">Pro tip:</strong> <span className="hidden lg:inline">Try the live demo on the right!</span><span className="lg:hidden">Start with Module 1 to begin coding!</span>
-              </p>
-            </div>
           </div>
 
           {/* Right Column - Live Demo */}

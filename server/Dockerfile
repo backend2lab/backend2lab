@@ -8,7 +8,8 @@ RUN apk add --no-cache git
 WORKDIR /app
 
 # Copy go mod files
-COPY go.mod go.sum ./
+COPY go.mod ./
+COPY go.sum* ./
 
 # Download dependencies
 RUN go mod download
@@ -32,7 +33,8 @@ RUN apk add --no-cache nodejs npm curl docker-cli
 WORKDIR /app
 
 # Copy go mod files
-COPY go.mod go.sum ./
+COPY go.mod ./
+COPY go.sum* ./
 
 # Download dependencies
 RUN go mod download
@@ -47,7 +49,7 @@ RUN npm install
 COPY . .
 
 # Expose port
-EXPOSE 4000
+EXPOSE 8080
 
 # Start with air for hot reload
 CMD ["air", "-c", ".air.toml"]
@@ -55,16 +57,23 @@ CMD ["air", "-c", ".air.toml"]
 # Production stage
 FROM alpine:latest AS production
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates
+# Install ca-certificates for HTTPS requests and Node.js for test execution
+RUN apk --no-cache add ca-certificates nodejs npm
 
 WORKDIR /root/
 
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
 
+# Copy Node.js dependencies and install them
+COPY --from=builder /app/package*.json ./
+RUN npm install --production
+
+# Copy the modules directory that the application needs at runtime
+COPY --from=builder /app/src ./src
+
 # Expose port
-EXPOSE 4000
+EXPOSE 8080
 
 # Run the binary
 CMD ["./main"]

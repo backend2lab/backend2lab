@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       target: development
     ports:
-      - "4000:4000"
+      - "4000:8080"
     volumes:
       - ./server:/app
       - /app/node_modules
@@ -14,13 +14,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock  # Docker socket for container execution
     environment:
       - HOST=0.0.0.0
-      - PORT=4000
+      - PORT=8080
       - GIN_MODE=debug
       - DOCKER_HOST=unix:///var/run/docker.sock
     networks:
       - backend-playground
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -38,7 +38,7 @@ services:
       - ./client:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:4000
+      - VITE_API_BASE_URL=http://localhost:4000
       - VITE_HOST=0.0.0.0
       - VITE_PORT=4200
     networks:

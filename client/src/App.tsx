@@ -29,12 +29,26 @@ function AppContent() {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
-  // Default module ID - could be made configurable later
+  // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
 
   useEffect(() => {
     loadAvailableModules();
     checkWelcomeModal();
+
+    // --- LOGIC TO READ URL PARAMETER ---
+    const queryParams = new URLSearchParams(window.location.search);
+    const labIdFromUrl = queryParams.get('lab');
+
+    if (labIdFromUrl) {
+      // Use a regular expression to validate 'module-X' format
+      const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+      
+      if (isValidModuleId) {
+        setCurrentModuleId(labIdFromUrl);
+      }
+    }
+    // --- END OF NEW LOGIC ---
   }, []);
 
   const checkWelcomeModal = () => {

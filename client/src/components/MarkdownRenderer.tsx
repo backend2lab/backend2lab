@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -24,9 +25,8 @@ interface ContentBlock {
   showLineNumbers?: boolean;
 }
 
-export default function MarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {  
-  // Parse the markdown content to extract sections with ordered content blocks
-  const parseSections = (markdown: string): Section[] => {
+// Parse the markdown content to extract sections with ordered content blocks
+const parseSections = (markdown: string): Section[] => {
     const sections: Section[] = [];
     const lines = markdown.split('\n');
     let currentSection: Partial<Section> = {};
@@ -146,9 +146,12 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
     }
 
     return sections;
-  };
+};
 
-  const sections = parseSections(content);
+
+function MarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {  
+  // Memoize sections calculation to prevent unnecessary re-parsing
+  const sections = useMemo(() => parseSections(content), [content]);
 
   // If we have sections, render them as StepCards
   if (sections.length > 0 && sections.some(section => section.title)) {
@@ -193,14 +196,11 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             p: ({ children }) => (
                               <p className="text-theme-secondary mb-3 leading-relaxed">{children}</p>
                             ),
-                            ul: ({ children }) => {
-                              // Check if this is a test cases list by looking at the parent context
-                              return (
-                                <ul className="list-disc list-inside space-y-3 text-theme-secondary mb-6 bg-theme-surface p-4 rounded-lg border border-theme-primary">
-                                  {children}
-                                </ul>
-                              );
-                            },
+                            ul: ({ children }) => (
+                              <ul className="list-disc list-inside space-y-3 text-theme-secondary mb-6 bg-theme-surface p-4 rounded-lg border border-theme-primary">
+                                {children}
+                              </ul>
+                            ),
                             ol: ({ children }) => (
                               <ol className="list-decimal list-inside space-y-2 text-theme-secondary mb-4">{children}</ol>
                             ),
@@ -247,39 +247,22 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                             pre: ({ children, className }) => {
                               const language = className?.replace('language-', '') || 'javascript';
                               
-                              // Debug: log what we're receiving
-                              console.log('pre children:', children);
-                              console.log('pre children type:', typeof children);
-                              console.log('pre children isArray:', Array.isArray(children));
-                              if (children && typeof children === 'object') {
-                                console.log('pre children keys:', Object.keys(children));
-                                if ('props' in children) {
-                                  const childrenProps = children.props as { children?: any };
-                                  console.log('pre children.props:', childrenProps);
-                                  console.log('pre children.props.children:', childrenProps.children);
-                                }
-                              }
-                              
                               // Extract code content safely
                               let codeContent = '';
                               
                               // Handle different types of children
                               if (Array.isArray(children)) {
                                 codeContent = children.map(child => {
-                                  console.log('child:', child, 'type:', typeof child);
                                   if (typeof child === 'string') return child;
                                   if (child && typeof child === 'object' && 'props' in child) {
-                                    console.log('child props:', child.props);
                                     return String(child.props?.children || '');
                                   }
                                   return String(child || '');
                                 }).join('');
-                              } else                               if (children && typeof children === 'object' && 'props' in children) {
+                              } else if (children && typeof children === 'object' && 'props' in children) {
                                 const childrenProps = children.props as { children?: any };
-                                console.log('Extracting from props.children:', childrenProps.children);
                                 if (Array.isArray(childrenProps.children)) {
                                   codeContent = childrenProps.children.map((child: any) => {
-                                    console.log('props child:', child, 'type:', typeof child);
                                     if (typeof child === 'string') return child;
                                     if (child && typeof child === 'object' && 'props' in child) {
                                       return String(child.props?.children || '');
@@ -294,8 +277,6 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
                               } else {
                                 codeContent = String(children || '');
                               }
-                              
-                              console.log('final codeContent:', codeContent);
                               
                               return (
                                 <CodeDisplay
@@ -338,7 +319,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
-      components={{
+        components={{
           h1: ({ children }) => (
             <h1 className="text-3xl font-bold text-theme-primary mb-6 mt-8 first:mt-0">{children}</h1>
           ),
@@ -359,7 +340,7 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
               <h3 className="text-xl font-medium text-theme-primary mb-3 mt-4 first:mt-0">{children}</h3>
             );
           },
-        p: ({ children }) => (
+          p: ({ children }) => (
             <p className="text-theme-secondary mb-4 leading-relaxed">{children}</p>
           ),
           ul: ({ children }) => (
@@ -370,15 +351,14 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
           ),
           li: ({ children }) => (
             <li className="text-theme-secondary mb-5">{children}</li>
-        ),
-        strong: ({ children }) => (
+          ),
+          strong: ({ children }) => (
             <strong className="font-semibold text-theme-primary">{children}</strong>
-        ),
-        em: ({ children }) => (
+          ),
+          em: ({ children }) => (
             <em className="italic text-theme-secondary">{children}</em>
-        ),
-        code: ({ children }) => {
-            // const language = className?.replace('language-', '') || 'text';
+          ),
+          code: ({ children }) => {
             const text = String(children);
             
             // Special styling for test case details
@@ -399,21 +379,14 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
           pre: ({ children, className }) => {
             const language = className?.replace('language-', '') || 'javascript';
             
-            // Debug: log what we're receiving
-            console.log('fallback pre children:', children);
-            console.log('fallback pre children type:', typeof children);
-            console.log('fallback pre children isArray:', Array.isArray(children));
-            
             // Extract code content safely
             let codeContent = '';
             
             // Handle different types of children
             if (Array.isArray(children)) {
               codeContent = children.map(child => {
-                console.log('fallback child:', child, 'type:', typeof child);
                 if (typeof child === 'string') return child;
                 if (child && typeof child === 'object' && 'props' in child) {
-                  console.log('fallback child props:', child.props);
                   return String(child.props?.children || '');
                 }
                 return String(child || '');
@@ -427,8 +400,6 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
               codeContent = String(children || '');
             }
             
-            console.log('fallback final codeContent:', codeContent);
-            
             return (
               <CodeDisplay
                 code={codeContent}
@@ -437,15 +408,18 @@ export default function MarkdownRenderer({ content, className = "" }: MarkdownRe
               />
             );
           },
-        blockquote: ({ children }) => (
+          blockquote: ({ children }) => (
             <blockquote className="border-l-4 border-b2l-highlight pl-4 italic text-theme-secondary bg-theme-surface py-3 rounded-r mb-4">
-            {children}
-          </blockquote>
-        ),
-      }}
-    >
-              {content}
+              {children}
+            </blockquote>
+          ),
+        }}
+      >
+        {content}
       </ReactMarkdown>
     </div>
   );
 }
+
+// Export as memoized component to prevent unnecessary re-renders
+export default React.memo(MarkdownRenderer);

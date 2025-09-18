@@ -20,8 +20,19 @@ export function CodeDisplay({
   // Ensure code is a string
   const safeCode = typeof code === 'string' ? code : String(code || '');
   
-  // Generate a unique ID for this editor instance to ensure complete isolation
-  const editorId = useMemo(() => `code-display-${Math.random().toString(36).substr(2, 9)}`, []);
+  // Generate a stable ID based on content to prevent unnecessary editor recreation
+  const editorId = useMemo(() => {
+    // Create a simple hash from the content using a more robust method
+    const content = safeCode + language + showLineNumbers;
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    const hashStr = Math.abs(hash).toString(36);
+    return `code-display-${hashStr}`;
+  }, [safeCode, language, showLineNumbers]);
   
   // Calculate height based on number of lines
   const lineCount = safeCode.split('\n').length;
@@ -100,3 +111,4 @@ export function CodeDisplay({
     </div>
   );
 }
+

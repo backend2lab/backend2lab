@@ -7,6 +7,7 @@ import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { WelcomeModal } from "./components/WelcomeModal";
+import { Confetti } from "./components/Confetti";
 import { ModuleService } from "./services/moduleService";
 import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
@@ -28,9 +29,20 @@ function AppContent() {
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [triggerConfetti, setTriggerConfetti] = useState(false);
 
   // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
+
+  // Reset confetti trigger after it's been used
+  useEffect(() => {
+    if (triggerConfetti) {
+      const timer = setTimeout(() => {
+        setTriggerConfetti(false);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [triggerConfetti]);
 
   useEffect(() => {
     loadAvailableModules();
@@ -181,6 +193,8 @@ function AppContent() {
         setOutput(`⚠️ No tests were executed.\n\nExecution time: ${results.executionTime}ms\n\nPlease check that the test setup is working correctly.`);
       } else if (results.passedTests === results.totalTests) {
         setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
+        // Trigger confetti celebration!
+        setTriggerConfetti(true);
       } else {
         setOutput(`✗ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
       }
@@ -243,6 +257,9 @@ function AppContent() {
         isOpen={showWelcomeModal} 
         onClose={handleCloseWelcomeModal} 
       />
+      
+      {/* Confetti Component */}
+      <Confetti trigger={triggerConfetti} />
       
       {/* Header Bar */}
       <header className="bg-theme-surface border-b border-theme-primary shadow-sm">

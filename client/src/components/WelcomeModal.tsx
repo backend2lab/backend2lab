@@ -133,7 +133,7 @@ app.listen(PORT, () => {
       
       {/* Modal */}
       <div 
-        className={`relative w-full max-w-2xl lg:max-w-7xl max-h-[80vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-hidden ${
+        className={`relative w-full max-w-2xl lg:max-w-7xl max-h-[80vh] lg:max-h-[70vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-y-auto lg:overflow-hidden ${
           isVisible 
             ? 'scale-100 opacity-100 translate-y-0' 
             : 'scale-95 opacity-0 translate-y-4'
@@ -141,21 +141,18 @@ app.listen(PORT, () => {
       >
 
         {/* Two Column Layout */}
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col lg:flex-row lg:h-full">
           {/* Left Column - Welcome Content */}
           <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
             {/* Header */}
             <div className="flex items-center space-x-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                 <span className="text-white font-bold text-2xl font-b2l">B2L</span>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-theme-primary font-b2l mb-1">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl lg:text-3xl font-bold text-theme-primary font-b2l mb-1">
                   Welcome to Backend2Lab
                 </h1>
-                <p className="text-theme-secondary text-lg">
-                  Your interactive backend development playground
-                </p>
               </div>
             </div>
 

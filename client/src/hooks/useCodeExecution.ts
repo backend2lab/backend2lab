@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ModuleService } from "../services/moduleService";
+import { ProgressService } from "../services/progressService";
 import type { TestSuiteResult, RunResult } from "../services/moduleService";
 
 export function useCodeExecution() {
@@ -9,6 +10,31 @@ export function useCodeExecution() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState<TestSuiteResult | null>(null);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [currentModuleId, setCurrentModuleId] = useState<string | null>(null);
+
+  // Enhanced setCode that also saves to localStorage
+  const setCodeWithSave = useCallback((newCode: string, moduleId?: string) => {
+    setCode(newCode);
+    const targetModuleId = moduleId || currentModuleId;
+    if (targetModuleId) {
+      ProgressService.saveCode(targetModuleId, newCode);
+    }
+  }, [currentModuleId]);
+
+  // Load saved code for a module
+  const loadSavedCode = useCallback((moduleId: string, defaultCode: string) => {
+    setCurrentModuleId(moduleId);
+    const savedCode = ProgressService.getCode(moduleId);
+    const codeToUse = savedCode || defaultCode;
+    setCode(codeToUse);
+    return codeToUse;
+  }, []);
+
+  // Clear saved progress for current module
+  const clearModuleProgress = useCallback((moduleId: string) => {
+    ProgressService.clearModuleProgress(moduleId);
+    setCode("");
+  }, []);
 
   const handleRunCode = async (currentModuleId: string, codeToRun?: string, exerciseType?: 'function' | 'server') => {
     const codeContent = codeToRun || code;
@@ -70,7 +96,7 @@ export function useCodeExecution() {
 
   return {
     code,
-    setCode,
+    setCode: setCodeWithSave,
     output,
     isRunning,
     isSubmitting,
@@ -79,5 +105,7 @@ export function useCodeExecution() {
     handleRunCode,
     handleSubmit,
     resetState,
+    loadSavedCode,
+    clearModuleProgress,
   };
 }

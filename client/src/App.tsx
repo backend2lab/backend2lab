@@ -49,6 +49,8 @@ function AppContent() {
     handleRunCode,
     handleSubmit,
     resetState,
+    loadSavedCode,
+    clearModuleProgress,
   } = useCodeExecution();
 
   const {
@@ -77,13 +79,14 @@ function AppContent() {
     setShowScreenLockModal(isSmallScreen);
   }, [isSmallScreen, setShowScreenLockModal]);
 
-  // Update code when module content changes
+  // Update code when module content changes - load saved progress if available
   useEffect(() => {
     if (moduleContent) {
-      setCode(moduleContent.exerciseContent.editorFiles.server);
+      const defaultCode = moduleContent.exerciseContent.editorFiles.server;
+      loadSavedCode(currentModuleId, defaultCode);
       setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
     }
-  }, [moduleContent, currentModuleId, setCode]);
+  }, [moduleContent, currentModuleId, loadSavedCode]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -131,6 +134,20 @@ function AppContent() {
     handleModuleChange(moduleId);
     resetState();
     setActiveTab('Lab');
+  };
+
+  const handleResetProgress = () => {
+    if (moduleContent) {
+      clearModuleProgress(currentModuleId);
+      setCode(moduleContent.exerciseContent.editorFiles.server);
+      resetState();
+    }
+  };
+
+  const handleResetCode = () => {
+    if (moduleContent) {
+      setCode(moduleContent.exerciseContent.editorFiles.server);
+    }
   };
 
   const handleRunCodeWrapper = (codeToRun?: string) => {
@@ -194,6 +211,7 @@ function AppContent() {
         showModuleDropdown={showModuleDropdown}
         onModuleDropdownToggle={() => setShowModuleDropdown(!showModuleDropdown)}
         onModuleChange={handleModuleChangeWithReset}
+        onResetProgress={handleResetProgress}
         getDifficultyColor={getDifficultyColor}
       />
 
@@ -217,6 +235,7 @@ function AppContent() {
               solution={moduleContent.exerciseContent.solution}
               runCode={handleRunCodeWrapper}
               hasAttemptedSubmit={hasAttemptedSubmit}
+              onResetCode={handleResetCode}
             />
           </div>
           

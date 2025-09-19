@@ -13,8 +13,15 @@ It combines **labs**, **exercises**, and a **code playground** for beginners to 
 ### Prerequisites
 - Node.js (v18 or higher)
 - pnpm (recommended) or npm
+- Docker (optional)
 
-### Start All Services (Recommended)
+### Option 1: Docker (Recommended)
+```bash
+# Start both services with Docker
+docker compose up
+```
+
+### Option 2: Local Development
 ```bash
 # Install all dependencies
 pnpm install
@@ -23,7 +30,7 @@ pnpm install
 pnpm run dev
 ```
 
-This will start:
+Both options will start:
 - **Client** at `http://localhost:4200`
 - **Server** at `http://localhost:4000`
 
@@ -84,6 +91,22 @@ pnpm test
 cd client
 pnpm run lint
 ```
+
+## Docker
+
+### Basic Commands
+```bash
+# Start services
+docker compose up
+
+# Stop services
+docker compose down
+
+# View logs
+docker compose logs -f
+```
+
+For detailed Docker setup, see [DOCKER.md](./DOCKER.md).
 
 ## Project Structure
 

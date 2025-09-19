@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 export function useModals() {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showLabCompletionModal, setShowLabCompletionModal] = useState(false);
+  const [showScreenLockModal, setShowScreenLockModal] = useState(false);
   const [triggerConfetti, setTriggerConfetti] = useState(false);
 
   // Reset confetti trigger after it's been used
@@ -47,11 +48,13 @@ export function useModals() {
   return {
     showWelcomeModal,
     showLabCompletionModal,
+    showScreenLockModal,
     triggerConfetti,
     checkWelcomeModal,
     handleCloseWelcomeModal,
     handleCloseLabCompletionModal,
     triggerSuccess,
     setShowLabCompletionModal,
+    setShowScreenLockModal,
   };
 }

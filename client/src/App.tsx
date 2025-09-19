@@ -1,228 +1,77 @@
-import { useState, useEffect, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { useState, useEffect } from "react";
 import CodeEditor from "./components/Editor";
-import MarkdownRenderer from "./components/MarkdownRenderer";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { ThemeToggle } from "./components/ThemeToggle";
 import { WelcomeModal } from "./components/WelcomeModal";
 import { Confetti } from "./components/Confetti";
 import { LabCompletionModal } from "./components/LabCompletionModal";
-import { ModuleService } from "./services/moduleService";
-import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
+import { Header } from "./components/Header";
+import { ContentPanel } from "./components/ContentPanel";
+import { OutputPanel } from "./components/OutputPanel";
+import { LoadingState } from "./components/LoadingState";
+import { ErrorState } from "./components/ErrorState";
+import { useModuleManagement } from "./hooks/useModuleManagement";
+import { useUrlHandling } from "./hooks/useUrlHandling";
+import { useCodeExecution } from "./hooks/useCodeExecution";
+import { useModals } from "./hooks/useModals";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
-  const [moduleContent, setModuleContent] = useState<ModuleContent | null>(null);
-  const [availableModules, setAvailableModules] = useState<Module[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [output, setOutput] = useState("");
-  const [isRunning, setIsRunning] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [testResults, setTestResults] = useState<TestSuiteResult | null>(null);
   const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
-  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
-  const [triggerConfetti, setTriggerConfetti] = useState(false);
-  const [showLabCompletionModal, setShowLabCompletionModal] = useState(false);
 
-  // Default module ID
-  const [currentModuleId, setCurrentModuleId] = useState('module-1');
-  const [pendingModuleId, setPendingModuleId] = useState<string | null>(null);
+  // Custom hooks
+  const {
+    moduleContent,
+    availableModules,
+    loading,
+    error,
+    currentModuleId,
+    setCurrentModuleId,
+    handleModuleChange,
+    loadModuleContent,
+  } = useModuleManagement();
 
-  // Reset confetti trigger after it's been used
+  useUrlHandling(availableModules, currentModuleId, setCurrentModuleId);
+
+  const {
+    code,
+    setCode,
+    output,
+    isRunning,
+    isSubmitting,
+    testResults,
+    hasAttemptedSubmit,
+    handleRunCode,
+    handleSubmit,
+    resetState,
+  } = useCodeExecution();
+
+  const {
+    showWelcomeModal,
+    showLabCompletionModal,
+    triggerConfetti,
+    checkWelcomeModal,
+    handleCloseWelcomeModal,
+    handleCloseLabCompletionModal,
+    triggerSuccess,
+    setShowLabCompletionModal,
+  } = useModals();
+
+  // Initialize welcome modal check
   useEffect(() => {
-    if (triggerConfetti) {
-      const timer = setTimeout(() => {
-        setTriggerConfetti(false);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [triggerConfetti]);
-
-  useEffect(() => {
-    loadAvailableModules();
     checkWelcomeModal();
+  }, [checkWelcomeModal]);
 
-    // --- LOGIC TO READ URL PARAMETER ---
-    const queryParams = new URLSearchParams(window.location.search);
-    const labIdFromUrl = queryParams.get('lab');
-
-    if (labIdFromUrl) {
-      // Use a regular expression to validate 'module-X' format
-      const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
-      
-      if (isValidModuleId) {
-        // Store the pending module ID to validate later when modules are loaded
-        setPendingModuleId(labIdFromUrl);
-      } else {
-        // Invalid module ID format, redirect to module-1
-        setCurrentModuleId('module-1');
-        const url = new URL(window.location.href);
-        url.searchParams.set('lab', 'module-1');
-        window.history.replaceState({}, '', url.toString());
-      }
-    }
-    // --- END OF NEW LOGIC ---
-  }, []); // Only run once on mount
-
-  // Handle browser back/forward navigation
+  // Update code when module content changes
   useEffect(() => {
-    const handlePopState = () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const labIdFromUrl = queryParams.get('lab');
-      
-      if (labIdFromUrl) {
-        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
-        const moduleExists = availableModules.length > 0 ? availableModules.some(module => module.id === labIdFromUrl) : true;
-        
-        if (isValidModuleId && moduleExists) {
-          setCurrentModuleId(labIdFromUrl);
-          setOutput("");
-          setTestResults(null);
-          setActiveTab('Lab');
-          setHasAttemptedSubmit(false);
-        } else if (!isValidModuleId || !moduleExists) {
-          // Invalid module ID format or module doesn't exist, redirect to module-1
-          setCurrentModuleId('module-1');
-          setOutput("");
-          setTestResults(null);
-          setActiveTab('Lab');
-          setHasAttemptedSubmit(false);
-          const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
-          window.history.replaceState({}, '', url.toString());
-        }
-      } else {
-        // If no lab parameter, reset to default
-        setCurrentModuleId('module-1');
-        setOutput("");
-        setTestResults(null);
-        setActiveTab('Lab');
-        setHasAttemptedSubmit(false);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [availableModules]); // Only depend on availableModules
-
-  const checkWelcomeModal = () => {
-    try {
-      const hasSeenWelcome = localStorage.getItem('backend2lab-welcome-seen');
-      if (!hasSeenWelcome) {
-        // Small delay to ensure the app is fully loaded
-        setTimeout(() => setShowWelcomeModal(true), 500);
-      }
-    } catch {
-      // If localStorage is not available, show the modal anyway
-      setTimeout(() => setShowWelcomeModal(true), 500);
-    }
-  };
-
-  const handleCloseWelcomeModal = () => {
-    setShowWelcomeModal(false);
-    try {
-      localStorage.setItem('backend2lab-welcome-seen', 'true');
-    } catch {
-      // Ignore localStorage errors
-    }
-  };
-
-  const handleCloseLabCompletionModal = () => {
-    setShowLabCompletionModal(false);
-  };
-
-  const handleNextLab = () => {
-    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
-    const nextModule = availableModules[currentModuleIndex + 1];
-    
-    if (nextModule) {
-      handleModuleChange(nextModule.id);
-    }
-    
-    setShowLabCompletionModal(false);
-  };
-
-  const getNextModule = () => {
-    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
-    return availableModules[currentModuleIndex + 1];
-  };
-
-  const loadModuleContent = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const content = await ModuleService.getModuleContent(currentModuleId);
-      setModuleContent(content);
-      setCode(content.exerciseContent.editorFiles.server);
-      
-      // Set exercise type based on module ID
+    if (moduleContent) {
+      setCode(moduleContent.exerciseContent.editorFiles.server);
       setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load module content');
-    } finally {
-      setLoading(false);
     }
-  }, [currentModuleId]);
-
-  useEffect(() => {
-    loadModuleContent();
-  }, [loadModuleContent]);
-
-  // Validate URL parameter against available modules after they're loaded
-  useEffect(() => {
-    if (availableModules.length > 0) {
-      // First, handle any pending module ID from initial load
-      if (pendingModuleId) {
-        const moduleExists = availableModules.some(module => module.id === pendingModuleId);
-        
-        if (moduleExists) {
-          setCurrentModuleId(pendingModuleId);
-        } else {
-          // Module doesn't exist, redirect to module-1
-          setCurrentModuleId('module-1');
-          const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
-          window.history.replaceState({}, '', url.toString());
-        }
-        setPendingModuleId(null); // Clear pending module ID
-        return;
-      }
-
-      // Then handle any URL parameter changes (for browser navigation)
-      const queryParams = new URLSearchParams(window.location.search);
-      const labIdFromUrl = queryParams.get('lab');
-      
-      if (labIdFromUrl) {
-        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
-        const moduleExists = availableModules.some(module => module.id === labIdFromUrl);
-        
-        if (!isValidModuleId || !moduleExists) {
-          // Invalid module ID format or module doesn't exist, redirect to module-1
-          setCurrentModuleId('module-1');
-          setOutput("");
-          setTestResults(null);
-          setActiveTab('Lab');
-          setHasAttemptedSubmit(false);
-          const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
-          window.history.replaceState({}, '', url.toString());
-        }
-      }
-    }
-  }, [availableModules, pendingModuleId]); // Include pendingModuleId
-
+  }, [moduleContent, currentModuleId, setCode]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -242,97 +91,49 @@ function AppContent() {
     };
   }, [showModuleDropdown]);
 
-  const loadAvailableModules = async () => {
-    try {
-      const modules = await ModuleService.getAllModules();
-      setAvailableModules(modules);
-    } catch (err) {
-      console.error('Failed to load available modules:', err);
+  const handleNextLab = () => {
+    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
+    const nextModule = availableModules[currentModuleIndex + 1];
+    
+    if (nextModule) {
+      handleModuleChange(nextModule.id);
+      resetState();
+      setActiveTab('Lab');
     }
+    
+    setShowLabCompletionModal(false);
   };
 
-  const handleModuleChange = (moduleId: string) => {
+  const getNextModule = () => {
+    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
+    return availableModules[currentModuleIndex + 1];
+  };
+
+  const handleModuleChangeWithReset = (moduleId: string) => {
     if (moduleId === currentModuleId) {
       setShowModuleDropdown(false);
       return;
     }
     
     setShowModuleDropdown(false);
-    setCurrentModuleId(moduleId);
-    setOutput("");
-    setTestResults(null);
-    setActiveTab('Lab'); // Reset to Lab tab when switching modules
-    setHasAttemptedSubmit(false);
-    
-    // Update URL parameter without page refresh
-    const url = new URL(window.location.href);
-    url.searchParams.set('lab', moduleId);
-    window.history.pushState({}, '', url.toString());
+    handleModuleChange(moduleId);
+    resetState();
+    setActiveTab('Lab');
   };
 
-  const handleRunCode = async (codeToRun?: string) => {
-    if (!moduleContent) return;
-    
-    const codeContent = codeToRun || code;
-    
-    setIsRunning(true);
-    setOutput("Running code...\n");
-    
-    try {
-      // Send code to server for execution
-      const result: RunResult = await ModuleService.runCode(currentModuleId, codeContent);
-      
-      if (result.success) {
-        if (exerciseType === 'function') {
-          setOutput(`✓ Code executed successfully!\n\n--- Output ---\n${result.output || 'Code executed without output'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour code is working correctly!`);
-        } else {
-          setOutput(`✓ Code executed successfully!\n\n--- Output ---\n${result.output || 'Code is running'}\n--- End Output ---\n\nExecution time: ${result.executionTime}ms\n\nYour code is working correctly!`);
-        }
-      } else {
-        setOutput(`✗ Code execution failed.\n\n--- Output ---\n${result.output || 'No output available'}\n--- End Output ---\n\nError: ${result.error}\n\nExecution time: ${result.executionTime}ms\n\nCheck your code for syntax errors or issues.`);
-      }
-      
-      // Clear test results when just running code
-      setTestResults(null);
-    } catch (err) {
-      setOutput(`✗ Code execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    } finally {
-      setIsRunning(false);
+  const handleRunCodeWrapper = (codeToRun?: string) => {
+    handleRunCode(currentModuleId, codeToRun, exerciseType);
+  };
+
+  const handleSubmitWrapper = async () => {
+    const success = await handleSubmit(currentModuleId);
+    if (success) {
+      triggerSuccess();
     }
   };
 
-  const handleSubmit = async () => {
-    if (!moduleContent) return;
-    
-    setIsSubmitting(true);
- 
-    setOutput("Running tests...\n");
-    
-    try {
-      const results = await ModuleService.runTests(currentModuleId, code);
-      setTestResults(results);
-      
-      if (results.totalTests === 0) {
-        setOutput(`⚠️ No tests were executed.\n\nExecution time: ${results.executionTime}ms\n\nPlease check that the test setup is working correctly.`);
-      } else if (results.passedTests === results.totalTests) {
-        setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
-        // Trigger confetti celebration!
-        setTriggerConfetti(true);
-        // Show lab completion modal
-        setShowLabCompletionModal(true);
-      } else {
-        setOutput(`✗ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
-      }
-    } catch (err) {
-      setOutput(`✗ Test execution failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    } finally {
-      setHasAttemptedSubmit(true);
-      setIsSubmitting(false);
-    }
-  };
-
-  const getDifficultyColor = (difficulty: Difficulty) => {
-    switch (difficulty) {
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty as Difficulty) {
       case 'Beginner': return 'bg-success-100 text-success-700';
       case 'Intermediate': return 'bg-warning-100 text-warning-700';
       case 'Advanced': return 'bg-error-100 text-error-700';
@@ -340,39 +141,12 @@ function AppContent() {
     }
   };
 
-  const tabs: Tab[] = ['Lab', 'Exercise'];
-
   if (loading && !moduleContent) {
-    return (
-      <div className="min-h-screen bg-theme-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b2l-primary mx-auto mb-4"></div>
-          <p className="text-theme-secondary">Loading module content...</p>
-        </div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error || !moduleContent) {
-    return (
-      <div className="min-h-screen bg-theme-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 mb-4">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-          </div>
-          <p className="text-theme-primary mb-2">Failed to load module</p>
-          <p className="text-theme-secondary mb-4">{error}</p>
-          <button 
-            onClick={loadModuleContent}
-            className="px-4 py-2 bg-b2l-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+    return <ErrorState error={error || 'Module not found'} onRetry={loadModuleContent} />;
   }
 
   return (
@@ -396,142 +170,26 @@ function AppContent() {
       {/* Confetti Component */}
       <Confetti trigger={triggerConfetti} />
       
-      {/* Header Bar */}
-      <header className="bg-theme-surface border-b border-theme-primary shadow-sm">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo and Brand */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-sm font-b2l">B2L</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-theme-primary font-b2l">Backend2Lab</span>
-                <span className="text-xs text-theme-secondary font-b2l">Learn Backend Development</span>
-              </div>
-            </div>
-
-            {/* Module Info */}
-            <div className="flex-1 flex justify-center max-w-2xl">
-              <div className="text-center flex items-center">
-                <h1 className="text-lg font-semibold text-theme-primary font-b2l">
-                  {loading && moduleContent ? (
-                    <div className="flex items-center space-x-2">
-                      <span>{moduleContent.module.title}</span>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-b2l-primary"></div>
-                    </div>
-                  ) : (
-                    moduleContent?.module.title || 'Loading...'
-                  )}
-                </h1>
-                {moduleContent && (
-                  <div className="flex items-center justify-center space-x-3 ml-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getDifficultyColor(moduleContent.module.difficulty)}`}>
-                      {moduleContent.module.difficulty}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Top Right:- Module Selector + GitHub Link */}
-            <div className="flex items-center space-x-3">
-              <div className="relative module-dropdown">
-                <button 
-                  onClick={() => setShowModuleDropdown(!showModuleDropdown)}
-                  disabled={loading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="text-sm font-medium font-b2l">
-                    {loading ? (
-                      <div className="flex items-center space-x-2">
-                        <span>{availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'}</span>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-b2l-primary"></div>
-                      </div>
-                    ) : (
-                      availableModules.find(m => m.id === currentModuleId)?.title || 'Select Module'
-                    )}
-                  </span>
-                  <FontAwesomeIcon 
-                    icon={faChevronDown} 
-                    className={`text-xs transition-transform ${showModuleDropdown ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                
-                {showModuleDropdown && (
-                  <div className="absolute right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto module-dropdown">
-                    {availableModules.map((module) => (
-                      <button
-                        key={module.id}
-                        onClick={() => handleModuleChange(module.id)}
-                        className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors border-b border-theme-primary last:border-b-0 ${
-                          module.id === currentModuleId 
-                            ? 'bg-b2l-primary text-white' 
-                            : 'text-theme-primary'
-                        }`}
-                      >
-                        <span className="text-sm font-medium">
-                          <span className="mr-2">{module.id}:</span>
-                          {module.title}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <ThemeToggle />
-              {/* GitHub Link Icon */}
-              <a
-                href="https://github.com/backend2lab/backend2lab"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-b2l-text-secondary hover:text-b2l-primary transition-colors"
-                title="View on GitHub"
-              >
-                <FontAwesomeIcon icon={faGithub} size="2x" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header */}
+      <Header
+        loading={loading}
+        moduleContent={moduleContent}
+        availableModules={availableModules}
+        currentModuleId={currentModuleId}
+        showModuleDropdown={showModuleDropdown}
+        onModuleDropdownToggle={() => setShowModuleDropdown(!showModuleDropdown)}
+        onModuleChange={handleModuleChangeWithReset}
+        getDifficultyColor={getDifficultyColor}
+      />
 
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] bg-theme-background overflow-hidden">
         {/* Left Panel - Learning Content */}
-        <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-theme-primary bg-theme-background flex flex-col min-h-0">
-          {/* Tab Navigation */}
-          <div className="border-b border-theme-primary bg-theme-surface flex-shrink-0 h-12">
-            <div className="flex h-full">
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 px-6 text-sm font-medium transition-all duration-200 border-b-2 flex items-center justify-center ${
-                    activeTab === tab 
-                      ? 'text-b2l-primary border-b2l-primary bg-theme-background' 
-                      : 'text-theme-secondary border-transparent hover:text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto bg-theme-background min-h-0">
-            {activeTab === 'Lab' && (
-              <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.labContent} />
-              </div>
-            )}
-            {activeTab === 'Exercise' && (
-              <div className="max-w-4xl mx-auto p-6 space-y-8">
-                <MarkdownRenderer content={moduleContent.exerciseContent.readme} />
-              </div>
-            )}
-          </div>
-        </div>
+        <ContentPanel
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          moduleContent={moduleContent}
+        />
 
         {/* Right Panel - Code Editor */}
         <div className="w-full lg:w-1/2 bg-theme-background flex flex-col min-h-0">
@@ -542,67 +200,20 @@ function AppContent() {
               onCodeChange={setCode}
               packageJson={moduleContent.exerciseContent.editorFiles.package}
               solution={moduleContent.exerciseContent.solution}
-              runCode={handleRunCode}
+              runCode={handleRunCodeWrapper}
               hasAttemptedSubmit={hasAttemptedSubmit}
             />
           </div>
           
           {/* Output Panel */}
-          <div className="border-t border-theme-primary bg-theme-surface p-4 flex-shrink-0">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-theme-primary">Console</h3>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleRunCode()}
-                  disabled={isRunning}
-                  className="px-3 py-1.5 text-xs font-medium bg-b2l-primary text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {isRunning ? 'Running...' : 'Run'}
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {isSubmitting ? 'Testing...' : 'Submit'}
-                </button>
-              </div>
-            </div>
-            
-            <div className="bg-theme-background rounded border border-theme-primary p-3 h-32 overflow-y-auto">
-              <pre className="text-sm text-theme-primary whitespace-pre-wrap font-mono">
-                {output || 'Ready to run your code...'}
-              </pre>
-            </div>
-
-            {/* Test Results */}
-            {testResults && (
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold text-theme-primary mb-2">Test Results</h4>
-                <div className="bg-theme-background rounded border border-theme-primary p-3 max-h-48 overflow-y-auto">
-                  <div className="space-y-2">
-                    {testResults.results && testResults.results.length > 0 ? (
-                      testResults.results.map((result: TestResult, index: number) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <span className={result.passed ? 'text-green-500' : 'text-red-500'}>
-                            {result.passed ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faTimes} />}
-                          </span>
-                          <span className="text-sm text-theme-primary">{result.testName}</span>
-                          {!result.passed && result.error && (
-                            <span className="text-xs text-red-400">({result.error})</span>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-sm text-theme-secondary">
-                        {testResults.totalTests === 0 ? 'No tests were executed' : 'No test results available'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <OutputPanel
+            output={output}
+            isRunning={isRunning}
+            isSubmitting={isSubmitting}
+            testResults={testResults}
+            onRunCode={handleRunCodeWrapper}
+            onSubmit={handleSubmitWrapper}
+          />
         </div>
       </div>
     </div>

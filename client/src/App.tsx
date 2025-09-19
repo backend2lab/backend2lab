@@ -8,6 +8,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { WelcomeModal } from "./components/WelcomeModal";
 import { Confetti } from "./components/Confetti";
+import { LevelCompletionModal } from "./components/LevelCompletionModal";
 import { ModuleService } from "./services/moduleService";
 import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
@@ -30,6 +31,7 @@ function AppContent() {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [triggerConfetti, setTriggerConfetti] = useState(false);
+  const [showLevelCompletionModal, setShowLevelCompletionModal] = useState(false);
 
   // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
@@ -135,6 +137,26 @@ function AppContent() {
     } catch {
       // Ignore localStorage errors
     }
+  };
+
+  const handleCloseLevelCompletionModal = () => {
+    setShowLevelCompletionModal(false);
+  };
+
+  const handleNextLevel = () => {
+    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
+    const nextModule = availableModules[currentModuleIndex + 1];
+    
+    if (nextModule) {
+      handleModuleChange(nextModule.id);
+    }
+    
+    setShowLevelCompletionModal(false);
+  };
+
+  const getNextModule = () => {
+    const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
+    return availableModules[currentModuleIndex + 1];
   };
 
   const loadModuleContent = useCallback(async () => {
@@ -296,6 +318,8 @@ function AppContent() {
         setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
         // Trigger confetti celebration!
         setTriggerConfetti(true);
+        // Show level completion modal
+        setShowLevelCompletionModal(true);
       } else {
         setOutput(`✗ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
       }
@@ -357,6 +381,16 @@ function AppContent() {
       <WelcomeModal 
         isOpen={showWelcomeModal} 
         onClose={handleCloseWelcomeModal} 
+      />
+      
+      {/* Level Completion Modal */}
+      <LevelCompletionModal
+        isOpen={showLevelCompletionModal}
+        onClose={handleCloseLevelCompletionModal}
+        onNextLevel={handleNextLevel}
+        currentModuleTitle={moduleContent?.module.title || ''}
+        nextModuleTitle={getNextModule()?.title}
+        hasNextModule={!!getNextModule()}
       />
       
       {/* Confetti Component */}

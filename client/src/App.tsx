@@ -4,6 +4,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { WelcomeModal } from "./components/WelcomeModal";
 import { Confetti } from "./components/Confetti";
 import { LabCompletionModal } from "./components/LabCompletionModal";
+import { ScreenLockModal } from "./components/ScreenLockModal";
 import { Header } from "./components/Header";
 import { ContentPanel } from "./components/ContentPanel";
 import { OutputPanel } from "./components/OutputPanel";
@@ -13,6 +14,7 @@ import { useModuleManagement } from "./hooks/useModuleManagement";
 import { useUrlHandling } from "./hooks/useUrlHandling";
 import { useCodeExecution } from "./hooks/useCodeExecution";
 import { useModals } from "./hooks/useModals";
+import { useScreenSize } from "./hooks/useScreenSize";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';
@@ -52,18 +54,28 @@ function AppContent() {
   const {
     showWelcomeModal,
     showLabCompletionModal,
+    showScreenLockModal,
     triggerConfetti,
     checkWelcomeModal,
     handleCloseWelcomeModal,
     handleCloseLabCompletionModal,
     triggerSuccess,
     setShowLabCompletionModal,
+    setShowScreenLockModal,
   } = useModals();
+
+  // Screen size detection
+  const { isSmallScreen } = useScreenSize();
 
   // Initialize welcome modal check
   useEffect(() => {
     checkWelcomeModal();
   }, [checkWelcomeModal]);
+
+  // Handle screen size changes
+  useEffect(() => {
+    setShowScreenLockModal(isSmallScreen);
+  }, [isSmallScreen, setShowScreenLockModal]);
 
   // Update code when module content changes
   useEffect(() => {
@@ -151,6 +163,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-theme-background">
+      {/* Screen Lock Modal */}
+      <ScreenLockModal isOpen={showScreenLockModal} />
+      
       {/* Welcome Modal */}
       <WelcomeModal 
         isOpen={showWelcomeModal} 

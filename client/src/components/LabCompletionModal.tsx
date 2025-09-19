@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faArrowRight, faRocket, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-interface LevelCompletionModalProps {
+interface LabCompletionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onNextLevel: () => void;
+  onNextLab: () => void;
   currentModuleTitle: string;
   nextModuleTitle?: string;
   hasNextModule: boolean;
 }
 
-export function LevelCompletionModal({ 
+export function LabCompletionModal({ 
   isOpen, 
   onClose, 
-  onNextLevel, 
+  onNextLab, 
   currentModuleTitle, 
   nextModuleTitle,
   hasNextModule 
-}: LevelCompletionModalProps) {
+}: LabCompletionModalProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export function LevelCompletionModal({
 
   const handleContinue = () => {
     if (hasNextModule) {
-      onNextLevel();
+      onNextLab();
     } else {
       onClose();
     }
@@ -88,7 +88,7 @@ export function LevelCompletionModal({
 
           {/* Title */}
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-theme-primary mb-2 font-b2l">
-            Level Complete!
+            Lab Complete!
           </h2>
           
           {/* Module title */}
@@ -112,7 +112,7 @@ export function LevelCompletionModal({
               className="w-full bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-sm sm:text-base"
             >
               <FontAwesomeIcon icon={faRocket} className="text-sm sm:text-base" />
-              <span>Continue to {nextModuleTitle}</span>
+              <span>Continue to Next Lab</span>
               <FontAwesomeIcon icon={faArrowRight} className="text-sm sm:text-base" />
             </button>
           ) : (

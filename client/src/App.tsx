@@ -8,7 +8,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { WelcomeModal } from "./components/WelcomeModal";
 import { Confetti } from "./components/Confetti";
-import { LevelCompletionModal } from "./components/LevelCompletionModal";
+import { LabCompletionModal } from "./components/LabCompletionModal";
 import { ModuleService } from "./services/moduleService";
 import type { ModuleContent, TestSuiteResult, RunResult, Module, TestResult } from "./services/moduleService";
 
@@ -31,7 +31,7 @@ function AppContent() {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [triggerConfetti, setTriggerConfetti] = useState(false);
-  const [showLevelCompletionModal, setShowLevelCompletionModal] = useState(false);
+  const [showLabCompletionModal, setShowLabCompletionModal] = useState(false);
 
   // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
@@ -139,11 +139,11 @@ function AppContent() {
     }
   };
 
-  const handleCloseLevelCompletionModal = () => {
-    setShowLevelCompletionModal(false);
+  const handleCloseLabCompletionModal = () => {
+    setShowLabCompletionModal(false);
   };
 
-  const handleNextLevel = () => {
+  const handleNextLab = () => {
     const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
     const nextModule = availableModules[currentModuleIndex + 1];
     
@@ -151,7 +151,7 @@ function AppContent() {
       handleModuleChange(nextModule.id);
     }
     
-    setShowLevelCompletionModal(false);
+    setShowLabCompletionModal(false);
   };
 
   const getNextModule = () => {
@@ -318,8 +318,8 @@ function AppContent() {
         setOutput(`✓ All ${results.totalTests} tests passed!\n\nExecution time: ${results.executionTime}ms\n\nCongratulations! You've successfully completed this exercise!`);
         // Trigger confetti celebration!
         setTriggerConfetti(true);
-        // Show level completion modal
-        setShowLevelCompletionModal(true);
+        // Show lab completion modal
+        setShowLabCompletionModal(true);
       } else {
         setOutput(`✗ ${results.failedTests} out of ${results.totalTests} tests failed.\n\nExecution time: ${results.executionTime}ms\n\nCheck the test results below for details.`);
       }
@@ -383,11 +383,11 @@ function AppContent() {
         onClose={handleCloseWelcomeModal} 
       />
       
-      {/* Level Completion Modal */}
-      <LevelCompletionModal
-        isOpen={showLevelCompletionModal}
-        onClose={handleCloseLevelCompletionModal}
-        onNextLevel={handleNextLevel}
+      {/* Lab Completion Modal */}
+      <LabCompletionModal
+        isOpen={showLabCompletionModal}
+        onClose={handleCloseLabCompletionModal}
+        onNextLab={handleNextLab}
         currentModuleTitle={moduleContent?.module.title || ''}
         nextModuleTitle={getNextModule()?.title}
         hasNextModule={!!getNextModule()}

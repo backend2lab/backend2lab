@@ -33,6 +33,7 @@ function AppContent() {
 
   // Default module ID
   const [currentModuleId, setCurrentModuleId] = useState('module-1');
+  const [pendingModuleId, setPendingModuleId] = useState<string | null>(null);
 
   // Reset confetti trigger after it's been used
   useEffect(() => {
@@ -57,11 +58,62 @@ function AppContent() {
       const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
       
       if (isValidModuleId) {
-        setCurrentModuleId(labIdFromUrl);
+        // Store the pending module ID to validate later when modules are loaded
+        setPendingModuleId(labIdFromUrl);
+      } else {
+        // Invalid module ID format, redirect to module-1
+        setCurrentModuleId('module-1');
+        const url = new URL(window.location.href);
+        url.searchParams.set('lab', 'module-1');
+        window.history.replaceState({}, '', url.toString());
       }
     }
     // --- END OF NEW LOGIC ---
-  }, []);
+  }, []); // Only run once on mount
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const labIdFromUrl = queryParams.get('lab');
+      
+      if (labIdFromUrl) {
+        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+        const moduleExists = availableModules.length > 0 ? availableModules.some(module => module.id === labIdFromUrl) : true;
+        
+        if (isValidModuleId && moduleExists) {
+          setCurrentModuleId(labIdFromUrl);
+          setOutput("");
+          setTestResults(null);
+          setActiveTab('Lab');
+          setHasAttemptedSubmit(false);
+        } else if (!isValidModuleId || !moduleExists) {
+          // Invalid module ID format or module doesn't exist, redirect to module-1
+          setCurrentModuleId('module-1');
+          setOutput("");
+          setTestResults(null);
+          setActiveTab('Lab');
+          setHasAttemptedSubmit(false);
+          const url = new URL(window.location.href);
+          url.searchParams.set('lab', 'module-1');
+          window.history.replaceState({}, '', url.toString());
+        }
+      } else {
+        // If no lab parameter, reset to default
+        setCurrentModuleId('module-1');
+        setOutput("");
+        setTestResults(null);
+        setActiveTab('Lab');
+        setHasAttemptedSubmit(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [availableModules]); // Only depend on availableModules
 
   const checkWelcomeModal = () => {
     try {
@@ -106,6 +158,50 @@ function AppContent() {
     loadModuleContent();
   }, [loadModuleContent]);
 
+  // Validate URL parameter against available modules after they're loaded
+  useEffect(() => {
+    if (availableModules.length > 0) {
+      // First, handle any pending module ID from initial load
+      if (pendingModuleId) {
+        const moduleExists = availableModules.some(module => module.id === pendingModuleId);
+        
+        if (moduleExists) {
+          setCurrentModuleId(pendingModuleId);
+        } else {
+          // Module doesn't exist, redirect to module-1
+          setCurrentModuleId('module-1');
+          const url = new URL(window.location.href);
+          url.searchParams.set('lab', 'module-1');
+          window.history.replaceState({}, '', url.toString());
+        }
+        setPendingModuleId(null); // Clear pending module ID
+        return;
+      }
+
+      // Then handle any URL parameter changes (for browser navigation)
+      const queryParams = new URLSearchParams(window.location.search);
+      const labIdFromUrl = queryParams.get('lab');
+      
+      if (labIdFromUrl) {
+        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+        const moduleExists = availableModules.some(module => module.id === labIdFromUrl);
+        
+        if (!isValidModuleId || !moduleExists) {
+          // Invalid module ID format or module doesn't exist, redirect to module-1
+          setCurrentModuleId('module-1');
+          setOutput("");
+          setTestResults(null);
+          setActiveTab('Lab');
+          setHasAttemptedSubmit(false);
+          const url = new URL(window.location.href);
+          url.searchParams.set('lab', 'module-1');
+          window.history.replaceState({}, '', url.toString());
+        }
+      }
+    }
+  }, [availableModules, pendingModuleId]); // Include pendingModuleId
+
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -145,6 +241,11 @@ function AppContent() {
     setTestResults(null);
     setActiveTab('Lab'); // Reset to Lab tab when switching modules
     setHasAttemptedSubmit(false);
+    
+    // Update URL parameter without page refresh
+    const url = new URL(window.location.href);
+    url.searchParams.set('lab', moduleId);
+    window.history.pushState({}, '', url.toString());
   };
 
   const handleRunCode = async (codeToRun?: string) => {

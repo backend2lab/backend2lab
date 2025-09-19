@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileCode, 
   faFile,
+  faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { faPython, faJava, faJs } from "@fortawesome/free-brands-svg-icons";
 import { useTheme } from '../contexts/ThemeContext';
@@ -24,9 +25,10 @@ interface Props {
   runCode?: (code: string) => void;
   readOnly?: boolean;
   hasAttemptedSubmit?: boolean;
+  onResetCode?: () => void;
 }
 
-export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit }: Props) {
+export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit, onResetCode }: Props) {
   const { theme } = useTheme();
   
   const [files, setFiles] = useState<FileTab[]>([
@@ -404,6 +406,16 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
                 }`}
               >
                 {showSolution ? 'Hide Solution' : 'Show Solution'}
+              </button>
+            )}
+            {onResetCode && activeFile.id === 'server.js' && (
+              <button 
+                onClick={onResetCode}
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 bg-slate-200 hover:bg-slate-300 text-theme-secondary"
+                title="Reset code to original"
+              >
+                <FontAwesomeIcon icon={faRotateLeft} className="text-sm" />
+                <span>Reset</span>
               </button>
             )}
           </div>

@@ -144,6 +144,12 @@ function AppContent() {
     }
   };
 
+  const handleResetCode = () => {
+    if (moduleContent) {
+      setCode(moduleContent.exerciseContent.editorFiles.server);
+    }
+  };
+
   const handleRunCodeWrapper = (codeToRun?: string) => {
     handleRunCode(currentModuleId, codeToRun, exerciseType);
   };
@@ -229,6 +235,7 @@ function AppContent() {
               solution={moduleContent.exerciseContent.solution}
               runCode={handleRunCodeWrapper}
               hasAttemptedSubmit={hasAttemptedSubmit}
+              onResetCode={handleResetCode}
             />
           </div>
           

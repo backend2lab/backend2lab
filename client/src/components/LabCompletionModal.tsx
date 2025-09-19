@@ -16,7 +16,6 @@ export function LabCompletionModal({
   onClose, 
   onNextLab, 
   currentModuleTitle, 
-  nextModuleTitle,
   hasNextModule 
 }: LabCompletionModalProps) {
   const [isVisible, setIsVisible] = useState(false);

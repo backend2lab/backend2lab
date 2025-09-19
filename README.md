@@ -1,7 +1,8 @@
 # Backend2lab
 
 
-https://github.com/user-attachments/assets/9ae710c8-8c8c-4c84-9eb1-1a622ed28488
+<img width="4074" height="2102" alt="backend2lab" src="https://github.com/user-attachments/assets/9b351f25-0f08-4982-a51f-15ffcebf87cd" />
+
 
 
 Backend2lab is an **interactive learning platform** for backend development.

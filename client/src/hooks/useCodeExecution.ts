@@ -5,6 +5,7 @@ import type { TestSuiteResult, RunResult } from "../services/moduleService";
 
 export function useCodeExecution() {
   const [code, setCode] = useState("");
+  const [originalCode, setOriginalCode] = useState("");
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,6 +25,7 @@ export function useCodeExecution() {
   // Load saved code for a module
   const loadSavedCode = useCallback((moduleId: string, defaultCode: string) => {
     setCurrentModuleId(moduleId);
+    setOriginalCode(defaultCode);
     const savedCode = ProgressService.getCode(moduleId);
     const codeToUse = savedCode || defaultCode;
     setCode(codeToUse);
@@ -94,9 +96,15 @@ export function useCodeExecution() {
     setHasAttemptedSubmit(false);
   };
 
+  // Check if current code differs from original code
+  const hasCodeChanged = useCallback(() => {
+    return code !== originalCode;
+  }, [code, originalCode]);
+
   return {
     code,
     setCode: setCodeWithSave,
+    originalCode,
     output,
     isRunning,
     isSubmitting,
@@ -107,5 +115,6 @@ export function useCodeExecution() {
     resetState,
     loadSavedCode,
     clearModuleProgress,
+    hasCodeChanged,
   };
 }

@@ -13,34 +13,22 @@ It combines **labs**, **exercises**, and a **code playground** for beginners to 
 ### Prerequisites
 - Node.js (v18 or higher)
 - pnpm (recommended) or npm
+- Go (v1.25.0 or higher)
 - Docker (optional)
 
-### Option 1: Docker (Recommended)
+### Docker (Recommended)
 ```bash
 # Start both services with Docker
 docker compose up
 ```
-
-### Option 2: Local Development
-```bash
-# Install all dependencies
-pnpm install
-
-# Start both client and server simultaneously
-pnpm run dev
-```
-
-Both options will start:
-- **Client** at `http://localhost:4200`
-- **Server** at `http://localhost:4000`
 
 ### Start Services Separately
 
 #### Start the Backend Server only
 ```bash
 cd server
-pnpm install
-pnpm run dev
+go mod download
+go run main.go
 ```
 The server will be available at `http://localhost:4000`
 
@@ -52,45 +40,6 @@ pnpm run dev
 ```
 The client will be available at `http://localhost:4200`
 
-
-## Development
-
-### Building for Production
-
-**Build both client and server:**
-```bash
-pnpm run build
-```
-
-**Build individually:**
-```bash
-# Frontend
-cd client
-pnpm run build
-
-# Backend
-cd server
-pnpm run build
-pnpm start
-```
-
-### Running Tests
-
-**Run all tests:**
-```bash
-pnpm run test
-```
-
-**Run tests individually:**
-```bash
-# Backend tests
-cd server
-pnpm test
-
-# Frontend linting
-cd client
-pnpm run lint
-```
 
 ## Docker
 
@@ -121,7 +70,7 @@ Each application can be deployed independently to different platforms.
 2. Create a feature branch
 3. Make your changes
 4. Test both client and server
-5. Submit a pull request again the dev branch
+5. Submit a pull request against the dev branch
 
 ## License
 

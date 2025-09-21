@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import CodeEditor from "./components/Editor";
+import CodeEditor from "./components/Editor"; // Editor component with conditional reset button
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { WelcomeModal } from "./components/WelcomeModal";
 import { Confetti } from "./components/Confetti";
@@ -51,6 +51,7 @@ function AppContent() {
     resetState,
     loadSavedCode,
     clearModuleProgress,
+    hasCodeChanged,
   } = useCodeExecution();
 
   const {
@@ -236,6 +237,7 @@ function AppContent() {
               runCode={handleRunCodeWrapper}
               hasAttemptedSubmit={hasAttemptedSubmit}
               onResetCode={handleResetCode}
+              hasCodeChanged={hasCodeChanged}
             />
           </div>
           

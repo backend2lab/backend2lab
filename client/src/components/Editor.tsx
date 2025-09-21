@@ -26,9 +26,10 @@ interface Props {
   readOnly?: boolean;
   hasAttemptedSubmit?: boolean;
   onResetCode?: () => void;
+  hasCodeChanged?: () => boolean; // Function to check if code has changed from original
 }
 
-export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit, onResetCode }: Props) {
+export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit, onResetCode, hasCodeChanged }: Props) {
   const { theme } = useTheme();
   
   const [files, setFiles] = useState<FileTab[]>([
@@ -408,7 +409,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
                 {showSolution ? 'Hide Solution' : 'Show Solution'}
               </button>
             )}
-            {onResetCode && activeFile.id === 'server.js' && (
+            {onResetCode && activeFile.id === 'server.js' && hasCodeChanged && hasCodeChanged() && (
               <button 
                 onClick={onResetCode}
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 bg-slate-200 hover:bg-slate-300 text-theme-secondary"

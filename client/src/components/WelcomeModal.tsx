@@ -133,7 +133,7 @@ app.listen(PORT, () => {
       
       {/* Modal */}
       <div 
-        className={`relative w-full max-w-2xl lg:max-w-7xl max-h-[80vh] lg:max-h-[70vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-y-auto lg:overflow-hidden ${
+        className={`relative w-full max-w-2xl lg:max-w-7xl max-h-[80vh] lg:max-h-[60vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-y-auto lg:overflow-hidden lg:flex lg:flex-col ${
           isVisible 
             ? 'scale-100 opacity-100 translate-y-0' 
             : 'scale-95 opacity-0 translate-y-4'
@@ -141,9 +141,9 @@ app.listen(PORT, () => {
       >
 
         {/* Two Column Layout */}
-        <div className="flex flex-col lg:flex-row lg:h-full">
+        <div className="flex flex-col lg:flex-row lg:h-full lg:min-h-0">
           {/* Left Column - Welcome Content */}
-          <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col">
+          <div className="w-full lg:w-1/2 p-6 lg:p-8 flex flex-col lg:min-h-0 lg:overflow-y-auto">
             {/* Header */}
             <div className="flex items-center space-x-4 mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">

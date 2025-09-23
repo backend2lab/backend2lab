@@ -15,10 +15,12 @@ export function useCodeExecution() {
 
   // Enhanced setCode that also saves to localStorage
   const setCodeWithSave = useCallback((newCode: string, moduleId?: string) => {
-    setCode(newCode);
+    // Ensure newCode is always a string
+    const safeCode = typeof newCode === 'string' ? newCode : String(newCode || '');
+    setCode(safeCode);
     const targetModuleId = moduleId || currentModuleId;
     if (targetModuleId) {
-      ProgressService.saveCode(targetModuleId, newCode);
+      ProgressService.saveCode(targetModuleId, safeCode);
     }
   }, [currentModuleId]);
 
@@ -39,7 +41,13 @@ export function useCodeExecution() {
   }, []);
 
   const handleRunCode = async (currentModuleId: string, codeToRun?: string, exerciseType?: 'function' | 'server') => {
-    const codeContent = codeToRun || code;
+    // Handle case where codeToRun might be an object (Monaco Editor event)
+    let codeContent: string;
+    if (codeToRun && typeof codeToRun === 'string') {
+      codeContent = codeToRun;
+    } else {
+      codeContent = code;
+    }
     
     setIsRunning(true);
     setOutput("Running code...\n");
@@ -66,11 +74,14 @@ export function useCodeExecution() {
   };
 
   const handleSubmit = async (currentModuleId: string) => {
+    // Ensure code is a string
+    const safeCode = typeof code === 'string' ? code : String(code || '');
+    
     setIsSubmitting(true);
     setOutput("Running tests...\n");
     
     try {
-      const results = await ModuleService.runTests(currentModuleId, code);
+      const results = await ModuleService.runTests(currentModuleId, safeCode);
       setTestResults(results);
       
       if (results.totalTests === 0) {

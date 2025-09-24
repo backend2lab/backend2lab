@@ -54,18 +54,6 @@ export class ProgressService {
     }
   }
 
-  /**
-   * Clear progress for a specific module
-   */
-  static clearModuleProgress(moduleId: string): void {
-    try {
-      const progress = this.getProgress();
-      delete progress[moduleId];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch (error) {
-      console.warn('Failed to clear module progress:', error);
-    }
-  }
 
   /**
    * Clear all user progress

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ThemeToggle } from "./ThemeToggle";
 import type { Module, ModuleContent } from "../services/moduleService";
@@ -12,7 +12,6 @@ interface HeaderProps {
   showModuleDropdown: boolean;
   onModuleDropdownToggle: () => void;
   onModuleChange: (moduleId: string) => void;
-  onResetProgress: () => void;
   getDifficultyColor: (difficulty: string) => string;
 }
 
@@ -24,7 +23,6 @@ export function Header({
   showModuleDropdown,
   onModuleDropdownToggle,
   onModuleChange,
-  onResetProgress,
   getDifficultyColor,
 }: HeaderProps) {
   return (
@@ -65,19 +63,8 @@ export function Header({
             </div>
           </div>
 
-          {/* Top Right:- Module Selector + Reset Progress + GitHub Link */}
+          {/* Top Right:- Module Selector + GitHub Link */}
           <div className="flex items-center space-x-3">
-            {/* Reset Progress Button */}
-            <button
-              onClick={onResetProgress}
-              disabled={loading}
-              className="flex items-center space-x-2 px-3 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Reset current module progress"
-            >
-              <FontAwesomeIcon icon={faRotateLeft} className="text-sm" />
-              <span className="text-sm font-medium font-b2l hidden sm:inline">Reset</span>
-            </button>
-            
             <div className="relative module-dropdown">
               <button 
                 onClick={onModuleDropdownToggle}

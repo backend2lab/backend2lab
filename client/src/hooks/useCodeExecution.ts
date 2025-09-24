@@ -34,11 +34,6 @@ export function useCodeExecution() {
     return codeToUse;
   }, []);
 
-  // Clear saved progress for current module
-  const clearModuleProgress = useCallback((moduleId: string) => {
-    ProgressService.clearModuleProgress(moduleId);
-    setCode("");
-  }, []);
 
   const handleRunCode = async (currentModuleId: string, codeToRun?: string, exerciseType?: 'function' | 'server') => {
     // Handle case where codeToRun might be an object (Monaco Editor event)
@@ -125,7 +120,6 @@ export function useCodeExecution() {
     handleSubmit,
     resetState,
     loadSavedCode,
-    clearModuleProgress,
     hasCodeChanged,
   };
 }

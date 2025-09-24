@@ -50,7 +50,6 @@ function AppContent() {
     handleSubmit,
     resetState,
     loadSavedCode,
-    clearModuleProgress,
     hasCodeChanged,
   } = useCodeExecution();
 
@@ -137,13 +136,6 @@ function AppContent() {
     setActiveTab('Lab');
   };
 
-  const handleResetProgress = () => {
-    if (moduleContent) {
-      clearModuleProgress(currentModuleId);
-      setCode(moduleContent.exerciseContent.editorFiles.server);
-      resetState();
-    }
-  };
 
   const handleResetCode = () => {
     if (moduleContent) {
@@ -212,7 +204,6 @@ function AppContent() {
         showModuleDropdown={showModuleDropdown}
         onModuleDropdownToggle={() => setShowModuleDropdown(!showModuleDropdown)}
         onModuleChange={handleModuleChangeWithReset}
-        onResetProgress={handleResetProgress}
         getDifficultyColor={getDifficultyColor}
       />
 

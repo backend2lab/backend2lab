@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCode, faPlay, faCheckCircle, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faJs } from '@fortawesome/free-brands-svg-icons';
+import { faArrowCircleRight, faCheckCircle, faCode, faPlay, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Editor from '@monaco-editor/react';
+import { useEffect, useState } from 'react';
+import { startTour } from '../config/tourConfig';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface WelcomeModalProps {
@@ -119,27 +120,31 @@ app.listen(PORT, () => {
     onClose();
   };
 
+  const handleStartTour = () => {
+    onClose();
+    startTour();
+  };
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
     >
       {/* Backdrop */}
-      <div 
+      <div
         className={`absolute inset-0 bg-black transition-opacity duration-300 ${
-          isVisible ? 'opacity-60' : 'opacity-0'
+          isVisible ? "opacity-60" : "opacity-0"
         }`}
       />
-      
+
       {/* Modal */}
-      <div 
+      <div
         className={`relative w-full max-w-2xl lg:max-w-7xl max-h-[80vh] lg:max-h-[60vh] bg-theme-surface border-2 border-theme-primary rounded-2xl shadow-b2l-lg transform transition-all duration-300 overflow-y-auto lg:overflow-hidden lg:flex lg:flex-col ${
-          isVisible 
-            ? 'scale-100 opacity-100 translate-y-0' 
-            : 'scale-95 opacity-0 translate-y-4'
+          isVisible
+            ? "scale-100 opacity-100 translate-y-0"
+            : "scale-95 opacity-0 translate-y-4"
         }`}
       >
-
         {/* Two Column Layout */}
         <div className="flex flex-col lg:flex-row lg:h-full lg:min-h-0">
           {/* Left Column - Welcome Content */}
@@ -147,7 +152,9 @@ app.listen(PORT, () => {
             {/* Header */}
             <div className="flex items-center space-x-4 mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-b2l-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
-                <span className="text-white font-bold text-2xl font-b2l">B2L</span>
+                <span className="text-white font-bold text-2xl font-b2l">
+                  B2L
+                </span>
               </div>
               <div className="min-w-0 flex-1">
                 <h1 className="text-2xl lg:text-3xl font-bold text-theme-primary font-b2l mb-1">
@@ -159,43 +166,62 @@ app.listen(PORT, () => {
             {/* Platform Summary */}
             <div className="bg-theme-background rounded-xl p-6 border-2 border-theme-primary mb-6">
               <p className="text-theme-secondary leading-relaxed mb-4">
-                Backend2Lab is an <strong className="text-theme-primary">interactive learning platform</strong> that combines 
-                hands-on labs, practical exercises, and a real-time code playground. Learn backend development 
-                concepts in a real Node.js environment, directly from your browser.
+                Backend2Lab is an{" "}
+                <strong className="text-theme-primary">
+                  interactive learning platform
+                </strong>{" "}
+                that combines hands-on labs, practical exercises, and a
+                real-time code playground. Learn backend development concepts in
+                a real Node.js environment, directly from your browser.
               </p>
-              
+
               {/* Features Grid */}
               <div className="grid grid-cols-1 gap-4 mt-6">
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <FontAwesomeIcon icon={faCode} className="text-white text-sm" />
+                    <FontAwesomeIcon
+                      icon={faCode}
+                      className="text-white text-sm"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-theme-primary text-sm mb-1">Interactive Labs</h3>
+                    <h3 className="font-semibold text-theme-primary text-sm mb-1">
+                      Interactive Labs
+                    </h3>
                     <p className="text-theme-secondary text-xs leading-relaxed">
                       Learn concepts through guided, hands-on tutorials
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <FontAwesomeIcon icon={faPlay} className="text-white text-sm" />
+                    <FontAwesomeIcon
+                      icon={faPlay}
+                      className="text-white text-sm"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-theme-primary text-sm mb-1">Live Code Playground</h3>
+                    <h3 className="font-semibold text-theme-primary text-sm mb-1">
+                      Live Code Playground
+                    </h3>
                     <p className="text-theme-secondary text-xs leading-relaxed">
                       Write, run, and test code in real-time
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-white text-sm" />
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      className="text-white text-sm"
+                    />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-theme-primary text-sm mb-1">Instant Feedback</h3>
+                    <h3 className="font-semibold text-theme-primary text-sm mb-1">
+                      Instant Feedback
+                    </h3>
                     <p className="text-theme-secondary text-xs leading-relaxed">
                       Get immediate test results and validation
                     </p>
@@ -210,17 +236,28 @@ app.listen(PORT, () => {
                 Ready to start your backend journey?
               </h3>
               <p className="text-theme-secondary mb-4">
-                Begin with Module 1 to learn the fundamentals, or explore any module that interests you. 
-                Each module includes both lab content and hands-on exercises.
+                Begin with Module 1 to learn the fundamentals, or explore any
+                module that interests you. Each module includes both lab content
+                and hands-on exercises.
               </p>
-              
-              <div className="flex flex-col gap-3">
+
+              <div className="flex flex-row items-center w-full gap-3">
                 <button
                   onClick={handleStartLearning}
-                  className="bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+                  className="bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 w-1/2"
                 >
                   <FontAwesomeIcon icon={faRocket} className="text-sm" />
                   <span>Start Learning</span>
+                </button>
+                <button
+                  onClick={handleStartTour}
+                  className="bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 w-1/2"
+                >
+                  <span>Take a tour</span>
+                  <FontAwesomeIcon
+                    icon={faArrowCircleRight}
+                    className="text-sm"
+                  />
                 </button>
               </div>
             </div>
@@ -233,10 +270,14 @@ app.listen(PORT, () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <FontAwesomeIcon icon={faJs} className="text-yellow-400" />
-                  <span className="text-sm font-medium text-theme-primary font-b2l">Live Demo</span>
+                  <span className="text-sm font-medium text-theme-primary font-b2l">
+                    Live Demo
+                  </span>
                   <div className="flex items-center space-x-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs text-green-500 font-medium">Running</span>
+                    <span className="text-xs text-green-500 font-medium">
+                      Running
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -257,21 +298,22 @@ app.listen(PORT, () => {
               <Editor
                 height="100%"
                 defaultLanguage="javascript"
-                value={demoCode + (showCursor && !isAnimating ? '|' : '')}
+                value={demoCode + (showCursor && !isAnimating ? "|" : "")}
                 onChange={() => {}} // Disable manual editing during animation
-                options={{ 
+                options={{
                   readOnly: true,
                   minimap: { enabled: false },
                   fontSize: 13,
                   lineHeight: 20,
-                  fontFamily: "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+                  fontFamily:
+                    "'Geist Mono', 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
                   lineNumbers: "on",
                   roundedSelection: false,
                   scrollBeyondLastLine: false,
                   automaticLayout: true,
                   scrollbar: {
-                    vertical: 'visible',
-                    horizontal: 'visible',
+                    vertical: "visible",
+                    horizontal: "visible",
                     verticalScrollbarSize: 8,
                     horizontalScrollbarSize: 8,
                     useShadows: false,
@@ -284,16 +326,16 @@ app.listen(PORT, () => {
                   glyphMargin: false,
                   folding: false,
                   lineNumbersMinChars: 2,
-                  renderLineHighlight: 'line',
+                  renderLineHighlight: "line",
                   selectOnLineNumbers: true,
-                  wordWrap: 'on',
-                  wrappingStrategy: 'advanced',
+                  wordWrap: "on",
+                  wrappingStrategy: "advanced",
                   suggestOnTriggerCharacters: true,
-                  acceptSuggestionOnEnter: 'on',
-                  tabCompletion: 'on',
-                  wordBasedSuggestions: 'off',
+                  acceptSuggestionOnEnter: "on",
+                  tabCompletion: "on",
+                  wordBasedSuggestions: "off",
                   parameterHints: { enabled: false },
-                  autoIndent: 'full',
+                  autoIndent: "full",
                   formatOnPaste: false,
                   formatOnType: false,
                   dragAndDrop: false,
@@ -301,22 +343,25 @@ app.listen(PORT, () => {
                   colorDecorators: false,
                   bracketPairColorization: { enabled: true },
                   guides: { bracketPairs: true, indentation: false },
-                  renderWhitespace: 'none',
-                  cursorBlinking: 'blink',
-                  cursorStyle: 'line',
+                  renderWhitespace: "none",
+                  cursorBlinking: "blink",
+                  cursorStyle: "line",
                   smoothScrolling: false,
                   mouseWheelScrollSensitivity: 1,
                   fastScrollSensitivity: 5,
                   padding: { top: 8, bottom: 8 },
                   contextmenu: true,
-                  quickSuggestions: { other: true, comments: false, strings: false },
+                  quickSuggestions: {
+                    other: true,
+                    comments: false,
+                    strings: false,
+                  },
                   hover: { enabled: false },
                 }}
-                theme={theme === 'dark' ? 'vs-dark' : 'vs'}
+                theme={theme === "dark" ? "vs-dark" : "vs"}
                 className="rounded-none"
               />
             </div>
-
           </div>
         </div>
       </div>

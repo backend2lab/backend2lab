@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import CodeEditor from "./components/Editor"; // Editor component with conditional reset button
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { WelcomeModal } from "./components/WelcomeModal";
+import { useEffect, useState } from "react";
 import { Confetti } from "./components/Confetti";
-import { LabCompletionModal } from "./components/LabCompletionModal";
-import { ScreenLockModal } from "./components/ScreenLockModal";
-import { Header } from "./components/Header";
 import { ContentPanel } from "./components/ContentPanel";
-import { OutputPanel } from "./components/OutputPanel";
-import { LoadingState } from "./components/LoadingState";
+import CodeEditor from "./components/Editor"; // Editor component with conditional reset button
 import { ErrorState } from "./components/ErrorState";
-import { useModuleManagement } from "./hooks/useModuleManagement";
-import { useUrlHandling } from "./hooks/useUrlHandling";
+import { Header } from "./components/Header";
+import { LabCompletionModal } from "./components/LabCompletionModal";
+import { LoadingState } from "./components/LoadingState";
+import { OutputPanel } from "./components/OutputPanel";
+import { ScreenLockModal } from "./components/ScreenLockModal";
+import { WelcomeModal } from "./components/WelcomeModal";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import { useCodeExecution } from "./hooks/useCodeExecution";
 import { useModals } from "./hooks/useModals";
+import { useModuleManagement } from "./hooks/useModuleManagement";
 import { useScreenSize } from "./hooks/useScreenSize";
+import { useUrlHandling } from "./hooks/useUrlHandling";
 
 type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 type Tab = 'Lab' | 'Exercise';

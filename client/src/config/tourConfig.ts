@@ -14,8 +14,9 @@ export const startTour = () => {
          {
            element: "#tab-lab",
            popover: {
-             title: "Create Your First Project",
-             description: "Click here to start your first secure project.",
+             title: "Labs",
+             description:
+               "This is where you can find interactive labs to practice your skills.",
              side: "bottom",
              align: "center",
            },
@@ -23,21 +24,31 @@ export const startTour = () => {
          {
            element: "#tab-exercise",
            popover: {
-             title: "Manage Your Secrets",
+             title: "Check Out Exercises",
              description:
-               "This is where you can add and manage your environment secrets safely.",
+               "This is where you can find exercises to practice what you've learned in the labs.",
              side: "bottom",
              align: "center",
            },
          },
          {
-           element: ".invite-team-btn",
+           element: "#code-editor",
            popover: {
-             title: "Invite Your Team",
+             title: "Code Editor",
              description:
-               "Invite your teammates to collaborate securely on this workspace.",
-             side: "left",
-             align: "start",
+               "This is your code editor where you can write and test your code.",
+             side: "bottom",
+             align: "center",
+           },
+         },
+         {
+           element: "#packages-json-editor",
+           popover: {
+             title: "Packages JSON Editor",
+             description:
+               "This is your packages.json editor where you can manage your project dependencies.",
+             side: "bottom",
+             align: "center",
            },
          },
        ],

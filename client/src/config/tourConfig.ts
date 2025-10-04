@@ -32,7 +32,7 @@ export const startTour = () => {
            },
          },
          {
-           element: "#code-editor",
+           element: "#serverjs",
            popover: {
              title: "Code Editor",
              description:
@@ -42,11 +42,41 @@ export const startTour = () => {
            },
          },
          {
-           element: "#packages-json-editor",
+           element: "#packagejson",
            popover: {
              title: "Packages JSON Editor",
              description:
                "This is your packages.json editor where you can manage your project dependencies.",
+             side: "bottom",
+             align: "center",
+           },
+         },
+         {
+           element: "#console",
+           popover: {
+             title: "Console",
+             description:
+               "This is your console where you can see the output of your code.",
+             side: "bottom",
+             align: "center",
+           },
+         },
+         {
+           element: "#runButton",
+           popover: {
+             title: "Run Code",
+             description:
+               "Click here to run your code and see the output in the console.",
+             side: "bottom",
+             align: "center",
+           },
+         },
+         {
+           element: "#submitButton",
+           popover: {
+             title: "Submit Code",
+             description:
+               "Click here to submit your code and see the output in the console.",
              side: "bottom",
              align: "center",
            },

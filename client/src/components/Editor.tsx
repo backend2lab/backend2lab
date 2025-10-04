@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import Editor from "@monaco-editor/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faJava, faJs, faPython } from "@fortawesome/free-brands-svg-icons";
 import {
-  faFileCode, 
   faFile,
+  faFileCode,
   faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { faPython, faJava, faJs } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Editor from "@monaco-editor/react";
+import { useEffect, useState } from "react";
 import { useTheme } from '../contexts/ThemeContext';
 
 interface FileTab {
@@ -15,6 +15,7 @@ interface FileTab {
   language: string;
   content: string;
   isActive: boolean;
+  tourId?: string; // Optional tour ID for guided tours
 }
 
 interface Props {
@@ -38,14 +39,16 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
       name: 'server.js',
       language: 'javascript',
       content: code,
-      isActive: true
+      isActive: true,
+      tourId: 'serverjs'
     },
     {
       id: 'package.json',
       name: 'package.json',
       language: 'json',
       content: packageJson,
-      isActive: false
+      isActive: false,
+      tourId: 'packagejson'
     }
   ]);
 
@@ -153,6 +156,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
           <div
             key={file.id}
             onClick={() => handleTabClick(file.id)}
+            id={file.tourId} // Add tour ID for guided tours
             className={`flex items-center space-x-2 px-4 h-full cursor-pointer border-r border-theme-primary flex-1 transition-colors ${
               file.isActive 
                 ? 'bg-theme-background text-theme-primary' 

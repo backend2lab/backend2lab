@@ -119,5 +119,26 @@ export const startTour = (theme?: string) => {
     ],
   });
 
+  const selectors = [
+      "#moduleTitle",
+      "#moduleSelector",
+      "#tab-lab",
+      "#tab-exercise",
+      "#serverjs",
+      "#packagejson",
+      "#console",
+      "#runButton",
+      "#submitButton",
+  ];
+  
+   const missing = selectors.filter((sel) => !document.querySelector(sel));
+
+   if (missing.length > 0) {
+     console.warn(
+       `[Tour Warning] Missing selectors: ${missing.join(", ")}. Skipping tour.`
+     );
+     return; 
+   }
+
   driverObj.drive();
 };

@@ -2,7 +2,7 @@ import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 
 
-export const startTour = (theme?: string) => {
+export const startTour = (theme?: "dark" | "light") => {
   const popoverClass =
     theme === "dark"
       ? "dark bg-theme-background text-theme-primary"
@@ -25,7 +25,6 @@ export const startTour = (theme?: string) => {
             "This displays the current module's title and its difficulty level.",
           side: "bottom",
           align: "center",
-          
         },
       },
       {
@@ -36,7 +35,6 @@ export const startTour = (theme?: string) => {
             "This shows all available modules and lets you choose one to work on.",
           side: "bottom",
           align: "center",
-          
         },
       },
       {
@@ -47,7 +45,6 @@ export const startTour = (theme?: string) => {
             "This is where you can find interactive labs to practice your skills.",
           side: "bottom",
           align: "center",
-         
         },
       },
       {
@@ -58,7 +55,6 @@ export const startTour = (theme?: string) => {
             "This is where you can find exercises to practice what you've learned in the labs.",
           side: "bottom",
           align: "center",
-         
         },
       },
       {
@@ -69,7 +65,6 @@ export const startTour = (theme?: string) => {
             "This is your code editor where you can write and test your code.",
           side: "bottom",
           align: "center",
-       
         },
       },
       {
@@ -80,7 +75,6 @@ export const startTour = (theme?: string) => {
             "This is your packages.json editor where you can manage your project dependencies.",
           side: "bottom",
           align: "center",
-        
         },
       },
       {
@@ -91,7 +85,6 @@ export const startTour = (theme?: string) => {
             "This is your console where you can see the output of your code.",
           side: "bottom",
           align: "center",
-       
         },
       },
       {
@@ -102,7 +95,6 @@ export const startTour = (theme?: string) => {
             "Click here to run your code and see the output in the console.",
           side: "bottom",
           align: "center",
-      
         },
       },
       {
@@ -113,32 +105,29 @@ export const startTour = (theme?: string) => {
             "Click here to submit your code and see the output in the console.",
           side: "bottom",
           align: "center",
-        
         },
       },
     ],
   });
 
   const selectors = [
-      "#moduleTitle",
-      "#moduleSelector",
-      "#tab-lab",
-      "#tab-exercise",
-      "#serverjs",
-      "#packagejson",
-      "#console",
-      "#runButton",
-      "#submitButton",
+    "#moduleTitle",
+    "#moduleSelector",
+    "#tab-lab",
+    "#tab-exercise",
+    "#serverjs",
+    "#packagejson",
+    "#console",
+    "#runButton",
+    "#submitButton",
   ];
-  
-   const missing = selectors.filter((sel) => !document.querySelector(sel));
 
-   if (missing.length > 0) {
-     console.warn(
-       `Missing selectors: ${missing.join(", ")}. Skipping tour.`
-     );
-     return; 
-   }
+  const missing = selectors.filter((sel) => !document.querySelector(sel));
+
+  if (missing.length > 0) {
+    console.warn(`Missing selectors: ${missing.join(", ")}. Skipping tour.`);
+    return;
+  }
 
   driverObj.drive();
 };

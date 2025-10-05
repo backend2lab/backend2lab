@@ -122,7 +122,7 @@ app.listen(PORT, () => {
 
   const handleStartTour = () => {
     onClose();
-    startTour();
+    startTour(theme);
   };
 
   return (

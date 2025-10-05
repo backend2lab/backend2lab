@@ -135,7 +135,7 @@ export const startTour = (theme?: string) => {
 
    if (missing.length > 0) {
      console.warn(
-       `[Tour Warning] Missing selectors: ${missing.join(", ")}. Skipping tour.`
+       `Missing selectors: ${missing.join(", ")}. Skipping tour.`
      );
      return; 
    }

@@ -3,12 +3,10 @@ import "driver.js/dist/driver.css";
 
 
 export const startTour = (theme?: string) => {
-  // theme === "dark" ? "vs-dark" : "vs"
   const popoverClass =
     theme === "dark"
       ? "dark bg-theme-background text-theme-primary"
       : "light bg-theme-background text-theme-primary";
-  // .driver-popover-arrow
   const driverObj = driver({
     showProgress: true,
     allowClose: true,
@@ -27,7 +25,7 @@ export const startTour = (theme?: string) => {
             "This displays the current module's title and its difficulty level.",
           side: "bottom",
           align: "center",
-          popoverClass,
+          
         },
       },
       {
@@ -38,7 +36,7 @@ export const startTour = (theme?: string) => {
             "This shows all available modules and lets you choose one to work on.",
           side: "bottom",
           align: "center",
-          popoverClass,
+          
         },
       },
       {
@@ -49,7 +47,7 @@ export const startTour = (theme?: string) => {
             "This is where you can find interactive labs to practice your skills.",
           side: "bottom",
           align: "center",
-          popoverClass,
+         
         },
       },
       {
@@ -60,7 +58,7 @@ export const startTour = (theme?: string) => {
             "This is where you can find exercises to practice what you've learned in the labs.",
           side: "bottom",
           align: "center",
-          popoverClass,
+         
         },
       },
       {
@@ -71,18 +69,18 @@ export const startTour = (theme?: string) => {
             "This is your code editor where you can write and test your code.",
           side: "bottom",
           align: "center",
-          popoverClass,
+       
         },
       },
       {
         element: "#packagejson",
         popover: {
-          title: "Packages JSON Editor",
+          title: "package.json Editor",
           description:
             "This is your packages.json editor where you can manage your project dependencies.",
           side: "bottom",
           align: "center",
-          popoverClass,
+        
         },
       },
       {
@@ -93,7 +91,7 @@ export const startTour = (theme?: string) => {
             "This is your console where you can see the output of your code.",
           side: "bottom",
           align: "center",
-          popoverClass,
+       
         },
       },
       {
@@ -104,7 +102,7 @@ export const startTour = (theme?: string) => {
             "Click here to run your code and see the output in the console.",
           side: "bottom",
           align: "center",
-          popoverClass,
+      
         },
       },
       {
@@ -115,7 +113,7 @@ export const startTour = (theme?: string) => {
             "Click here to submit your code and see the output in the console.",
           side: "bottom",
           align: "center",
-          popoverClass,
+        
         },
       },
     ],

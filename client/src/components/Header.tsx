@@ -17,6 +17,8 @@ interface HeaderProps {
   getCurrentLanguage: () => 'js' | 'python';
   getCurrentBaseModule: () => Module[];
   getDifficultyColor: (difficulty: string) => string;
+  showLanguageDropdown: boolean;
+  onLanguageDropdownToggle: () => void;
 }
 
 export function Header({
@@ -32,6 +34,8 @@ export function Header({
   getCurrentLanguage,
   getCurrentBaseModule,
   getDifficultyColor,
+  showLanguageDropdown,
+  onLanguageDropdownToggle,
 }: HeaderProps) {
   return (
     <header className="bg-theme-surface border-b border-theme-primary shadow-sm">
@@ -124,32 +128,54 @@ export function Header({
             </div>
             
             {/* Language Selector */}
-            <div className="flex items-center space-x-1">
-              {getCurrentBaseModule().length > 1 && (
-                <>
-                  <button
-                    onClick={() => onLanguageChange('js')}
-                    className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      getCurrentLanguage() === 'js'
-                        ? 'bg-b2l-primary text-white'
-                        : 'bg-slate-200 dark:bg-neutral-700 text-theme-primary hover:bg-slate-300 dark:hover:bg-neutral-600'
-                    }`}
-                  >
-                    JS
-                  </button>
-                  <button
-                    onClick={() => onLanguageChange('python')}
-                    className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      getCurrentLanguage() === 'python'
-                        ? 'bg-b2l-primary text-white'
-                        : 'bg-slate-200 dark:bg-neutral-700 text-theme-primary hover:bg-slate-300 dark:hover:bg-neutral-600'
-                    }`}
-                  >
-                    PYTHON
-                  </button>
-                </>
-              )}
-            </div>
+            {getCurrentBaseModule().length > 1 && (
+              <div className="relative language-dropdown">
+                <button 
+                  onClick={onLanguageDropdownToggle}
+                  disabled={loading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-theme-surface border border-theme-primary rounded-lg text-theme-primary hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="text-sm font-medium font-b2l">
+                    {getCurrentLanguage().toUpperCase()}
+                  </span>
+                  <FontAwesomeIcon 
+                    icon={faChevronDown} 
+                    className={`text-xs transition-transform ${showLanguageDropdown ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                
+                {showLanguageDropdown && (
+                  <div className="absolute right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-lg z-50 language-dropdown min-w-32">
+                    <button
+                      onClick={() => {
+                        onLanguageChange('js');
+                        onLanguageDropdownToggle();
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors border-b border-theme-primary ${
+                        getCurrentLanguage() === 'js'
+                          ? 'bg-b2l-primary text-white' 
+                          : 'text-theme-primary'
+                      }`}
+                    >
+                      <span className="text-sm font-medium">JavaScript</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        onLanguageChange('python');
+                        onLanguageDropdownToggle();
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors ${
+                        getCurrentLanguage() === 'python'
+                          ? 'bg-b2l-primary text-white' 
+                          : 'text-theme-primary'
+                      }`}
+                    >
+                      <span className="text-sm font-medium">Python</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
             
             <ThemeToggle />
             {/* GitHub Link Icon */}

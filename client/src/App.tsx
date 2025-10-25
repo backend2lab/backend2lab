@@ -23,6 +23,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('Lab');
   const [exerciseType, setExerciseType] = useState<'function' | 'server'>('function');
   const [showModuleDropdown, setShowModuleDropdown] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
   // Custom hooks
   const {
@@ -92,23 +93,26 @@ function AppContent() {
     }
   }, [moduleContent, currentModuleId, loadSavedCode]);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
       if (!target.closest('.module-dropdown')) {
         setShowModuleDropdown(false);
       }
+      if (!target.closest('.language-dropdown')) {
+        setShowLanguageDropdown(false);
+      }
     };
 
-    if (showModuleDropdown) {
+    if (showModuleDropdown || showLanguageDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showModuleDropdown]);
+  }, [showModuleDropdown, showLanguageDropdown]);
 
   const handleNextLab = () => {
     const currentModuleIndex = availableModules.findIndex(module => module.id === currentModuleId);
@@ -213,6 +217,8 @@ function AppContent() {
         getCurrentLanguage={getCurrentLanguage}
         getCurrentBaseModule={getCurrentBaseModule}
         getDifficultyColor={getDifficultyColor}
+        showLanguageDropdown={showLanguageDropdown}
+        onLanguageDropdownToggle={() => setShowLanguageDropdown(!showLanguageDropdown)}
       />
 
       {/* Main Layout */}

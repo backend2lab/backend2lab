@@ -166,10 +166,11 @@ func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
 	if strings.HasSuffix(moduleId, "-python") {
 		baseModuleId := strings.TrimSuffix(moduleId, "-python")
 		modulePath = filepath.Join(d.modulesPath, baseModuleId, "python", "exercise")
-		dockerfilePath = filepath.Join(d.modulesPath, "../..", "Dockerfile.python-runner")
+		dockerfilePath = "Dockerfile.python-runner"
 	} else {
-		modulePath = filepath.Join(d.modulesPath, moduleId, "exercise")
-		dockerfilePath = filepath.Join(d.modulesPath, "../..", "Dockerfile.module-runner")
+		baseModuleId := strings.TrimSuffix(moduleId, "-js")
+		modulePath = filepath.Join(d.modulesPath, baseModuleId, "js", "exercise")
+		dockerfilePath = "Dockerfile.module-runner"
 	}
 	
 	// Check if module exists
@@ -523,7 +524,7 @@ func (d *DockerRunner) runContainer(containerID string, timeout time.Duration) (
 	return strings.TrimSpace(output.String()), nil
 }
 
-// parseTestResults parses Mocha JSON output into TestSuiteResult
+// parseTestResults parses test output into TestSuiteResult
 func (d *DockerRunner) parseTestResults(moduleId, output string, executionTime time.Duration) (*models.TestSuiteResult, error) {	
 	// Handle empty output
 	if strings.TrimSpace(output) == "" {
@@ -535,6 +536,11 @@ func (d *DockerRunner) parseTestResults(moduleId, output string, executionTime t
 			Results:       []models.TestResult{},
 			ExecutionTime: executionTime.Milliseconds(),
 		}, nil
+	}
+
+	// Check if this is a Python module and parse pytest output
+	if strings.HasSuffix(moduleId, "-python") {
+		return d.parsePytestResults(moduleId, output, executionTime)
 	}
 
 	// Try to parse as JSON (Mocha JSON reporter) - same as non-Docker runner
@@ -678,4 +684,135 @@ func (d *DockerRunner) cleanupContainer(containerID string) {
 	if err != nil {
 		logrus.Warnf("Failed to remove container %s: %v", containerID, err)
 	}
+}
+
+// parsePytestResults parses pytest output into TestSuiteResult
+func (d *DockerRunner) parsePytestResults(moduleId, output string, executionTime time.Duration) (*models.TestSuiteResult, error) {
+	var results []models.TestResult
+	lines := strings.Split(output, "\n")
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		
+		// Look for test results in pytest format
+		// Examples:
+		// "test_greet_user_alice PASSED"
+		// "test_greet_user_bob FAILED"
+		// "test_greet_user_charlie.py::TestGreetingFunction::test_greet_user_charlie PASSED"
+		
+		if strings.Contains(line, " PASSED") {
+			// Extract test name
+			testName := strings.TrimSuffix(line, " PASSED")
+			// Remove file path if present
+			if strings.Contains(testName, "::") {
+				parts := strings.Split(testName, "::")
+				testName = parts[len(parts)-1]
+			}
+			results = append(results, models.TestResult{
+				TestName: testName,
+				Passed:   true,
+			})
+		} else if strings.Contains(line, " FAILED") {
+			// Extract test name
+			testName := strings.TrimSuffix(line, " FAILED")
+			// Remove file path if present
+			if strings.Contains(testName, "::") {
+				parts := strings.Split(testName, "::")
+				testName = parts[len(parts)-1]
+			}
+			results = append(results, models.TestResult{
+				TestName: testName,
+				Passed:   false,
+				Error:    &[]string{"Test failed"}[0],
+			})
+		} else if strings.Contains(line, "PASSED") && !strings.Contains(line, "::") {
+			// Handle pytest format: "test_name PASSED [percentage]"
+			parts := strings.Fields(line)
+			if len(parts) >= 2 {
+				testName := parts[0]
+				results = append(results, models.TestResult{
+					TestName: testName,
+					Passed:   true,
+				})
+			}
+		} else if strings.Contains(line, "FAILED") && !strings.Contains(line, "::") {
+			// Handle pytest format: "test_name FAILED [percentage]"
+			parts := strings.Fields(line)
+			if len(parts) >= 2 {
+				testName := parts[0]
+				results = append(results, models.TestResult{
+					TestName: testName,
+					Passed:   false,
+					Error:    &[]string{"Test failed"}[0],
+				})
+			}
+		}
+	}
+
+	// If no individual test results found, look for summary
+	if len(results) == 0 {
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			// Look for pytest summary like "8 passed in 0.04s" or "1 failed, 7 passed"
+			if strings.Contains(line, "passed") && strings.Contains(line, "failed") {
+				// Parse "X failed, Y passed" format
+				re := regexp.MustCompile(`(\d+)\s+failed.*?(\d+)\s+passed`)
+				matches := re.FindStringSubmatch(line)
+				if len(matches) >= 3 {
+					failedTests, _ := strconv.Atoi(matches[1])
+					passedTests, _ := strconv.Atoi(matches[2])
+					
+					// Create generic results
+					for i := 0; i < passedTests; i++ {
+						results = append(results, models.TestResult{
+							TestName: fmt.Sprintf("test_%d", i+1),
+							Passed:   true,
+						})
+					}
+					for i := 0; i < failedTests; i++ {
+						results = append(results, models.TestResult{
+							TestName: fmt.Sprintf("test_%d", passedTests+i+1),
+							Passed:   false,
+							Error:    &[]string{"Test failed"}[0],
+						})
+					}
+				}
+			} else if strings.Contains(line, "passed") && !strings.Contains(line, "failed") {
+				// Parse "X passed in Ys" format
+				re := regexp.MustCompile(`(\d+)\s+passed`)
+				matches := re.FindStringSubmatch(line)
+				if len(matches) >= 2 {
+					passedTests, _ := strconv.Atoi(matches[1])
+					
+					// Create generic results
+					for i := 0; i < passedTests; i++ {
+						results = append(results, models.TestResult{
+							TestName: fmt.Sprintf("test_%d", i+1),
+							Passed:   true,
+						})
+					}
+				}
+			}
+		}
+	}
+
+	passedTests := 0
+	failedTests := 0
+	for _, result := range results {
+		if result.Passed {
+			passedTests++
+		} else {
+			failedTests++
+		}
+	}
+
+	return &models.TestSuiteResult{
+		ModuleID:      moduleId,
+		TotalTests:    len(results),
+		PassedTests:   passedTests,
+		FailedTests:   failedTests,
+		Results:       results,
+		ExecutionTime: executionTime.Milliseconds(),
+		ExerciseType:  "python",
+	}, nil
 }

@@ -30,10 +30,13 @@ func NewTestRunner() *TestRunner {
 	modulesPath := filepath.Join("src", "modules")
 	
 	// Initialize Docker runner
+	logrus.Infof("Initializing Docker runner...")
 	dockerRunner, err := NewDockerRunner()
 	if err != nil {
 		logrus.Warnf("Failed to initialize Docker runner, falling back to direct execution: %v", err)
 		dockerRunner = nil
+	} else {
+		logrus.Infof("Docker runner initialized successfully")
 	}
 	
 	return &TestRunner{
@@ -575,8 +578,21 @@ func (t *TestRunner) killProcessOnPort(port int) error {
 	return nil
 }
 
-// runPythonCode executes Python code for a module
+// runPythonCode executes Python code for a module using Docker
 func (t *TestRunner) runPythonCode(moduleId, inputCode string, startTime time.Time) (*models.RunResult, error) {
+	// Use Docker runner for Python code execution if available
+	if t.dockerRunner != nil {
+		logrus.Infof("Using Docker runner for Python code execution: %s", moduleId)
+		return t.dockerRunner.RunCode(moduleId, inputCode)
+	}
+
+	// Fallback to direct execution if Docker is not available
+	logrus.Warnf("Docker runner not available, falling back to direct execution for: %s", moduleId)
+	return t.runPythonCodeDirect(moduleId, inputCode, startTime)
+}
+
+// runPythonCodeDirect executes Python code for a module directly (fallback)
+func (t *TestRunner) runPythonCodeDirect(moduleId, inputCode string, startTime time.Time) (*models.RunResult, error) {
 	// Extract base module name (e.g., "module-1" from "module-1-python")
 	baseModuleId := strings.TrimSuffix(moduleId, "-python")
 	modulePath := filepath.Join(t.modulesPath, baseModuleId, "python")
@@ -636,8 +652,21 @@ func (t *TestRunner) runPythonCode(moduleId, inputCode string, startTime time.Ti
 	}, nil
 }
 
-// runPythonTests runs tests for Python modules
+// runPythonTests runs tests for Python modules using Docker
 func (t *TestRunner) runPythonTests(moduleId, inputCode string, startTime time.Time) (*models.TestSuiteResult, error) {
+	// Use Docker runner for Python tests if available
+	if t.dockerRunner != nil {
+		logrus.Infof("Using Docker runner for Python tests: %s", moduleId)
+		return t.dockerRunner.RunTests(moduleId, inputCode)
+	}
+
+	// Fallback to direct execution if Docker is not available
+	logrus.Warnf("Docker runner not available, falling back to direct execution for: %s", moduleId)
+	return t.runPythonTestsDirect(moduleId, inputCode, startTime)
+}
+
+// runPythonTestsDirect runs tests for Python modules directly (fallback)
+func (t *TestRunner) runPythonTestsDirect(moduleId, inputCode string, startTime time.Time) (*models.TestSuiteResult, error) {
 	// Extract base module name (e.g., "module-1" from "module-1-python")
 	baseModuleId := strings.TrimSuffix(moduleId, "-python")
 	modulePath := filepath.Join(t.modulesPath, baseModuleId, "python")

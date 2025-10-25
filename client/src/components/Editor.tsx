@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,23 +27,55 @@ interface Props {
   hasAttemptedSubmit?: boolean;
   onResetCode?: () => void;
   hasCodeChanged?: () => boolean; // Function to check if code has changed from original
+  language?: 'js' | 'python'; // Language of the current module
 }
 
-export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit, onResetCode, hasCodeChanged }: Props) {
+export default function CodeEditor({ code, onCodeChange, packageJson, solution, runCode, readOnly, hasAttemptedSubmit, onResetCode, hasCodeChanged, language = 'js' }: Props) {
   const { theme } = useTheme();
+  
+  // Determine file names and languages based on the module language
+  const fileConfig = useMemo(() => {
+    if (language === 'python') {
+      return {
+        mainFile: {
+          id: 'main.py',
+          name: 'main.py',
+          language: 'python'
+        },
+        packageFile: {
+          id: 'requirements.txt',
+          name: 'requirements.txt',
+          language: 'plaintext'
+        }
+      };
+    } else {
+      return {
+        mainFile: {
+          id: 'server.js',
+          name: 'server.js',
+          language: 'javascript'
+        },
+        packageFile: {
+          id: 'package.json',
+          name: 'package.json',
+          language: 'json'
+        }
+      };
+    }
+  }, [language]);
   
   const [files, setFiles] = useState<FileTab[]>([
     {
-      id: 'server.js',
-      name: 'server.js',
-      language: 'javascript',
+      id: fileConfig.mainFile.id,
+      name: fileConfig.mainFile.name,
+      language: fileConfig.mainFile.language,
       content: code,
       isActive: true
     },
     {
-      id: 'package.json',
-      name: 'package.json',
-      language: 'json',
+      id: fileConfig.packageFile.id,
+      name: fileConfig.packageFile.name,
+      language: fileConfig.packageFile.language,
       content: packageJson,
       isActive: false
     }
@@ -55,24 +87,44 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 1 });
   const [selectionInfo, setSelectionInfo] = useState('');
 
+  // Update files when language changes
+  useEffect(() => {
+    setFiles([
+      {
+        id: fileConfig.mainFile.id,
+        name: fileConfig.mainFile.name,
+        language: fileConfig.mainFile.language,
+        content: code,
+        isActive: true
+      },
+      {
+        id: fileConfig.packageFile.id,
+        name: fileConfig.packageFile.name,
+        language: fileConfig.packageFile.language,
+        content: packageJson,
+        isActive: false
+      }
+    ]);
+  }, [fileConfig, code, packageJson]);
+
   // Update files when props change
   useEffect(() => {
     setFiles(prevFiles => 
       prevFiles.map(file => 
-        file.id === 'server.js' 
+        file.id === fileConfig.mainFile.id 
           ? { ...file, content: code }
-          : file.id === 'package.json'
+          : file.id === fileConfig.packageFile.id
           ? { ...file, content: packageJson }
           : file
       )
     );
-  }, [code, packageJson]);
+  }, [code, packageJson, fileConfig]);
 
   const activeFile = files.find(file => file.isActive) || files[0];
 
   const handleTabClick = (fileId: string) => {
-    // Save current solution state if we're on server tab
-    if (activeFile.id === 'server.js') {
+    // Save current solution state if we're on main file tab
+    if (activeFile.id === fileConfig.mainFile.id) {
       setServerSolutionState(showSolution);
     }
     
@@ -82,7 +134,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
     })));
     
     // Update solution visibility based on the new tab
-    if (fileId === 'server.js') {
+    if (fileId === fileConfig.mainFile.id) {
       setShowSolution(serverSolutionState);
     } else {
       setShowSolution(false);
@@ -99,8 +151,8 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
         : file
     ));
 
-    // If the active file is server.js, call onCodeChange
-    if (activeFile.id === 'server.js') {
+    // If the active file is the main file, call onCodeChange
+    if (activeFile.id === fileConfig.mainFile.id) {
       onCodeChange(newValue);
     }
   };
@@ -185,7 +237,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
         {/* Main Editor */}
         <div 
           className="relative min-h-0"
-          style={{ width: (showSolution && activeFile.id === 'server.js') ? `${splitPosition}%` : '100%' }}
+          style={{ width: (showSolution && activeFile.id === fileConfig.mainFile.id) ? `${splitPosition}%` : '100%' }}
         >
           <Editor
             height="100%"
@@ -291,7 +343,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
         </div>
 
         {/* Split Resizer */}
-        {showSolution && activeFile.id === 'server.js' && (
+        {showSolution && activeFile.id === fileConfig.mainFile.id && (
           <div 
             className="w-1 bg-theme-primary cursor-col-resize hover:bg-b2l-primary transition-colors relative"
             onMouseDown={handleSplitDrag}
@@ -303,14 +355,14 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
         )}
 
         {/* Solution Editor */}
-        {showSolution && solution && activeFile.id === 'server.js' && (
+        {showSolution && solution && activeFile.id === fileConfig.mainFile.id && (
           <div 
             className="relative min-h-0 border-l border-theme-primary"
             style={{ width: `${100 - splitPosition}%` }}
           >
             <Editor
               height="100%"
-              defaultLanguage="javascript"
+              defaultLanguage={fileConfig.mainFile.language}
               value={solution}
               options={{ 
                 readOnly: true,
@@ -397,7 +449,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
       {!readOnly && runCode && (
         <div className="flex justify-between items-center p-4 bg-theme-surface border-t border-theme-primary">
           <div className="flex items-center space-x-2">
-            {solution && activeFile.id === 'server.js' && hasAttemptedSubmit && (
+            {solution && activeFile.id === fileConfig.mainFile.id && hasAttemptedSubmit && (
               <button 
                 onClick={handleShowSolution}
                 className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
@@ -409,7 +461,7 @@ export default function CodeEditor({ code, onCodeChange, packageJson, solution, 
                 {showSolution ? 'Hide Solution' : 'Show Solution'}
               </button>
             )}
-            {onResetCode && activeFile.id === 'server.js' && hasCodeChanged && hasCodeChanged() && (
+            {onResetCode && activeFile.id === fileConfig.mainFile.id && hasCodeChanged && hasCodeChanged() && (
               <button 
                 onClick={onResetCode}
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 bg-slate-200 hover:bg-slate-300 text-theme-secondary"

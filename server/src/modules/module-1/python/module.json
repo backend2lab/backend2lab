@@ -1,0 +1,31 @@
+{
+  "id": "module-1-python",
+  "title": "Environment Setup & Python Basics",
+  "description": "Learn the fundamentals of Python, including runtime environment, modules, package management, and basic operations",
+  "difficulty": "Beginner",
+  "estimatedTime": "45 minutes",
+  "tags": ["python", "basics", "modules", "pip", "functions"],
+  "files": {
+    "lab": {
+      "readme": "lab/README.md"
+    },
+    "exercise": {
+      "readme": "exercise/README.md",
+      "server": "exercise/main.py",
+      "test": "exercise/test.py",
+      "solution": "exercise/solution.py",
+      "package": "exercise/requirements.txt"
+    }
+  },
+  "learningObjectives": [
+    "Understand Python runtime environment",
+    "Learn module system and imports",
+    "Master package management with pip",
+    "Practice basic Python operations",
+    "Create and use custom functions"
+  ],
+  "prerequisites": [
+    "Basic programming knowledge",
+    "Understanding of functions and variables"
+  ]
+}

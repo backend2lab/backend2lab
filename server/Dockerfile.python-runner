@@ -1,0 +1,28 @@
+# Dockerfile for Python module execution
+FROM python:3.11-alpine
+
+# Install security tools and dependencies
+RUN apk add --no-cache \
+    dumb-init \
+    && addgroup -g 1001 -S python \
+    && adduser -S python -u 1001
+
+# Create working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy exercise files
+COPY ./ ./
+
+# Create a non-root user for execution
+USER python
+
+# Set up environment for safe execution
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Default command (will be overridden)
+CMD ["python", "main.py"]

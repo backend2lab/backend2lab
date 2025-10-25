@@ -17,6 +17,7 @@ type Module struct {
 	Difficulty         string     `json:"difficulty"`
 	EstimatedTime      string     `json:"estimatedTime"`
 	Tags               []string   `json:"tags"`
+	Language           string     `json:"language,omitempty"`
 	Files              ModuleFiles `json:"files"`
 	LearningObjectives []string   `json:"learningObjectives"`
 	Prerequisites      []string   `json:"prerequisites"`

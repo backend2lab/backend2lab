@@ -159,7 +159,18 @@ func (d *DockerRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteRe
 
 // buildModuleImage builds a Docker image for the module
 func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
-	modulePath := filepath.Join(d.modulesPath, moduleId, "exercise")
+	var modulePath string
+	var dockerfilePath string
+	
+	// Check if this is a Python module
+	if strings.HasSuffix(moduleId, "-python") {
+		baseModuleId := strings.TrimSuffix(moduleId, "-python")
+		modulePath = filepath.Join(d.modulesPath, baseModuleId, "python", "exercise")
+		dockerfilePath = filepath.Join(d.modulesPath, "../..", "Dockerfile.python-runner")
+	} else {
+		modulePath = filepath.Join(d.modulesPath, moduleId, "exercise")
+		dockerfilePath = filepath.Join(d.modulesPath, "../..", "Dockerfile.module-runner")
+	}
 	
 	// Check if module exists
 	if _, err := os.Stat(modulePath); os.IsNotExist(err) {
@@ -167,7 +178,7 @@ func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
 	}
 
 	// Create build context
-	buildContext, err := d.createBuildContext(modulePath)
+	buildContext, err := d.createBuildContext(modulePath, dockerfilePath)
 	if err != nil {
 		return fmt.Errorf("failed to create build context: %w", err)
 	}
@@ -211,7 +222,7 @@ func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
 }
 
 // createBuildContext creates a tar archive for Docker build context
-func (d *DockerRunner) createBuildContext(modulePath string) (io.Reader, error) {
+func (d *DockerRunner) createBuildContext(modulePath, dockerfilePath string) (io.Reader, error) {
 	var buf bytes.Buffer
 	tw := tar.NewWriter(&buf)
 
@@ -275,7 +286,6 @@ func (d *DockerRunner) createBuildContext(modulePath string) (io.Reader, error) 
 	}
 
 	// Add Dockerfile
-	dockerfilePath := filepath.Join(d.modulesPath, "../..", "Dockerfile.module-runner")
 	dockerfileContent, err := os.ReadFile(dockerfilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read Dockerfile: %w", err)
@@ -306,7 +316,20 @@ func (d *DockerRunner) createBuildContext(modulePath string) (io.Reader, error) 
 func (d *DockerRunner) createContainer(containerName, imageName, inputCode, moduleId string) (string, error) {
 	ctx := context.Background()
 
-	cmd := []string{"node", "tmp-server.js"}
+	var cmd []string
+	var fileName string
+	var user string
+	
+	// Check if this is a Python module
+	if strings.HasSuffix(moduleId, "-python") {
+		cmd = []string{"python3", "tmp_main.py"}
+		fileName = "tmp_main.py"
+		user = "1001:1001" // python user
+	} else {
+		cmd = []string{"node", "tmp-server.js"}
+		fileName = "tmp-server.js"
+		user = "1001:1001" // nodejs user
+	}
 	
 	containerConfig := &container.Config{
 		Image: imageName,
@@ -315,7 +338,7 @@ func (d *DockerRunner) createContainer(containerName, imageName, inputCode, modu
 			"PORT=3000",
 		},
 		WorkingDir: "/app",
-		User:       "1001:1001", // nodejs user
+		User:       user,
 		// NetworkDisabled: d.config.NetworkDisabled, // Disable network access for security
 	}
 
@@ -340,7 +363,7 @@ func (d *DockerRunner) createContainer(containerName, imageName, inputCode, modu
 	}
 
 	// Copy user code to container
-	if err := d.copyCodeToContainer(containerResp.ID, inputCode); err != nil {
+	if err := d.copyCodeToContainer(containerResp.ID, inputCode, fileName); err != nil {
 		d.dockerClient.ContainerRemove(ctx, containerResp.ID, container.RemoveOptions{Force: true})
 		return "", fmt.Errorf("failed to copy code to container: %w", err)
 	}
@@ -352,15 +375,30 @@ func (d *DockerRunner) createContainer(containerName, imageName, inputCode, modu
 func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, moduleId string) (string, error) {
 	ctx := context.Background()
 
+	var cmd []string
+	var fileName string
+	var user string
+	
+	// Check if this is a Python module
+	if strings.HasSuffix(moduleId, "-python") {
+		cmd = []string{"sh", "-c", "echo 'Running Python tests...'; python3 -m pytest test.py -v --tb=short; echo 'Done'"}
+		fileName = "tmp_main.py"
+		user = "1001:1001" // python user
+	} else {
+		cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; sleep 3; echo 'Running tests...'; npm run test -- --reporter json; echo 'Stopping server...'; kill $SERVER_PID 2>/dev/null || true; echo 'Done'"}
+		fileName = "tmp-server.js"
+		user = "1001:1001" // nodejs user
+	}
+
 	// Create container config for testing
 	containerConfig := &container.Config{
 		Image: imageName,
-		Cmd:   []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; sleep 3; echo 'Running tests...'; npm run test -- --reporter json; echo 'Stopping server...'; kill $SERVER_PID 2>/dev/null || true; echo 'Done'"},
+		Cmd:   cmd,
 		Env: []string{
 			"PORT=3000",
 		},
 		WorkingDir: "/app",
-		User:       "1001:1001", // nodejs user
+		User:       user,
 		// NetworkDisabled: false, // Enable network for testing (needed for npm install, etc.)
 	}
 
@@ -385,7 +423,7 @@ func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, 
 	}
 
 	// Copy user code to container
-	if err := d.copyCodeToContainer(containerResp.ID, inputCode); err != nil {
+	if err := d.copyCodeToContainer(containerResp.ID, inputCode, fileName); err != nil {
 		d.dockerClient.ContainerRemove(ctx, containerResp.ID, container.RemoveOptions{Force: true})
 		return "", fmt.Errorf("failed to copy code to container: %w", err)
 	}
@@ -394,16 +432,16 @@ func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, 
 }
 
 // copyCodeToContainer copies user code to the container
-func (d *DockerRunner) copyCodeToContainer(containerID, inputCode string) error {
+func (d *DockerRunner) copyCodeToContainer(containerID, inputCode, fileName string) error {
 	ctx := context.Background()
 
 	// Create tar archive with user code
 	var buf bytes.Buffer
 	tw := tar.NewWriter(&buf)
 
-	// Add user code as tmp-server.js
+	// Add user code with the appropriate filename
 	header := &tar.Header{
-		Name: "tmp-server.js",
+		Name: fileName,
 		Size: int64(len(inputCode)),
 		Mode: 0644,
 	}

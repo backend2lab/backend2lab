@@ -1,10 +1,17 @@
 {
-  "id": "module-1",
+  "id": "module-1-js",
   "title": "Environment Setup & Node.js Basics",
   "description": "Learn the fundamentals of Node.js, including runtime environment, modules, package management, and file system operations",
   "difficulty": "Beginner",
   "estimatedTime": "45 minutes",
-  "tags": ["nodejs", "basics", "modules", "npm", "filesystem"],
+  "tags": [
+    "nodejs",
+    "basics",
+    "modules",
+    "npm",
+    "filesystem"
+  ],
+  "language": "js",
   "files": {
     "lab": {
       "readme": "lab/README.md"

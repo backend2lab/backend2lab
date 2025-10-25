@@ -105,21 +105,67 @@ func (s *ModuleService) GetAllModules() ([]models.Module, error) {
 
 	// Load each module
 	for _, moduleDir := range moduleDirs {
-		moduleConfigPath := filepath.Join(s.modulesPath, moduleDir.Name(), "module.json")
-		
-		moduleData, err := os.ReadFile(moduleConfigPath)
+		// Check for language-specific modules (e.g., module-1/python, module-1/js)
+		modulePath := filepath.Join(s.modulesPath, moduleDir.Name())
+		entries, err := os.ReadDir(modulePath)
 		if err != nil {
-			logrus.Errorf("Error loading module %s: %v", moduleDir.Name(), err)
+			logrus.Errorf("Error reading module directory %s: %v", moduleDir.Name(), err)
 			continue
 		}
 
-		var module models.Module
-		if err := json.Unmarshal(moduleData, &module); err != nil {
-			logrus.Errorf("Error parsing module %s: %v", moduleDir.Name(), err)
-			continue
+		// Check if this is a language-specific module structure
+		hasLanguageDirs := false
+		for _, entry := range entries {
+			if entry.IsDir() && (entry.Name() == "js" || entry.Name() == "python") {
+				hasLanguageDirs = true
+				break
+			}
 		}
 
-		modules = append(modules, module)
+		if hasLanguageDirs {
+			// Load language-specific modules
+			for _, entry := range entries {
+				if entry.IsDir() && (entry.Name() == "js" || entry.Name() == "python") {
+					language := entry.Name()
+					moduleConfigPath := filepath.Join(modulePath, language, "module.json")
+					
+					moduleData, err := os.ReadFile(moduleConfigPath)
+					if err != nil {
+						logrus.Errorf("Error loading module %s/%s: %v", moduleDir.Name(), language, err)
+						continue
+					}
+
+					var module models.Module
+					if err := json.Unmarshal(moduleData, &module); err != nil {
+						logrus.Errorf("Error parsing module %s/%s: %v", moduleDir.Name(), language, err)
+						continue
+					}
+
+					// Set the language field
+					module.Language = language
+					modules = append(modules, module)
+				}
+			}
+		} else {
+			// Load legacy single-language module
+			moduleConfigPath := filepath.Join(modulePath, "module.json")
+			
+			moduleData, err := os.ReadFile(moduleConfigPath)
+			if err != nil {
+				logrus.Errorf("Error loading module %s: %v", moduleDir.Name(), err)
+				continue
+			}
+
+			var module models.Module
+			if err := json.Unmarshal(moduleData, &module); err != nil {
+				logrus.Errorf("Error parsing module %s: %v", moduleDir.Name(), err)
+				continue
+			}
+
+			// Set default language to js for legacy modules
+			module.Language = "js"
+			modules = append(modules, module)
+		}
 	}
 
 	return modules, nil
@@ -148,7 +194,16 @@ func (s *ModuleService) GetModuleContent(moduleId string) (*models.ModuleContent
 		return nil, err
 	}
 
-	modulePath := filepath.Join(s.modulesPath, moduleId)
+	// Determine the module path based on language
+	var modulePath string
+	if module.Language != "" {
+		// Extract base module name (e.g., "module-1" from "module-1-js" or "module-1-python")
+		baseModuleId := strings.TrimSuffix(moduleId, "-"+module.Language)
+		modulePath = filepath.Join(s.modulesPath, baseModuleId, module.Language)
+	} else {
+		// Legacy module (should not happen with new structure)
+		modulePath = filepath.Join(s.modulesPath, moduleId)
+	}
 
 	// Check if module directory exists
 	if _, err := os.Stat(modulePath); os.IsNotExist(err) {

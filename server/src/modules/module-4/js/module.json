@@ -1,10 +1,17 @@
 {
-  "id": "module-4",
+  "id": "module-4-js",
   "title": "RESTful API Design",
   "description": "Learn REST principles, HTTP methods, status codes, and build a complete RESTful API for managing books using Express.js",
   "difficulty": "Intermediate",
   "estimatedTime": "60 minutes",
-  "tags": ["rest", "api", "express", "http", "json", "status-codes"],
+  "tags": [
+    "rest",
+    "api",
+    "express",
+    "http",
+    "json",
+    "status-codes"
+  ],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -31,5 +38,6 @@
     "Module 2: Express.js Fundamentals",
     "Module 3: Middleware & Request Handling",
     "Basic understanding of HTTP protocol"
-  ]
+  ],
+  "language": "js"
 }

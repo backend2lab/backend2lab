@@ -1,10 +1,16 @@
 {
-  "id": "module-2",
+  "id": "module-2-js",
   "title": "HTTP Basics & First Server",
   "description": "Learn HTTP fundamentals and build your first Node.js web server",
   "difficulty": "Beginner",
   "estimatedTime": "30 minutes",
-  "tags": ["nodejs", "http", "server", "basics", "web"],
+  "tags": [
+    "nodejs",
+    "http",
+    "server",
+    "basics",
+    "web"
+  ],
   "files": {
     "lab": {
       "readme": "lab/README.md"
@@ -27,6 +33,6 @@
   "prerequisites": [
     "Basic JavaScript knowledge",
     "Understanding of web browsers"
-  ]
+  ],
+  "language": "js"
 }
-

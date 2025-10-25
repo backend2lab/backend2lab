@@ -10,14 +10,14 @@ export function useUrlHandling(availableModules: Module[], _currentModuleId: str
     const labIdFromUrl = queryParams.get('lab');
 
     if (labIdFromUrl) {
-      const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+      const isValidModuleId = /^module-\d+(-(js|python))?$/.test(labIdFromUrl);
       
       if (isValidModuleId) {
         setPendingModuleId(labIdFromUrl);
       } else {
-        setCurrentModuleId('module-1');
+        setCurrentModuleId('module-1-js');
         const url = new URL(window.location.href);
-        url.searchParams.set('lab', 'module-1');
+        url.searchParams.set('lab', 'module-1-js');
         window.history.replaceState({}, '', url.toString());
       }
     }
@@ -30,19 +30,19 @@ export function useUrlHandling(availableModules: Module[], _currentModuleId: str
       const labIdFromUrl = queryParams.get('lab');
       
       if (labIdFromUrl) {
-        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+        const isValidModuleId = /^module-\d+(-(js|python))?$/.test(labIdFromUrl);
         const moduleExists = availableModules.length > 0 ? availableModules.some(module => module.id === labIdFromUrl) : true;
         
         if (isValidModuleId && moduleExists) {
           setCurrentModuleId(labIdFromUrl);
         } else if (!isValidModuleId || !moduleExists) {
-          setCurrentModuleId('module-1');
+          setCurrentModuleId('module-1-js');
           const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
+          url.searchParams.set('lab', 'module-1-js');
           window.history.replaceState({}, '', url.toString());
         }
       } else {
-        setCurrentModuleId('module-1');
+        setCurrentModuleId('module-1-js');
       }
     };
 
@@ -62,10 +62,22 @@ export function useUrlHandling(availableModules: Module[], _currentModuleId: str
         if (moduleExists) {
           setCurrentModuleId(pendingModuleId);
         } else {
-          setCurrentModuleId('module-1');
-          const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
-          window.history.replaceState({}, '', url.toString());
+          // If the module doesn't exist, try to find the JS version of the base module
+          const baseId = pendingModuleId.replace(/-(js|python)$/, '');
+          const jsModuleId = `${baseId}-js`;
+          const jsModuleExists = availableModules.some(module => module.id === jsModuleId);
+          
+          if (jsModuleExists) {
+            setCurrentModuleId(jsModuleId);
+            const url = new URL(window.location.href);
+            url.searchParams.set('lab', jsModuleId);
+            window.history.replaceState({}, '', url.toString());
+          } else {
+            setCurrentModuleId('module-1-js');
+            const url = new URL(window.location.href);
+            url.searchParams.set('lab', 'module-1-js');
+            window.history.replaceState({}, '', url.toString());
+          }
         }
         setPendingModuleId(null);
         return;
@@ -75,14 +87,26 @@ export function useUrlHandling(availableModules: Module[], _currentModuleId: str
       const labIdFromUrl = queryParams.get('lab');
       
       if (labIdFromUrl) {
-        const isValidModuleId = /^module-\d+$/.test(labIdFromUrl);
+        const isValidModuleId = /^module-\d+(-(js|python))?$/.test(labIdFromUrl);
         const moduleExists = availableModules.some(module => module.id === labIdFromUrl);
         
         if (!isValidModuleId || !moduleExists) {
-          setCurrentModuleId('module-1');
-          const url = new URL(window.location.href);
-          url.searchParams.set('lab', 'module-1');
-          window.history.replaceState({}, '', url.toString());
+          // If the module doesn't exist, try to find the JS version of the base module
+          const baseId = labIdFromUrl.replace(/-(js|python)$/, '');
+          const jsModuleId = `${baseId}-js`;
+          const jsModuleExists = availableModules.some(module => module.id === jsModuleId);
+          
+          if (jsModuleExists) {
+            setCurrentModuleId(jsModuleId);
+            const url = new URL(window.location.href);
+            url.searchParams.set('lab', jsModuleId);
+            window.history.replaceState({}, '', url.toString());
+          } else {
+            setCurrentModuleId('module-1-js');
+            const url = new URL(window.location.href);
+            url.searchParams.set('lab', 'module-1-js');
+            window.history.replaceState({}, '', url.toString());
+          }
         }
       }
     }

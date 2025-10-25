@@ -50,7 +50,12 @@ func NewTestRunner() *TestRunner {
 func (t *TestRunner) RunCode(moduleId, inputCode string) (*models.RunResult, error) {
 	startTime := time.Now()
 
-	if moduleId == "module-1" {
+	// Check if this is a Python module
+	if strings.HasSuffix(moduleId, "-python") {
+		return t.runPythonCode(moduleId, inputCode, startTime)
+	}
+
+	if moduleId == "module-1-js" {
 		return t.runModule1Code(moduleId, inputCode, startTime)
 	}
 
@@ -62,7 +67,12 @@ func (t *TestRunner) RunCode(moduleId, inputCode string) (*models.RunResult, err
 func (t *TestRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteResult, error) {
 	startTime := time.Now()
 
-	if moduleId == "module-1" {
+	// Check if this is a Python module
+	if strings.HasSuffix(moduleId, "-python") {
+		return t.runPythonTests(moduleId, inputCode, startTime)
+	}
+
+	if moduleId == "module-1-js" {
 		return t.runModule1Tests(moduleId, inputCode, startTime)
 	}
 	return t.runServerTests(moduleId, inputCode, startTime)
@@ -71,7 +81,9 @@ func (t *TestRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteResu
 
 // runModule1Code executes function-based code for module-1
 func (t *TestRunner) runModule1Code(moduleId, inputCode string, startTime time.Time) (*models.RunResult, error) {
-	modulePath := filepath.Join(t.modulesPath, moduleId)
+	// Extract base module name (e.g., "module-1" from "module-1-js")
+	baseModuleId := strings.TrimSuffix(moduleId, "-js")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "js")
 	mainFilePath := filepath.Join(modulePath, "exercise", "tmp-server.js")
 
 	// Check if module exists
@@ -130,7 +142,9 @@ func (t *TestRunner) runModule1Code(moduleId, inputCode string, startTime time.T
 
 // runModule1Tests runs tests for module-1
 func (t *TestRunner) runModule1Tests(moduleId, inputCode string, startTime time.Time) (*models.TestSuiteResult, error) {
-	modulePath := filepath.Join(t.modulesPath, moduleId)
+	// Extract base module name (e.g., "module-1" from "module-1-js")
+	baseModuleId := strings.TrimSuffix(moduleId, "-js")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "js")
 	mainFilePath := filepath.Join(modulePath, "exercise", "tmp-server.js")
 
 	// Check if module exists
@@ -217,7 +231,9 @@ func (t *TestRunner) runModule1Tests(moduleId, inputCode string, startTime time.
 
 // runServerCode starts a server with the provided code
 func (t *TestRunner) runServerCode(moduleId, inputCode string, startTime time.Time) (*models.RunResult, error) {
-	modulePath := filepath.Join(t.modulesPath, moduleId)
+	// Extract base module name and language
+	baseModuleId := strings.TrimSuffix(moduleId, "-js")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "js")
 	mainFilePath := filepath.Join(modulePath, "exercise", "tmp-server.js")
 
 	// Check if module exists
@@ -314,7 +330,9 @@ func (t *TestRunner) runServerCode(moduleId, inputCode string, startTime time.Ti
 
 // runServerTests runs tests for server-based modules
 func (t *TestRunner) runServerTests(moduleId, inputCode string, startTime time.Time) (*models.TestSuiteResult, error) {
-	modulePath := filepath.Join(t.modulesPath, moduleId)
+	// Extract base module name and language
+	baseModuleId := strings.TrimSuffix(moduleId, "-js")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "js")
 	mainFilePath := filepath.Join(modulePath, "exercise", "tmp-server.js")
 
 	// Check if module exists
@@ -555,4 +573,219 @@ func (t *TestRunner) killProcessOnPort(port int) error {
 	}
 
 	return nil
+}
+
+// runPythonCode executes Python code for a module
+func (t *TestRunner) runPythonCode(moduleId, inputCode string, startTime time.Time) (*models.RunResult, error) {
+	// Extract base module name (e.g., "module-1" from "module-1-python")
+	baseModuleId := strings.TrimSuffix(moduleId, "-python")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "python")
+	mainFilePath := filepath.Join(modulePath, "exercise", "tmp_main.py")
+
+	// Check if module exists
+	if _, err := os.Stat(modulePath); os.IsNotExist(err) {
+		return &models.RunResult{
+			ModuleID:      moduleId,
+			Success:       false,
+			Message:       fmt.Sprintf("Module %s not found", moduleId),
+			ExecutionTime: time.Since(startTime).Milliseconds(),
+			ExerciseType:  "python",
+		}, nil
+	}
+
+	// Write input code to tmp_main.py
+	if err := os.WriteFile(mainFilePath, []byte(inputCode), 0644); err != nil {
+		return &models.RunResult{
+			ModuleID:      moduleId,
+			Success:       false,
+			Message:       "Failed to write code to file",
+			ExecutionTime: time.Since(startTime).Milliseconds(),
+			Error:         &[]string{err.Error()}[0],
+			ExerciseType:  "python",
+		}, nil
+	}
+
+	// Execute the code
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "python3", "tmp_main.py")
+	cmd.Dir = filepath.Join(modulePath, "exercise")
+
+	output, err := cmd.CombinedOutput()
+	outputStr := strings.TrimSpace(string(output))
+
+	if err != nil {
+		return &models.RunResult{
+			ModuleID:      moduleId,
+			Success:       false,
+			Message:       "Code execution failed",
+			ExecutionTime: time.Since(startTime).Milliseconds(),
+			Error:         &outputStr,
+			ExerciseType:  "python",
+		}, nil
+	}
+
+	return &models.RunResult{
+		ModuleID:      moduleId,
+		Success:       true,
+		Message:       "Code executed successfully",
+		ExecutionTime: time.Since(startTime).Milliseconds(),
+		Output:        &outputStr,
+		ExerciseType:  "python",
+	}, nil
+}
+
+// runPythonTests runs tests for Python modules
+func (t *TestRunner) runPythonTests(moduleId, inputCode string, startTime time.Time) (*models.TestSuiteResult, error) {
+	// Extract base module name (e.g., "module-1" from "module-1-python")
+	baseModuleId := strings.TrimSuffix(moduleId, "-python")
+	modulePath := filepath.Join(t.modulesPath, baseModuleId, "python")
+	mainFilePath := filepath.Join(modulePath, "exercise", "tmp_main.py")
+
+	// Check if module exists
+	if _, err := os.Stat(modulePath); os.IsNotExist(err) {
+		return &models.TestSuiteResult{
+			ModuleID:      moduleId,
+			TotalTests:    0,
+			PassedTests:   0,
+			FailedTests:   0,
+			Results:       []models.TestResult{{TestName: "Module Setup", Passed: false, Error: &[]string{fmt.Sprintf("Module %s not found", moduleId)}[0]}},
+			ExecutionTime: time.Since(startTime).Milliseconds(),
+			ExerciseType:  "python",
+		}, nil
+	}
+
+	// Write input code to tmp_main.py
+	if err := os.WriteFile(mainFilePath, []byte(inputCode), 0644); err != nil {
+		return &models.TestSuiteResult{
+			ModuleID:      moduleId,
+			TotalTests:    0,
+			PassedTests:   0,
+			FailedTests:   0,
+			Results:       []models.TestResult{{TestName: "Function Setup", Passed: false, Error: &[]string{fmt.Sprintf("Function setup failed: %s", err.Error())}[0]}},
+			ExecutionTime: time.Since(startTime).Milliseconds(),
+			ExerciseType:  "python",
+		}, nil
+	}
+
+	// Run tests using pytest
+	testPath := filepath.Join(modulePath, "exercise", "test.py")
+	cmd := exec.Command("python3", "-m", "pytest", testPath, "-v", "--tb=short")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cmd = exec.CommandContext(ctx, cmd.Path, cmd.Args...)
+	cmd.Dir = filepath.Join(modulePath, "exercise")
+
+	output, err := cmd.CombinedOutput()
+	outputStr := string(output)
+
+	var results []models.TestResult
+	if err != nil {
+		// Try to parse pytest output even if command failed
+		results = t.parsePytestOutput(outputStr)
+		if len(results) == 0 {
+			results = []models.TestResult{{
+				TestName: "Test Execution",
+				Passed:   false,
+				Error:    &[]string{fmt.Sprintf("Test execution failed: %s", err.Error())}[0],
+			}}
+		}
+	} else {
+		results = t.parsePytestOutput(outputStr)
+		if len(results) == 0 {
+			results = []models.TestResult{{
+				TestName: "Test Execution",
+				Passed:   false,
+				Error:    &[]string{fmt.Sprintf("Failed to parse test results: %s", outputStr)}[0],
+			}}
+		}
+	}
+
+	passedTests := 0
+	failedTests := 0
+	for _, result := range results {
+		if result.Passed {
+			passedTests++
+		} else {
+			failedTests++
+		}
+	}
+
+	return &models.TestSuiteResult{
+		ModuleID:      moduleId,
+		TotalTests:    len(results),
+		PassedTests:   passedTests,
+		FailedTests:   failedTests,
+		Results:       results,
+		ExecutionTime: time.Since(startTime).Milliseconds(),
+		ExerciseType:  "python",
+	}, nil
+}
+
+// parsePytestOutput parses pytest output into TestResult format
+func (t *TestRunner) parsePytestOutput(output string) []models.TestResult {
+	var results []models.TestResult
+	lines := strings.Split(output, "\n")
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		
+		// Look for test results in pytest format
+		// Examples:
+		// "test_greet_user_alice PASSED"
+		// "test_greet_user_bob FAILED"
+		// "test_greet_user_charlie.py::TestGreetingFunction::test_greet_user_charlie PASSED"
+		
+		if strings.Contains(line, " PASSED") {
+			// Extract test name
+			testName := strings.TrimSuffix(line, " PASSED")
+			// Remove file path if present
+			if strings.Contains(testName, "::") {
+				parts := strings.Split(testName, "::")
+				testName = parts[len(parts)-1]
+			}
+			results = append(results, models.TestResult{
+				TestName: testName,
+				Passed:   true,
+			})
+		} else if strings.Contains(line, " FAILED") {
+			// Extract test name
+			testName := strings.TrimSuffix(line, " FAILED")
+			// Remove file path if present
+			if strings.Contains(testName, "::") {
+				parts := strings.Split(testName, "::")
+				testName = parts[len(parts)-1]
+			}
+			results = append(results, models.TestResult{
+				TestName: testName,
+				Passed:   false,
+				Error:    &[]string{"Test failed"}[0],
+			})
+		} else if strings.Contains(line, "PASSED") && !strings.Contains(line, "::") {
+			// Handle pytest format: "test_name PASSED [percentage]"
+			parts := strings.Fields(line)
+			if len(parts) >= 2 {
+				testName := parts[0]
+				results = append(results, models.TestResult{
+					TestName: testName,
+					Passed:   true,
+				})
+			}
+		} else if strings.Contains(line, "FAILED") && !strings.Contains(line, "::") {
+			// Handle pytest format: "test_name FAILED [percentage]"
+			parts := strings.Fields(line)
+			if len(parts) >= 2 {
+				testName := parts[0]
+				results = append(results, models.TestResult{
+					TestName: testName,
+					Passed:   false,
+					Error:    &[]string{"Test failed"}[0],
+				})
+			}
+		}
+	}
+	
+	return results
 }

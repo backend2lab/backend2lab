@@ -28,12 +28,16 @@ function AppContent() {
   const {
     moduleContent,
     availableModules,
+    groupedModules,
     loading,
     error,
     currentModuleId,
     setCurrentModuleId,
     handleModuleChange,
     loadModuleContent,
+    getCurrentBaseModule,
+    getCurrentLanguage,
+    switchLanguage,
   } = useModuleManagement();
 
   useUrlHandling(availableModules, currentModuleId, setCurrentModuleId);
@@ -84,7 +88,7 @@ function AppContent() {
     if (moduleContent) {
       const defaultCode = moduleContent.exerciseContent.editorFiles.server;
       loadSavedCode(currentModuleId, defaultCode);
-      setExerciseType(currentModuleId === 'module-1' ? 'function' : 'server');
+      setExerciseType(currentModuleId === 'module-1-js' || currentModuleId === 'module-1-python' ? 'function' : 'server');
     }
   }, [moduleContent, currentModuleId, loadSavedCode]);
 
@@ -200,10 +204,14 @@ function AppContent() {
         loading={loading}
         moduleContent={moduleContent}
         availableModules={availableModules}
+        groupedModules={groupedModules}
         currentModuleId={currentModuleId}
         showModuleDropdown={showModuleDropdown}
         onModuleDropdownToggle={() => setShowModuleDropdown(!showModuleDropdown)}
         onModuleChange={handleModuleChangeWithReset}
+        onLanguageChange={switchLanguage}
+        getCurrentLanguage={getCurrentLanguage}
+        getCurrentBaseModule={getCurrentBaseModule}
         getDifficultyColor={getDifficultyColor}
       />
 
@@ -229,6 +237,7 @@ function AppContent() {
               hasAttemptedSubmit={hasAttemptedSubmit}
               onResetCode={handleResetCode}
               hasCodeChanged={hasCodeChanged}
+              language={getCurrentLanguage()}
             />
           </div>
           

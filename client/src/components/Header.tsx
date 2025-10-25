@@ -8,10 +8,14 @@ interface HeaderProps {
   loading: boolean;
   moduleContent: ModuleContent | null;
   availableModules: Module[];
+  groupedModules: Record<string, Module[]>;
   currentModuleId: string;
   showModuleDropdown: boolean;
   onModuleDropdownToggle: () => void;
   onModuleChange: (moduleId: string) => void;
+  onLanguageChange: (language: 'js' | 'python') => void;
+  getCurrentLanguage: () => 'js' | 'python';
+  getCurrentBaseModule: () => Module[];
   getDifficultyColor: (difficulty: string) => string;
 }
 
@@ -19,10 +23,14 @@ export function Header({
   loading,
   moduleContent,
   availableModules,
+  groupedModules,
   currentModuleId,
   showModuleDropdown,
   onModuleDropdownToggle,
   onModuleChange,
+  onLanguageChange,
+  getCurrentLanguage,
+  getCurrentBaseModule,
   getDifficultyColor,
 }: HeaderProps) {
   return (
@@ -63,8 +71,9 @@ export function Header({
             </div>
           </div>
 
-          {/* Top Right:- Module Selector + GitHub Link */}
+          {/* Top Right:- Module Selector + Language Selector + GitHub Link */}
           <div className="flex items-center space-x-3">
+            {/* Module Selector */}
             <div className="relative module-dropdown">
               <button 
                 onClick={onModuleDropdownToggle}
@@ -88,26 +97,60 @@ export function Header({
               </button>
               
               {showModuleDropdown && (
-                <div className="absolute right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto module-dropdown">
-                  {availableModules.map((module) => (
-                    <button
-                      key={module.id}
-                      onClick={() => onModuleChange(module.id)}
-                      className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors border-b border-theme-primary last:border-b-0 ${
-                        module.id === currentModuleId 
-                          ? 'bg-b2l-primary text-white' 
-                          : 'text-theme-primary'
-                      }`}
-                    >
-                      <span className="text-sm font-medium">
-                        <span className="mr-2">{module.id}:</span>
-                        {module.title}
-                      </span>
-                    </button>
-                  ))}
+                <div className="absolute right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto module-dropdown min-w-80">
+                  {Object.entries(groupedModules).map(([baseId, modules]) => {
+                    const currentModule = modules.find(m => m.id === currentModuleId);
+                    const isCurrentModule = currentModule?.id === currentModuleId;
+                    
+                    return (
+                      <button
+                        key={baseId}
+                        onClick={() => onModuleChange(baseId)}
+                        className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors border-b border-theme-primary last:border-b-0 ${
+                          isCurrentModule 
+                            ? 'bg-b2l-primary text-white' 
+                            : 'text-theme-primary'
+                        }`}
+                      >
+                        <span className="text-sm font-medium">
+                          <span className="mr-2">{baseId}:</span>
+                          {currentModule?.title || modules[0]?.title}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
+            
+            {/* Language Selector */}
+            <div className="flex items-center space-x-1">
+              {getCurrentBaseModule().length > 1 && (
+                <>
+                  <button
+                    onClick={() => onLanguageChange('js')}
+                    className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      getCurrentLanguage() === 'js'
+                        ? 'bg-b2l-primary text-white'
+                        : 'bg-slate-200 dark:bg-neutral-700 text-theme-primary hover:bg-slate-300 dark:hover:bg-neutral-600'
+                    }`}
+                  >
+                    JS
+                  </button>
+                  <button
+                    onClick={() => onLanguageChange('python')}
+                    className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      getCurrentLanguage() === 'python'
+                        ? 'bg-b2l-primary text-white'
+                        : 'bg-slate-200 dark:bg-neutral-700 text-theme-primary hover:bg-slate-300 dark:hover:bg-neutral-600'
+                    }`}
+                  >
+                    PYTHON
+                  </button>
+                </>
+              )}
+            </div>
+            
             <ThemeToggle />
             {/* GitHub Link Icon */}
             <a

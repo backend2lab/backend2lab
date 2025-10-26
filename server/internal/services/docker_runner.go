@@ -2,6 +2,7 @@ package services
 
 import (
 	"archive/tar"
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -330,8 +331,8 @@ func (d *DockerRunner) createContainer(containerName, imageName, inputCode, modu
 		// Check if this is a server module (modules 2 and above)
 		moduleNum, err := strconv.Atoi(strings.TrimPrefix(strings.TrimSuffix(moduleId, "-js"), "module-"))
 		if err == nil && moduleNum >= 2 {
-			// For server modules, run with timeout and wait for server startup
-			cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js > server.log 2>&1 & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; echo 'Waiting for server to start...'; timeout 10 sh -c 'until grep -q \"Server running on\" server.log; do sleep 0.5; done' && echo 'Server started successfully' || echo 'Server startup timeout'; echo 'Server is running. Press Ctrl+C to stop.'; wait $SERVER_PID"}
+			// For server modules, run directly - the container monitoring will handle detection
+			cmd = []string{"node", "tmp-server.js"}
 		} else {
 			// For non-server modules, run normally
 			cmd = []string{"node", "tmp-server.js"}
@@ -394,7 +395,7 @@ func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, 
 		fileName = "tmp_main.py"
 		user = "1001:1001" // python user
 	} else {
-		cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js > server.log 2>&1 & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; echo 'Waiting for server to start...'; timeout 15 sh -c 'until grep -q \"Server running on\" server.log; do sleep 0.5; done' && echo 'Server started successfully' || echo 'Server startup timeout'; echo 'Running tests...'; npm run test -- --reporter json; echo 'Stopping server...'; kill $SERVER_PID 2>/dev/null || true; echo 'Done'"}
+		cmd = []string{"sh", "-c", "node tmp-server.js & SERVER_PID=$!; sleep 2; npm run test -- --reporter json; kill $SERVER_PID 2>/dev/null || true"}
 		fileName = "tmp-server.js"
 		user = "1001:1001" // nodejs user
 	}
@@ -489,48 +490,59 @@ func (d *DockerRunner) runContainer(containerID string, timeout time.Duration) (
 	// Check container status
 	inspect, err := d.dockerClient.ContainerInspect(ctx, containerID)
 	if err != nil {
-		fmt.Printf("Failed to inspect container: %v\n", err)
+		logrus.Warnf("Failed to inspect container: %v", err)
 	} else {
-		fmt.Printf("Container state: %+v\n", inspect.State)
 		if !inspect.State.Running {
 			return "", fmt.Errorf("container is not running, state: %s, error: %s", inspect.State.Status, inspect.State.Error)
 		}
 	}
 
-	// Wait for container to finish
-	statusCh, errCh := d.dockerClient.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
+	// For server modules, monitor logs and terminate when server is ready
+	return d.runContainerWithServerDetection(ctx, containerID, timeout)
+}
 
-	select {
-	case err := <-errCh:
-		if err != nil {
-			return "", fmt.Errorf("container wait error: %w", err)
-		}
-	case status := <-statusCh:
-		fmt.Printf("Container finished with status: %+v\n", status)
-		// Container finished
-	case <-ctx.Done():
-		return "", fmt.Errorf("container wait timed out: %w", ctx.Err())
-	}
-
-	// Get container logs
+// runContainerWithServerDetection monitors container logs and terminates when server starts
+func (d *DockerRunner) runContainerWithServerDetection(ctx context.Context, containerID string, timeout time.Duration) (string, error) {
+	// Start streaming logs
 	logs, err := d.dockerClient.ContainerLogs(ctx, containerID, container.LogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
+		Follow:     true,
+		Since:      "0",
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to get container logs: %w", err)
 	}
 	defer logs.Close()
 
-	// Read logs
 	var output bytes.Buffer
-	_, err = io.Copy(&output, logs)
-	if err != nil {
-		return "", fmt.Errorf("failed to read container logs: %w", err)
+	
+	// Read logs line by line and check for server ready
+	scanner := bufio.NewScanner(logs)
+	for scanner.Scan() {
+		line := scanner.Text()
+		output.WriteString(line + "\n")
+		
+		// Check if server is ready - look for "3000" in the output
+		if strings.Contains(line, "3000") {
+			// Server is ready, stop the container immediately in a goroutine
+			go func() {
+				if err := d.dockerClient.ContainerStop(ctx, containerID, container.StopOptions{}); err != nil {
+					logrus.Warnf("Failed to stop container: %v", err)
+				}
+			}()
+			
+			// Return immediately without waiting for container to stop
+			return output.String(), nil
+		}
 	}
 
-	return strings.TrimSpace(output.String()), nil
+	// If we get here, scanner finished without finding "3000"
+	// This means timeout or container finished
+	return output.String(), nil
 }
+
+
 
 // parseTestResults parses test output into TestSuiteResult
 func (d *DockerRunner) parseTestResults(moduleId, output string, executionTime time.Duration) (*models.TestSuiteResult, error) {	

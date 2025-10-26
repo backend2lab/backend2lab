@@ -170,7 +170,7 @@ func (d *DockerRunner) buildModuleImage(moduleId, imageName string) error {
 	} else {
 		baseModuleId := strings.TrimSuffix(moduleId, "-js")
 		modulePath = filepath.Join(d.modulesPath, baseModuleId, "js", "exercise")
-		dockerfilePath = "Dockerfile.module-runner"
+		dockerfilePath = "Dockerfile.js-runner"
 	}
 	
 	// Check if module exists

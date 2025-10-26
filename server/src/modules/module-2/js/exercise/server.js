@@ -13,7 +13,8 @@ const server = http.createServer((req, res) => {
 });
 
 // ===== PROTECTED CODE - DO NOT MODIFY =====
-server.listen(3000, () => {
+const PORT = 3000;
+server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 // ===== END PROTECTED CODE =====

@@ -20,3 +20,10 @@ const app = express();
 // Your code here
 
 console.log('Express server starting...');
+
+// ===== PROTECTED CODE - DO NOT MODIFY =====
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+// ===== END PROTECTED CODE =====

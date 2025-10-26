@@ -48,7 +48,9 @@ const PORT = 3000;
 // TODO: Start server
 // Listen on port 3000 with console.log message
 
-// Basic server startup for testing (students need to implement the upload endpoints)
+
+// ===== PROTECTED CODE - DO NOT MODIFY =====
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+// ===== END PROTECTED CODE =====

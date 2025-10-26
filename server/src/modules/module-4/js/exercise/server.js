@@ -42,7 +42,9 @@ app.delete('/books/:id', (req, res) => {
     // Handle "book not found" case
 });
 
+// ===== PROTECTED CODE - DO NOT MODIFY =====
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+// ===== END PROTECTED CODE =====

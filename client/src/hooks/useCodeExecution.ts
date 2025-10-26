@@ -13,16 +13,59 @@ export function useCodeExecution() {
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [currentModuleId, setCurrentModuleId] = useState<string | null>(null);
 
-  // Enhanced setCode that also saves to localStorage
+  // Function to validate and protect code sections
+  const validateAndProtectCode = useCallback((code: string, moduleId?: string) => {
+    const targetModuleId = moduleId || currentModuleId;
+    
+    // Check if this is a server module (modules 2 and above)
+    if (targetModuleId && targetModuleId.includes('module-')) {
+      const moduleNum = parseInt(targetModuleId.replace('module-', '').replace('-js', ''));
+      if (moduleNum >= 2) {
+        // Check for protected code sections
+        const protectedStart = '// ===== PROTECTED CODE - DO NOT MODIFY =====';
+        const protectedEnd = '// ===== END PROTECTED CODE =====';
+        
+        const hasProtectedStart = code.includes(protectedStart);
+        const hasProtectedEnd = code.includes(protectedEnd);
+        
+        if (hasProtectedStart && hasProtectedEnd) {
+          // Extract the protected section
+          const startIndex = code.indexOf(protectedStart);
+          const endIndex = code.indexOf(protectedEnd) + protectedEnd.length;
+          const protectedSection = code.substring(startIndex, endIndex);
+          
+          // Check if the protected section contains server.listen or app.listen
+          if (!protectedSection.includes('server.listen') && !protectedSection.includes('app.listen')) {
+            throw new Error('Protected code section is missing required server.listen() call. Please do not modify the protected section.');
+          }
+        } else if (hasProtectedStart || hasProtectedEnd) {
+          throw new Error('Protected code section is incomplete. Please do not modify the protected section markers.');
+        }
+      }
+    }
+    
+    return code;
+  }, [currentModuleId]);
+
+  // Enhanced setCode that also saves to localStorage and validates protected sections
   const setCodeWithSave = useCallback((newCode: string, moduleId?: string) => {
     // Ensure newCode is always a string
     const safeCode = typeof newCode === 'string' ? newCode : String(newCode || '');
-    setCode(safeCode);
-    const targetModuleId = moduleId || currentModuleId;
-    if (targetModuleId) {
-      ProgressService.saveCode(targetModuleId, safeCode);
+    
+    try {
+      // Validate and protect code sections
+      const validatedCode = validateAndProtectCode(safeCode, moduleId);
+      setCode(validatedCode);
+      const targetModuleId = moduleId || currentModuleId;
+      if (targetModuleId) {
+        ProgressService.saveCode(targetModuleId, validatedCode);
+      }
+    } catch (error) {
+      // If validation fails, show error but don't update code
+      setOutput(`⚠️ Code validation error: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease do not modify the protected code sections.`);
+      return;
     }
-  }, [currentModuleId]);
+  }, [currentModuleId, validateAndProtectCode]);
 
   // Load saved code for a module
   const loadSavedCode = useCallback((moduleId: string, defaultCode: string) => {
@@ -42,6 +85,14 @@ export function useCodeExecution() {
       codeContent = codeToRun;
     } else {
       codeContent = code;
+    }
+    
+    // Validate protected code sections before running
+    try {
+      validateAndProtectCode(codeContent, currentModuleId);
+    } catch (error) {
+      setOutput(`⚠️ Cannot run code: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease do not modify the protected code sections.`);
+      return;
     }
     
     setIsRunning(true);
@@ -71,6 +122,14 @@ export function useCodeExecution() {
   const handleSubmit = async (currentModuleId: string) => {
     // Ensure code is a string
     const safeCode = typeof code === 'string' ? code : String(code || '');
+    
+    // Validate protected code sections before submitting
+    try {
+      validateAndProtectCode(safeCode, currentModuleId);
+    } catch (error) {
+      setOutput(`⚠️ Cannot submit: ${error instanceof Error ? error.message : 'Unknown error'}\n\nPlease do not modify the protected code sections.`);
+      return false;
+    }
     
     setIsSubmitting(true);
     setOutput("Running tests...\n");

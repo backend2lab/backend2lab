@@ -327,7 +327,15 @@ func (d *DockerRunner) createContainer(containerName, imageName, inputCode, modu
 		fileName = "tmp_main.py"
 		user = "1001:1001" // python user
 	} else {
-		cmd = []string{"node", "tmp-server.js"}
+		// Check if this is a server module (modules 2 and above)
+		moduleNum, err := strconv.Atoi(strings.TrimPrefix(strings.TrimSuffix(moduleId, "-js"), "module-"))
+		if err == nil && moduleNum >= 2 {
+			// For server modules, run with timeout and wait for server startup
+			cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js > server.log 2>&1 & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; echo 'Waiting for server to start...'; timeout 10 sh -c 'until grep -q \"Server running on\" server.log; do sleep 0.5; done' && echo 'Server started successfully' || echo 'Server startup timeout'; echo 'Server is running. Press Ctrl+C to stop.'; wait $SERVER_PID"}
+		} else {
+			// For non-server modules, run normally
+			cmd = []string{"node", "tmp-server.js"}
+		}
 		fileName = "tmp-server.js"
 		user = "1001:1001" // nodejs user
 	}
@@ -386,7 +394,7 @@ func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, 
 		fileName = "tmp_main.py"
 		user = "1001:1001" // python user
 	} else {
-		cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; sleep 3; echo 'Running tests...'; npm run test -- --reporter json; echo 'Stopping server...'; kill $SERVER_PID 2>/dev/null || true; echo 'Done'"}
+		cmd = []string{"sh", "-c", "echo 'Starting server...'; node tmp-server.js > server.log 2>&1 & SERVER_PID=$!; echo 'Server PID:' $SERVER_PID; echo 'Waiting for server to start...'; timeout 15 sh -c 'until grep -q \"Server running on\" server.log; do sleep 0.5; done' && echo 'Server started successfully' || echo 'Server startup timeout'; echo 'Running tests...'; npm run test -- --reporter json; echo 'Stopping server...'; kill $SERVER_PID 2>/dev/null || true; echo 'Done'"}
 		fileName = "tmp-server.js"
 		user = "1001:1001" // nodejs user
 	}

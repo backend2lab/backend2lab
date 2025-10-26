@@ -7,4 +7,13 @@ const http = require('http');
 // 4. Handle 404 for other routes
 // 5. Listen on port 3000
 
-console.log('Server starting...');
+
+const server = http.createServer((req, res) => {
+    // Implementation here
+});
+
+// ===== PROTECTED CODE - DO NOT MODIFY =====
+server.listen(3000, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+// ===== END PROTECTED CODE =====

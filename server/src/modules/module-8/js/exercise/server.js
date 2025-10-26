@@ -145,7 +145,9 @@ app.delete('/users/:id', (req, res) => {
     }
 });
 
+// ===== PROTECTED CODE - DO NOT MODIFY =====
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+// ===== END PROTECTED CODE =====

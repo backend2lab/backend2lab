@@ -144,6 +144,7 @@ func (d *DockerRunner) RunTests(moduleId, inputCode string) (*models.TestSuiteRe
 	output, err := d.runContainer(containerID, time.Duration(d.config.ExecutionTimeout*2)*time.Second)
 
 	if err != nil {
+		logrus.Errorf("Container execution failed for module %s: %v", moduleId, err)
 		return &models.TestSuiteResult{
 			ModuleID:      moduleId,
 			TotalTests:    0,
@@ -395,7 +396,7 @@ func (d *DockerRunner) createTestContainer(containerName, imageName, inputCode, 
 		fileName = "tmp_main.py"
 		user = "1001:1001" // python user
 	} else {
-		cmd = []string{"sh", "-c", "node tmp-server.js & SERVER_PID=$!; sleep 2; npm run test -- --reporter json; kill $SERVER_PID 2>/dev/null || true"}
+		cmd = []string{"sh", "-c", "node tmp-server.js & SERVER_PID=$!; sleep 2; npm test; kill $SERVER_PID 2>/dev/null || true"}
 		fileName = "tmp-server.js"
 		user = "1001:1001" // nodejs user
 	}
@@ -498,7 +499,56 @@ func (d *DockerRunner) runContainer(containerID string, timeout time.Duration) (
 	}
 
 	// For server modules, monitor logs and terminate when server is ready
-	return d.runContainerWithServerDetection(ctx, containerID, timeout)
+	// Check if this is a test container by looking at the container name
+	containerName := inspect.Name
+	if strings.Contains(containerName, "module-tester-") {
+		// For test containers, run normally without server detection
+		return d.runContainerNormal(ctx, containerID, timeout)
+	} else {
+		// For regular containers, use server detection
+		return d.runContainerWithServerDetection(ctx, containerID, timeout)
+	}
+}
+
+// runContainerNormal runs container without server detection (for tests)
+func (d *DockerRunner) runContainerNormal(ctx context.Context, containerID string, timeout time.Duration) (string, error) {
+	// Start streaming logs
+	logs, err := d.dockerClient.ContainerLogs(ctx, containerID, container.LogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+		Since:      "0",
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to get container logs: %w", err)
+	}
+	defer logs.Close()
+
+	var output bytes.Buffer
+	
+	// Read logs line by line without server detection
+	scanner := bufio.NewScanner(logs)
+	for scanner.Scan() {
+		line := scanner.Text()
+		output.WriteString(line + "\n")
+	}
+
+	// Wait for container to finish
+	statusCh, errCh := d.dockerClient.ContainerWait(ctx, containerID, container.WaitConditionNotRunning)
+	select {
+	case <-statusCh:
+		// Container finished successfully
+	case err := <-errCh:
+		logrus.Warnf("Error waiting for container to finish: %v", err)
+	case <-time.After(timeout):
+		logrus.Warnf("Container execution timeout")
+		// Stop the container
+		if err := d.dockerClient.ContainerStop(ctx, containerID, container.StopOptions{}); err != nil {
+			logrus.Warnf("Failed to stop container: %v", err)
+		}
+	}
+
+	return output.String(), nil
 }
 
 // runContainerWithServerDetection monitors container logs and terminates when server starts

@@ -288,15 +288,15 @@ export default function CodeEditor({
               });
 
               editor.onDidChangeCursorSelection((e: any) => {
-                const s = e.selection;
+                
                 if (
-                  s.startLineNumber === s.endLineNumber &&
-                  s.startColumn === s.endColumn
+                  e.selection.startLineNumber === e.selection.endLineNumber &&
+                  e.selection.startColumn === e.selection.endColumn
                 ) {
                   setSelectionInfo("");
                 } else {
-                  const lines = s.endLineNumber - s.startLineNumber + 1;
-                  const chars = s.endColumn - s.startColumn;
+                  const lines = e.selection.endLineNumber - e.selection.startLineNumber + 1;
+                  const chars = e.selection.endColumn - e.selection.startColumn;
                   setSelectionInfo(` ${lines} lines, ${chars} chars`);
                 }
               });

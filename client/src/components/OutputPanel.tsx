@@ -22,12 +22,13 @@ export function OutputPanel({
   return (
     <div className="border-t border-theme-primary bg-theme-surface p-4 flex-shrink-0">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-theme-primary">Console</h3>
+        <h3 className="text-sm font-semibold text-theme-primary" id="console">Console</h3>
         <div className="flex space-x-2">
           <button
             onClick={onRunCode}
             disabled={isRunning}
             className="px-3 py-1.5 text-xs font-medium bg-b2l-primary text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            id="runButton"
           >
             {isRunning ? 'Running...' : 'Run'}
           </button>
@@ -35,6 +36,7 @@ export function OutputPanel({
             onClick={onSubmit}
             disabled={isSubmitting}
             className="px-3 py-1.5 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            id="submitButton"
           >
             {isSubmitting ? 'Testing...' : 'Submit'}
           </button>

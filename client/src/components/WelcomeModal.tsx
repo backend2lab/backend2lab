@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCode, faPlay, faCheckCircle, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faPlay, faCheckCircle, faRocket, faArrowCircleRight } from '@fortawesome/free-solid-svg-icons';
 import { faJs } from '@fortawesome/free-brands-svg-icons';
 import Editor from '@monaco-editor/react';
 import { useTheme } from '../contexts/ThemeContext';
+import { startTour } from '../config/tourConfig';
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -119,6 +120,11 @@ app.listen(PORT, () => {
     onClose();
   };
 
+  const handleStartTour = () => {
+    onClose();
+    startTour(theme);
+  };
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -139,7 +145,6 @@ app.listen(PORT, () => {
             : 'scale-95 opacity-0 translate-y-4'
         }`}
       >
-
         {/* Two Column Layout */}
         <div className="flex flex-col lg:flex-row lg:h-full lg:min-h-0">
           {/* Left Column - Welcome Content */}
@@ -163,7 +168,7 @@ app.listen(PORT, () => {
                 hands-on labs, practical exercises, and a real-time code playground. Learn backend development 
                 concepts in a real Node.js environment, directly from your browser.
               </p>
-              
+
               {/* Features Grid */}
               <div className="grid grid-cols-1 gap-4 mt-6">
                 <div className="flex items-start space-x-3">
@@ -221,6 +226,13 @@ app.listen(PORT, () => {
                 >
                   <FontAwesomeIcon icon={faRocket} className="text-sm" />
                   <span>Start Learning</span>
+                </button>
+                <button
+                  onClick={handleStartTour}
+                  className="bg-gradient-to-r from-b2l-primary to-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-b2l-primary transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+                >
+                  <span>Take a tour</span>
+                  <FontAwesomeIcon icon={faArrowCircleRight} className="text-sm" />
                 </button>
               </div>
             </div>
@@ -316,7 +328,6 @@ app.listen(PORT, () => {
                 className="rounded-none"
               />
             </div>
-
           </div>
         </div>
       </div>

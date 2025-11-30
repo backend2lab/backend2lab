@@ -15,6 +15,7 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
           <button
             key={tab}
             onClick={() => onTabChange(tab)}
+            id={`tab-${tab.toLowerCase()}`}
             className={`flex-1 px-6 text-sm font-medium transition-all duration-200 border-b-2 flex items-center justify-center ${
               activeTab === tab 
                 ? 'text-b2l-primary border-b2l-primary bg-theme-background' 

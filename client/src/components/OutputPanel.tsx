@@ -1,6 +1,6 @@
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { TestResult, TestSuiteResult } from "../services/moduleService";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import type { TestSuiteResult, TestResult } from "../services/moduleService";
 
 interface OutputPanelProps {
   output: string;

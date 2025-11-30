@@ -1,12 +1,12 @@
-import { faJava, faJs, faPython } from "@fortawesome/free-brands-svg-icons";
+import { useState, useEffect } from "react";
+import Editor from "@monaco-editor/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faFileCode, 
   faFile,
-  faFileCode,
   faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { faPython, faJava, faJs } from "@fortawesome/free-brands-svg-icons";
 import { useTheme } from '../contexts/ThemeContext';
 
 interface FileTab {

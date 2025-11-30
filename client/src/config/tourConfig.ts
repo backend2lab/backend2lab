@@ -72,7 +72,7 @@ export const startTour = (theme?: "dark" | "light") => {
         popover: {
           title: "package.json Editor",
           description:
-            "This is your packages.json editor where you can manage your project dependencies.",
+            "This is your package.json editor where you can manage your project dependencies.",
           side: "bottom",
           align: "center",
         },

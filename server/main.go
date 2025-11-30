@@ -48,7 +48,7 @@ func main() {
 	router.Use(middleware.RequestLogger())
 
 	// Health check endpoint
-	router.GET("/health", func(c *gin.Context) {
+	router.GET("/api/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":    "healthy",
 			"service":   "backend-playground-server",
